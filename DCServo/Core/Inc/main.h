@@ -31,6 +31,16 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stdint.h"
+#include "stdio.h"
+#include "string.h"
+
+#include "SysConfig.h"
+#include "gpio_Driver.h"
+#include "timer_Driver.h"
+#include "usart_Driver.h"
+
+
 
 /* USER CODE END Includes */
 

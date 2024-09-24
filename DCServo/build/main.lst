@@ -1,0 +1,456 @@
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"main.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Core/Src/main.c"
+  18              		.section	.text.EncoderTask,"ax",%progbits
+  19              		.align	1
+  20              		.global	EncoderTask
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	EncoderTask:
+  26              	.LFB75:
+   1:Core/Src/main.c **** #include "main.h"
+   2:Core/Src/main.c **** #include "FreeRTOS.h"
+   3:Core/Src/main.c **** #include "task.h"
+   4:Core/Src/main.c **** #include "queue.h"
+   5:Core/Src/main.c **** #include "semphr.h"
+   6:Core/Src/main.c **** 
+   7:Core/Src/main.c **** 
+   8:Core/Src/main.c **** QueueHandle_t EncoderQueue;
+   9:Core/Src/main.c **** 
+  10:Core/Src/main.c **** void EncoderTask(void* vParameters);
+  11:Core/Src/main.c **** void ControllerTask(void* vParametes);
+  12:Core/Src/main.c **** void CommunicationTask(void* vParameters);
+  13:Core/Src/main.c **** 
+  14:Core/Src/main.c **** 
+  15:Core/Src/main.c **** int main(void)
+  16:Core/Src/main.c **** {
+  17:Core/Src/main.c ****   HAL_Init();
+  18:Core/Src/main.c ****   SystemClock_Config();
+  19:Core/Src/main.c ****   MX_GPIO_Init();
+  20:Core/Src/main.c ****   USART1_Init();
+  21:Core/Src/main.c ****   Encoder_Init();
+  22:Core/Src/main.c ****   // PWM_init();
+  23:Core/Src/main.c **** 
+  24:Core/Src/main.c ****   LED_PC13();
+  25:Core/Src/main.c **** 
+  26:Core/Src/main.c ****   EncoderQueue = xQueueCreate(1, sizeof(int16_t));
+  27:Core/Src/main.c **** 
+  28:Core/Src/main.c ****   xTaskCreate(EncoderTask, NULL, configMINIMAL_STACK_SIZE, NULL, 4, NULL);
+  29:Core/Src/main.c ****   // xTaskCreate(ControllerTask, NULL, configMINIMAL_STACK_SIZE, NULL, 3, NULL);
+  30:Core/Src/main.c ****   xTaskCreate(CommunicationTask, NULL, configMINIMAL_STACK_SIZE, NULL, 2, NULL);
+  31:Core/Src/main.c **** 
+  32:Core/Src/main.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s 			page 2
+
+
+  33:Core/Src/main.c ****   vTaskStartScheduler();
+  34:Core/Src/main.c **** 
+  35:Core/Src/main.c **** 
+  36:Core/Src/main.c ****   while (1)
+  37:Core/Src/main.c ****   {}
+  38:Core/Src/main.c **** }
+  39:Core/Src/main.c **** 
+  40:Core/Src/main.c **** uint32_t PWM;
+  41:Core/Src/main.c **** void ControllerTask(void* vParametes)
+  42:Core/Src/main.c **** {
+  43:Core/Src/main.c ****   TickType_t MSDelay = pdMS_TO_TICKS(100);
+  44:Core/Src/main.c **** 	for(;;)
+  45:Core/Src/main.c **** 	{
+  46:Core/Src/main.c **** 		// RotationMode(CW);
+  47:Core/Src/main.c **** 		// PWM_Set(PWM);
+  48:Core/Src/main.c **** 
+  49:Core/Src/main.c ****     // vTaskDelay(MSDelay);
+  50:Core/Src/main.c **** 
+  51:Core/Src/main.c ****         // xSemaphoreTake(ControllerSemaphore, portMAX_DELAY);
+  52:Core/Src/main.c **** 	}
+  53:Core/Src/main.c **** }
+  54:Core/Src/main.c **** 
+  55:Core/Src/main.c **** int16_t countSend = 0;
+  56:Core/Src/main.c **** void EncoderTask(void* vParametes)
+  57:Core/Src/main.c **** {
+  27              		.loc 1 57 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32              		.loc 1 57 1 is_stmt 0 view .LVU1
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+  38              	.LVL1:
+  39              	.L2:
+  58:Core/Src/main.c **** 	TickType_t MSDelay = pdMS_TO_TICKS(5);
+  59:Core/Src/main.c **** 	for(;;)
+  40              		.loc 1 59 2 is_stmt 1 view .LVU2
+  60:Core/Src/main.c **** 	{
+  61:Core/Src/main.c **** 		countSend = Get_Encoder();
+  41              		.loc 1 61 3 view .LVU3
+  42              		.loc 1 61 15 is_stmt 0 view .LVU4
+  43 0002 FFF7FEFF 		bl	Get_Encoder
+  44              	.LVL2:
+  45              		.loc 1 61 13 discriminator 1 view .LVU5
+  46 0006 0449     		ldr	r1, .L4
+  47 0008 0880     		strh	r0, [r1]	@ movhi
+  62:Core/Src/main.c **** 
+  63:Core/Src/main.c **** 		xQueueSend(EncoderQueue, &countSend, MSDelay);
+  48              		.loc 1 63 3 is_stmt 1 discriminator 1 view .LVU6
+  49 000a 0023     		movs	r3, #0
+  50 000c 0522     		movs	r2, #5
+  51 000e 0348     		ldr	r0, .L4+4
+  52 0010 0068     		ldr	r0, [r0]
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s 			page 3
+
+
+  53 0012 FFF7FEFF 		bl	xQueueGenericSend
+  54              	.LVL3:
+  59:Core/Src/main.c **** 	{
+  55              		.loc 1 59 2 view .LVU7
+  56 0016 F4E7     		b	.L2
+  57              	.L5:
+  58              		.align	2
+  59              	.L4:
+  60 0018 00000000 		.word	countSend
+  61 001c 00000000 		.word	EncoderQueue
+  62              		.cfi_endproc
+  63              	.LFE75:
+  65              		.section	.rodata.CommunicationTask.str1.4,"aMS",%progbits,1
+  66              		.align	2
+  67              	.LC0:
+  68 0000 456E636F 		.ascii	"Encoder: %d\012\000"
+  68      6465723A 
+  68      2025640A 
+  68      00
+  69              		.section	.text.CommunicationTask,"ax",%progbits
+  70              		.align	1
+  71              		.global	CommunicationTask
+  72              		.syntax unified
+  73              		.thumb
+  74              		.thumb_func
+  76              	CommunicationTask:
+  77              	.LFB76:
+  64:Core/Src/main.c **** 		// xSemaphoreTake(EncoderSemaphore, portMAX_DELAY);
+  65:Core/Src/main.c **** 
+  66:Core/Src/main.c **** 	}
+  67:Core/Src/main.c **** }
+  68:Core/Src/main.c **** 
+  69:Core/Src/main.c **** char buffer[100];
+  70:Core/Src/main.c **** int16_t countReceived = 0;
+  71:Core/Src/main.c **** void CommunicationTask(void* vParametes)
+  72:Core/Src/main.c **** {
+  78              		.loc 1 72 1 view -0
+  79              		.cfi_startproc
+  80              		@ Volatile: function does not return.
+  81              		@ args = 0, pretend = 0, frame = 0
+  82              		@ frame_needed = 0, uses_anonymous_args = 0
+  83              	.LVL4:
+  84              		.loc 1 72 1 is_stmt 0 view .LVU9
+  85 0000 08B5     		push	{r3, lr}
+  86              	.LCFI1:
+  87              		.cfi_def_cfa_offset 8
+  88              		.cfi_offset 3, -8
+  89              		.cfi_offset 14, -4
+  90 0002 0EE0     		b	.L8
+  91              	.LVL5:
+  92              	.L10:
+  73:Core/Src/main.c **** 	for(;;)
+  74:Core/Src/main.c **** 	{
+  75:Core/Src/main.c **** 		if (xQueueReceive(EncoderQueue, &countReceived, portMAX_DELAY) == pdTRUE)
+  76:Core/Src/main.c **** 		{
+  77:Core/Src/main.c **** 			sprintf(buffer, "Encoder: %d\n", countReceived);
+  93              		.loc 1 77 4 is_stmt 1 view .LVU10
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s 			page 4
+
+
+  94 0004 0C4C     		ldr	r4, .L11
+  95 0006 0D4B     		ldr	r3, .L11+4
+  96 0008 B3F90020 		ldrsh	r2, [r3]
+  97 000c 0C49     		ldr	r1, .L11+8
+  98 000e 2046     		mov	r0, r4
+  99 0010 FFF7FEFF 		bl	sprintf
+ 100              	.LVL6:
+  78:Core/Src/main.c **** 			SendString(buffer);
+ 101              		.loc 1 78 4 view .LVU11
+ 102 0014 2046     		mov	r0, r4
+ 103 0016 FFF7FEFF 		bl	SendString
+ 104              	.LVL7:
+ 105              	.L7:
+  79:Core/Src/main.c **** 		}
+  80:Core/Src/main.c **** 		// xSemaphoreTake(CommunicationSemaphore, portMAX_DELAY);
+  81:Core/Src/main.c **** 
+  82:Core/Src/main.c ****     vTaskDelay(pdMS_TO_TICKS(1000));
+ 106              		.loc 1 82 5 view .LVU12
+ 107 001a 4FF47A70 		mov	r0, #1000
+ 108 001e FFF7FEFF 		bl	vTaskDelay
+ 109              	.LVL8:
+  73:Core/Src/main.c **** 	{
+ 110              		.loc 1 73 2 view .LVU13
+ 111              	.L8:
+  73:Core/Src/main.c **** 	{
+ 112              		.loc 1 73 2 view .LVU14
+  75:Core/Src/main.c **** 		{
+ 113              		.loc 1 75 3 view .LVU15
+  75:Core/Src/main.c **** 		{
+ 114              		.loc 1 75 7 is_stmt 0 view .LVU16
+ 115 0022 4FF0FF32 		mov	r2, #-1
+ 116 0026 0549     		ldr	r1, .L11+4
+ 117 0028 064B     		ldr	r3, .L11+12
+ 118 002a 1868     		ldr	r0, [r3]
+ 119 002c FFF7FEFF 		bl	xQueueReceive
+ 120              	.LVL9:
+  75:Core/Src/main.c **** 		{
+ 121              		.loc 1 75 6 discriminator 1 view .LVU17
+ 122 0030 0128     		cmp	r0, #1
+ 123 0032 E7D0     		beq	.L10
+ 124 0034 F1E7     		b	.L7
+ 125              	.L12:
+ 126 0036 00BF     		.align	2
+ 127              	.L11:
+ 128 0038 00000000 		.word	buffer
+ 129 003c 00000000 		.word	countReceived
+ 130 0040 00000000 		.word	.LC0
+ 131 0044 00000000 		.word	EncoderQueue
+ 132              		.cfi_endproc
+ 133              	.LFE76:
+ 135              		.section	.text.main,"ax",%progbits
+ 136              		.align	1
+ 137              		.global	main
+ 138              		.syntax unified
+ 139              		.thumb
+ 140              		.thumb_func
+ 142              	main:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s 			page 5
+
+
+ 143              	.LFB73:
+  16:Core/Src/main.c ****   HAL_Init();
+ 144              		.loc 1 16 1 is_stmt 1 view -0
+ 145              		.cfi_startproc
+ 146              		@ Volatile: function does not return.
+ 147              		@ args = 0, pretend = 0, frame = 0
+ 148              		@ frame_needed = 0, uses_anonymous_args = 0
+ 149 0000 00B5     		push	{lr}
+ 150              	.LCFI2:
+ 151              		.cfi_def_cfa_offset 4
+ 152              		.cfi_offset 14, -4
+ 153 0002 83B0     		sub	sp, sp, #12
+ 154              	.LCFI3:
+ 155              		.cfi_def_cfa_offset 16
+  17:Core/Src/main.c ****   SystemClock_Config();
+ 156              		.loc 1 17 3 view .LVU19
+ 157 0004 FFF7FEFF 		bl	HAL_Init
+ 158              	.LVL10:
+  18:Core/Src/main.c ****   MX_GPIO_Init();
+ 159              		.loc 1 18 3 view .LVU20
+ 160 0008 FFF7FEFF 		bl	SystemClock_Config
+ 161              	.LVL11:
+  19:Core/Src/main.c ****   USART1_Init();
+ 162              		.loc 1 19 3 view .LVU21
+ 163 000c FFF7FEFF 		bl	MX_GPIO_Init
+ 164              	.LVL12:
+  20:Core/Src/main.c ****   Encoder_Init();
+ 165              		.loc 1 20 3 view .LVU22
+ 166 0010 FFF7FEFF 		bl	USART1_Init
+ 167              	.LVL13:
+  21:Core/Src/main.c ****   // PWM_init();
+ 168              		.loc 1 21 3 view .LVU23
+ 169 0014 FFF7FEFF 		bl	Encoder_Init
+ 170              	.LVL14:
+  24:Core/Src/main.c **** 
+ 171              		.loc 1 24 3 view .LVU24
+ 172 0018 FFF7FEFF 		bl	LED_PC13
+ 173              	.LVL15:
+  26:Core/Src/main.c **** 
+ 174              		.loc 1 26 3 view .LVU25
+  26:Core/Src/main.c **** 
+ 175              		.loc 1 26 18 is_stmt 0 view .LVU26
+ 176 001c 0022     		movs	r2, #0
+ 177 001e 0221     		movs	r1, #2
+ 178 0020 0120     		movs	r0, #1
+ 179 0022 FFF7FEFF 		bl	xQueueGenericCreate
+ 180              	.LVL16:
+  26:Core/Src/main.c **** 
+ 181              		.loc 1 26 16 discriminator 1 view .LVU27
+ 182 0026 0C4B     		ldr	r3, .L16
+ 183 0028 1860     		str	r0, [r3]
+  28:Core/Src/main.c ****   // xTaskCreate(ControllerTask, NULL, configMINIMAL_STACK_SIZE, NULL, 3, NULL);
+ 184              		.loc 1 28 3 is_stmt 1 view .LVU28
+ 185 002a 0024     		movs	r4, #0
+ 186 002c 0194     		str	r4, [sp, #4]
+ 187 002e 0423     		movs	r3, #4
+ 188 0030 0093     		str	r3, [sp]
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s 			page 6
+
+
+ 189 0032 2346     		mov	r3, r4
+ 190 0034 8022     		movs	r2, #128
+ 191 0036 2146     		mov	r1, r4
+ 192 0038 0848     		ldr	r0, .L16+4
+ 193 003a FFF7FEFF 		bl	xTaskCreate
+ 194              	.LVL17:
+  30:Core/Src/main.c **** 
+ 195              		.loc 1 30 3 view .LVU29
+ 196 003e 0194     		str	r4, [sp, #4]
+ 197 0040 0223     		movs	r3, #2
+ 198 0042 0093     		str	r3, [sp]
+ 199 0044 2346     		mov	r3, r4
+ 200 0046 8022     		movs	r2, #128
+ 201 0048 2146     		mov	r1, r4
+ 202 004a 0548     		ldr	r0, .L16+8
+ 203 004c FFF7FEFF 		bl	xTaskCreate
+ 204              	.LVL18:
+  33:Core/Src/main.c **** 
+ 205              		.loc 1 33 3 view .LVU30
+ 206 0050 FFF7FEFF 		bl	vTaskStartScheduler
+ 207              	.LVL19:
+ 208              	.L14:
+  36:Core/Src/main.c ****   {}
+ 209              		.loc 1 36 3 view .LVU31
+  37:Core/Src/main.c **** }
+ 210              		.loc 1 37 4 view .LVU32
+  36:Core/Src/main.c ****   {}
+ 211              		.loc 1 36 9 view .LVU33
+ 212 0054 FEE7     		b	.L14
+ 213              	.L17:
+ 214 0056 00BF     		.align	2
+ 215              	.L16:
+ 216 0058 00000000 		.word	EncoderQueue
+ 217 005c 00000000 		.word	EncoderTask
+ 218 0060 00000000 		.word	CommunicationTask
+ 219              		.cfi_endproc
+ 220              	.LFE73:
+ 222              		.section	.text.ControllerTask,"ax",%progbits
+ 223              		.align	1
+ 224              		.global	ControllerTask
+ 225              		.syntax unified
+ 226              		.thumb
+ 227              		.thumb_func
+ 229              	ControllerTask:
+ 230              	.LFB74:
+  42:Core/Src/main.c ****   TickType_t MSDelay = pdMS_TO_TICKS(100);
+ 231              		.loc 1 42 1 view -0
+ 232              		.cfi_startproc
+ 233              		@ args = 0, pretend = 0, frame = 0
+ 234              		@ frame_needed = 0, uses_anonymous_args = 0
+ 235              		@ link register save eliminated.
+ 236              	.LVL20:
+ 237              	.L19:
+  44:Core/Src/main.c **** 	{
+ 238              		.loc 1 44 2 view .LVU35
+  52:Core/Src/main.c **** }
+ 239              		.loc 1 52 2 view .LVU36
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s 			page 7
+
+
+  44:Core/Src/main.c **** 	{
+ 240              		.loc 1 44 2 view .LVU37
+ 241 0000 FEE7     		b	.L19
+ 242              		.cfi_endproc
+ 243              	.LFE74:
+ 245              		.global	countReceived
+ 246              		.section	.bss.countReceived,"aw",%nobits
+ 247              		.align	1
+ 250              	countReceived:
+ 251 0000 0000     		.space	2
+ 252              		.global	buffer
+ 253              		.section	.bss.buffer,"aw",%nobits
+ 254              		.align	2
+ 257              	buffer:
+ 258 0000 00000000 		.space	100
+ 258      00000000 
+ 258      00000000 
+ 258      00000000 
+ 258      00000000 
+ 259              		.global	countSend
+ 260              		.section	.bss.countSend,"aw",%nobits
+ 261              		.align	1
+ 264              	countSend:
+ 265 0000 0000     		.space	2
+ 266              		.global	PWM
+ 267              		.section	.bss.PWM,"aw",%nobits
+ 268              		.align	2
+ 271              	PWM:
+ 272 0000 00000000 		.space	4
+ 273              		.global	EncoderQueue
+ 274              		.section	.bss.EncoderQueue,"aw",%nobits
+ 275              		.align	2
+ 278              	EncoderQueue:
+ 279 0000 00000000 		.space	4
+ 280              		.text
+ 281              	.Letext0:
+ 282              		.file 2 "C:/ArmToolChain/arm-none-eabi/include/machine/_default_types.h"
+ 283              		.file 3 "C:/ArmToolChain/arm-none-eabi/include/sys/_stdint.h"
+ 284              		.file 4 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 285              		.file 5 "ThirdParty/FreeRTOS/include/projdefs.h"
+ 286              		.file 6 "ThirdParty/FreeRTOS/portable/GCC/ARM_CM3/portmacro.h"
+ 287              		.file 7 "ThirdParty/FreeRTOS/include/task.h"
+ 288              		.file 8 "ThirdParty/FreeRTOS/include/queue.h"
+ 289              		.file 9 "Core/Src/Drivers/Inc/usart_Driver.h"
+ 290              		.file 10 "C:/ArmToolChain/arm-none-eabi/include/stdio.h"
+ 291              		.file 11 "Core/Src/Drivers/Inc/gpio_Driver.h"
+ 292              		.file 12 "Core/Src/Drivers/Inc/timer_Driver.h"
+ 293              		.file 13 "Core/Src/Drivers/Inc/SysConfig.h"
+ 294              		.file 14 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:19     .text.EncoderTask:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:25     .text.EncoderTask:00000000 EncoderTask
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:60     .text.EncoderTask:00000018 $d
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:264    .bss.countSend:00000000 countSend
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:278    .bss.EncoderQueue:00000000 EncoderQueue
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:66     .rodata.CommunicationTask.str1.4:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:70     .text.CommunicationTask:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:76     .text.CommunicationTask:00000000 CommunicationTask
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:128    .text.CommunicationTask:00000038 $d
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:257    .bss.buffer:00000000 buffer
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:250    .bss.countReceived:00000000 countReceived
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:136    .text.main:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:142    .text.main:00000000 main
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:216    .text.main:00000058 $d
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:223    .text.ControllerTask:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:229    .text.ControllerTask:00000000 ControllerTask
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:247    .bss.countReceived:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:254    .bss.buffer:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:261    .bss.countSend:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:271    .bss.PWM:00000000 PWM
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:268    .bss.PWM:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccfTTlkF.s:275    .bss.EncoderQueue:00000000 $d
+
+UNDEFINED SYMBOLS
+Get_Encoder
+xQueueGenericSend
+sprintf
+SendString
+vTaskDelay
+xQueueReceive
+HAL_Init
+SystemClock_Config
+MX_GPIO_Init
+USART1_Init
+Encoder_Init
+LED_PC13
+xQueueGenericCreate
+xTaskCreate
+vTaskStartScheduler

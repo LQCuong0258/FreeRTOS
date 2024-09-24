@@ -1,0 +1,46 @@
+void PID(double set_point, double real)
+{
+	double pid, out;
+	
+	High_lim = 400, Low_lim = 0;
+	static double e_pre = 0;
+	static double Ui_pre = 0;
+	static double e_reset = 0;
+	static double Ud_f_pre = 0;
+	
+	double e;
+	double Up, Ui, Ud, Ud_f;
+	
+	Kp = 0.8746591948;
+	Ki = 1.807511699;
+	Kd = 0.09015969137;
+	
+	Kb = 4.477487171;
+	
+	e = set_point - real; // error
+	
+	Up = Kp*e; //
+	
+	Ui = Ui_pre + Ki*Ts*e + Kb*Ts*e_reset; // antiwindup
+	
+	Ud = Kd*(e - e_pre)/Ts;//
+	Ud_f = (1 - alpha)*Ud_f_pre + alpha*Ud; // low pass fillter
+
+	// Luu lai cac gia tri
+	e_pre = e;
+	Ui_pre = Ui;
+	Ud_f_pre = Ud_f;
+	
+	pid = (Up + Ui + Ud_f);
+	
+	// set rotations
+	dir(pid);
+	out = abs((int) pid);
+	// Saturated
+	if (out > High_lim) pwm = High_lim;
+	else if(out < Low_lim) pwm = Low_lim;
+	else pwm = pid;
+	e_reset = pwm - out;
+	// Set value PWM
+	TIM3->CCR1 = pwm;
+}
