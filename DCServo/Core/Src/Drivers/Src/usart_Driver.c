@@ -1,6 +1,35 @@
 #include "usart_Driver.h"
+#include "FreeRTOS.h"
+#include "queue.h"
 
 UART_HandleTypeDef huart1;
+
+extern QueueHandle_t UARTQueue;
+
+char Buffer[100];
+uint8_t BufferIndex = 0;
+
+void USART1_IRQHandler(void)
+{
+	uint8_t ReceivedData;
+	HAL_UART_Receive(&huart1, &ReceivedData, 1, HAL_MAX_DELAY);
+
+	if(ReceivedData == 'S')
+	{ 
+		Buffer[BufferIndex] = '\0';
+
+		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+		xQueueSendFromISR(UARTQueue, Buffer, &xHigherPriorityTaskWoken);
+
+		BufferIndex = 0;
+		memset(Buffer, '\0', sizeof(Buffer));
+
+		portEND_SWITCHING_ISR(xHigherPriorityTaskWoken);
+	}
+	else Buffer[BufferIndex++] = ReceivedData;
+
+	// __HAL_UART_CLEAR_FLAG(&huart1, UART_FLAG_RXNE);
+}
 
 void SendString(char* str)
 {

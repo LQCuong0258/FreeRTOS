@@ -6,6 +6,7 @@
 
 
 QueueHandle_t EncoderQueue;
+QueueHandle_t UARTQueue;
 
 void EncoderTask(void* vParameters);
 void ControllerTask(void* vParametes);
@@ -24,6 +25,7 @@ int main(void)
   LED_PC13();
 
   EncoderQueue = xQueueCreate(1, sizeof(int16_t));
+  UARTQueue = xQueueCreate(1, sizeof(char)*100);
 
   xTaskCreate(EncoderTask, NULL, configMINIMAL_STACK_SIZE, NULL, 4, NULL);
   xTaskCreate(ControllerTask, NULL, configMINIMAL_STACK_SIZE, NULL, 3, NULL);
@@ -37,25 +39,31 @@ int main(void)
   {}
 }
 
-uint32_t PWM;
+uint32_t PWM = 0;
+char BufferReceive[100];
 void ControllerTask(void* vParametes)
 {
   TickType_t MSDelay = pdMS_TO_TICKS(100);
 	for(;;)
 	{
-		RotationMode(CW);
-		PWM_Set(PWM);
+    if (xQueueReceive(UARTQueue, &BufferReceive, pdMS_TO_TICKS(400)) == pdTRUE)
+		{
+      PWM = atoi(BufferReceive);
+      RotationMode(CW);
+			PWM_Set(PWM);
 
-    vTaskDelay(MSDelay);
-
-        // xSemaphoreTake(ControllerSemaphore, portMAX_DELAY);
+		}
+    else
+    {
+      SendString("Controller Task\n");
+    }
 	}
 }
 
 int16_t countSend = 0;
 void EncoderTask(void* vParametes)
 {
-	TickType_t MSDelay = pdMS_TO_TICKS(5);
+	TickType_t MSDelay = pdMS_TO_TICKS(9);
 	for(;;)
 	{
 		countSend = Get_Encoder();
@@ -76,9 +84,12 @@ void CommunicationTask(void* vParametes)
 		{
 			sprintf(buffer, "Encoder: %d\n", countReceived);
 			SendString(buffer);
+
+      vTaskDelay(pdMS_TO_TICKS(1000));
 		}
 		// xSemaphoreTake(CommunicationSemaphore, portMAX_DELAY);
 
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    // SendString("Hello World\n");
+    
 	}
 }
