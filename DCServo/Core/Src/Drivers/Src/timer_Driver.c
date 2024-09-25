@@ -1,11 +1,13 @@
 #include "timer_Driver.h"
+#include "FreeRTOS.h"
+#include "semphr.h"
 
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 
 // extern SemaphoreHandle_t ControllerSemaphore;
-// extern SemaphoreHandle_t EncoderSemaphore;
+extern SemaphoreHandle_t EncoderSemaphore;
 // extern SemaphoreHandle_t CommunicationSemaphore;
 
 
@@ -15,9 +17,9 @@ void TIM4_IRQHandler(void)
 {
 	if (__HAL_TIM_GET_FLAG(&htim4, TIM_FLAG_UPDATE) != RESET)
 	{
-		// __HAL_TIM_CLEAR_FLAG(&htim4, TIM_FLAG_UPDATE);
+		__HAL_TIM_CLEAR_FLAG(&htim4, TIM_FLAG_UPDATE);
 
-		// // xSemaphoreGiveFromISR(EncoderSemaphore, NULL);
+		xSemaphoreGiveFromISR(EncoderSemaphore, NULL);
 		// xSemaphoreGiveFromISR(ControllerSemaphore, NULL);
 
 		// tick4++;

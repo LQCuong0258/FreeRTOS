@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s 			page 1
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s 			page 1
 
 
    1              		.cpu cortex-m3
@@ -44,506 +44,580 @@ ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s 			page 1
    8:Core/Src/main.c **** QueueHandle_t EncoderQueue;
    9:Core/Src/main.c **** QueueHandle_t UARTQueue;
   10:Core/Src/main.c **** 
-  11:Core/Src/main.c **** void EncoderTask(void* vParameters);
-  12:Core/Src/main.c **** void ControllerTask(void* vParametes);
-  13:Core/Src/main.c **** void CommunicationTask(void* vParameters);
-  14:Core/Src/main.c **** 
-  15:Core/Src/main.c **** 
-  16:Core/Src/main.c **** int main(void)
-  17:Core/Src/main.c **** {
-  18:Core/Src/main.c ****   HAL_Init();
-  19:Core/Src/main.c ****   SystemClock_Config();
-  20:Core/Src/main.c ****   MX_GPIO_Init();
-  21:Core/Src/main.c ****   USART1_Init();
-  22:Core/Src/main.c ****   Encoder_Init();
-  23:Core/Src/main.c ****   PWM_init();
-  24:Core/Src/main.c **** 
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s 			page 2
+  11:Core/Src/main.c **** SemaphoreHandle_t EncoderSemaphore;
+  12:Core/Src/main.c **** 
+  13:Core/Src/main.c **** void EncoderTask(void* vParameters);
+  14:Core/Src/main.c **** void ControllerTask(void* vParametes);
+  15:Core/Src/main.c **** void CommunicationTask(void* vParameters);
+  16:Core/Src/main.c **** 
+  17:Core/Src/main.c **** 
+  18:Core/Src/main.c **** int main(void)
+  19:Core/Src/main.c **** {
+  20:Core/Src/main.c ****   HAL_Init();
+  21:Core/Src/main.c ****   SystemClock_Config();
+  22:Core/Src/main.c ****   MX_GPIO_Init();
+  23:Core/Src/main.c ****   USART1_Init();
+  24:Core/Src/main.c ****   Encoder_Init();
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s 			page 2
 
 
-  25:Core/Src/main.c ****   LED_PC13();
+  25:Core/Src/main.c ****   PWM_init();
   26:Core/Src/main.c **** 
-  27:Core/Src/main.c ****   EncoderQueue = xQueueCreate(1, sizeof(int16_t));
-  28:Core/Src/main.c ****   UARTQueue = xQueueCreate(1, sizeof(char)*100);
-  29:Core/Src/main.c **** 
-  30:Core/Src/main.c ****   xTaskCreate(EncoderTask, NULL, configMINIMAL_STACK_SIZE, NULL, 4, NULL);
-  31:Core/Src/main.c ****   xTaskCreate(ControllerTask, NULL, configMINIMAL_STACK_SIZE, NULL, 3, NULL);
-  32:Core/Src/main.c ****   xTaskCreate(CommunicationTask, NULL, configMINIMAL_STACK_SIZE, NULL, 2, NULL);
+  27:Core/Src/main.c ****   LED_PC13();
+  28:Core/Src/main.c **** 
+  29:Core/Src/main.c ****   EncoderQueue = xQueueCreate(1, sizeof(int16_t));
+  30:Core/Src/main.c ****   UARTQueue = xQueueCreate(1, sizeof(char)*100);
+  31:Core/Src/main.c **** 
+  32:Core/Src/main.c ****   EncoderSemaphore = xSemaphoreCreateBinary();
   33:Core/Src/main.c **** 
-  34:Core/Src/main.c **** 
-  35:Core/Src/main.c ****   vTaskStartScheduler();
-  36:Core/Src/main.c **** 
+  34:Core/Src/main.c ****   xTaskCreate(EncoderTask, NULL, configMINIMAL_STACK_SIZE, NULL, 4, NULL);
+  35:Core/Src/main.c ****   xTaskCreate(ControllerTask, NULL, configMINIMAL_STACK_SIZE, NULL, 3, NULL);
+  36:Core/Src/main.c ****   xTaskCreate(CommunicationTask, NULL, configMINIMAL_STACK_SIZE, NULL, 2, NULL);
   37:Core/Src/main.c **** 
-  38:Core/Src/main.c ****   while (1)
-  39:Core/Src/main.c ****   {}
-  40:Core/Src/main.c **** }
+  38:Core/Src/main.c **** 
+  39:Core/Src/main.c ****   vTaskStartScheduler();
+  40:Core/Src/main.c **** 
   41:Core/Src/main.c **** 
-  42:Core/Src/main.c **** uint32_t PWM = 0;
-  43:Core/Src/main.c **** char BufferReceive[100];
-  44:Core/Src/main.c **** void ControllerTask(void* vParametes)
-  45:Core/Src/main.c **** {
-  31              		.loc 1 45 1 view -0
+  42:Core/Src/main.c ****   while (1)
+  43:Core/Src/main.c ****   {}
+  44:Core/Src/main.c **** }
+  45:Core/Src/main.c **** 
+  46:Core/Src/main.c **** uint32_t PWM = 0;
+  47:Core/Src/main.c **** char BufferReceive[100];
+  48:Core/Src/main.c **** void ControllerTask(void* vParametes)
+  49:Core/Src/main.c **** {
+  31              		.loc 1 49 1 view -0
   32              		.cfi_startproc
-  33              		@ args = 0, pretend = 0, frame = 0
-  34              		@ frame_needed = 0, uses_anonymous_args = 0
-  35              	.LVL0:
-  36              		.loc 1 45 1 is_stmt 0 view .LVU1
-  37 0000 10B5     		push	{r4, lr}
-  38              	.LCFI0:
-  39              		.cfi_def_cfa_offset 8
-  40              		.cfi_offset 4, -8
-  41              		.cfi_offset 14, -4
-  42 0002 0AE0     		b	.L2
-  43              	.LVL1:
-  44              	.L6:
-  45              	.LBB2:
-  46:Core/Src/main.c ****   TickType_t MSDelay = pdMS_TO_TICKS(100);
-  47:Core/Src/main.c **** 	for(;;)
-  48:Core/Src/main.c **** 	{
-  49:Core/Src/main.c ****     if (xQueueReceive(UARTQueue, &BufferReceive, pdMS_TO_TICKS(400)) == pdTRUE)
-  50:Core/Src/main.c **** 		{
-  51:Core/Src/main.c ****       PWM = atoi(BufferReceive);
-  46              		.loc 1 51 7 is_stmt 1 view .LVU2
-  47              		.loc 1 51 13 is_stmt 0 view .LVU3
+  33              		@ Volatile: function does not return.
+  34              		@ args = 0, pretend = 0, frame = 0
+  35              		@ frame_needed = 0, uses_anonymous_args = 0
+  36              	.LVL0:
+  37              		.loc 1 49 1 is_stmt 0 view .LVU1
+  38 0000 08B5     		push	{r3, lr}
+  39              	.LCFI0:
+  40              		.cfi_def_cfa_offset 8
+  41              		.cfi_offset 3, -8
+  42              		.cfi_offset 14, -4
+  43 0002 0AE0     		b	.L2
+  44              	.LVL1:
+  45              	.L6:
+  50:Core/Src/main.c ****   // TickType_t MSDelay = pdMS_TO_TICKS(100);
+  51:Core/Src/main.c **** 	for(;;)
+  52:Core/Src/main.c **** 	{
+  53:Core/Src/main.c ****     if (xQueueReceive(UARTQueue, &BufferReceive, pdMS_TO_TICKS(400)) == pdTRUE)
+  54:Core/Src/main.c **** 		{
+  55:Core/Src/main.c ****       PWM = atoi(BufferReceive);
+  46              		.loc 1 55 7 is_stmt 1 view .LVU2
+  47              		.loc 1 55 13 is_stmt 0 view .LVU3
   48 0004 0B48     		ldr	r0, .L7
   49 0006 FFF7FEFF 		bl	atoi
   50              	.LVL2:
-  51              		.loc 1 51 11 discriminator 1 view .LVU4
+  51              		.loc 1 55 11 discriminator 1 view .LVU4
   52 000a 0B4C     		ldr	r4, .L7+4
   53 000c 2060     		str	r0, [r4]
-  52:Core/Src/main.c ****       RotationMode(CW);
-  54              		.loc 1 52 7 is_stmt 1 view .LVU5
+  56:Core/Src/main.c ****       RotationMode(CW);
+  54              		.loc 1 56 7 is_stmt 1 view .LVU5
   55 000e 0020     		movs	r0, #0
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s 			page 3
+
+
   56 0010 FFF7FEFF 		bl	RotationMode
   57              	.LVL3:
-  53:Core/Src/main.c **** 			PWM_Set(PWM);
-  58              		.loc 1 53 4 view .LVU6
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s 			page 3
-
-
+  57:Core/Src/main.c **** 			PWM_Set(PWM);
+  58              		.loc 1 57 4 view .LVU6
   59 0014 2068     		ldr	r0, [r4]
   60 0016 FFF7FEFF 		bl	PWM_Set
   61              	.LVL4:
   62              	.L2:
-  63              	.LBE2:
-  47:Core/Src/main.c **** 	{
-  64              		.loc 1 47 2 view .LVU7
-  49:Core/Src/main.c **** 		{
-  65              		.loc 1 49 5 view .LVU8
-  49:Core/Src/main.c **** 		{
-  66              		.loc 1 49 9 is_stmt 0 view .LVU9
-  67 001a 4FF4C872 		mov	r2, #400
-  68 001e 0549     		ldr	r1, .L7
-  69 0020 064B     		ldr	r3, .L7+8
-  70 0022 1868     		ldr	r0, [r3]
-  71 0024 FFF7FEFF 		bl	xQueueReceive
-  72              	.LVL5:
-  49:Core/Src/main.c **** 		{
-  73              		.loc 1 49 8 discriminator 1 view .LVU10
-  74 0028 0128     		cmp	r0, #1
-  75 002a EBD0     		beq	.L6
-  54:Core/Src/main.c **** 
-  55:Core/Src/main.c **** 		}
-  56:Core/Src/main.c ****     else
-  57:Core/Src/main.c ****     {
-  58:Core/Src/main.c ****       SendString("Controller Task\n");
-  76              		.loc 1 58 7 is_stmt 1 view .LVU11
-  77 002c 0448     		ldr	r0, .L7+12
-  78 002e FFF7FEFF 		bl	SendString
-  79              	.LVL6:
-  80 0032 F2E7     		b	.L2
-  81              	.L8:
-  82              		.align	2
-  83              	.L7:
-  84 0034 00000000 		.word	BufferReceive
-  85 0038 00000000 		.word	PWM
-  86 003c 00000000 		.word	UARTQueue
-  87 0040 00000000 		.word	.LC0
-  88              		.cfi_endproc
-  89              	.LFE74:
-  91              		.section	.text.EncoderTask,"ax",%progbits
-  92              		.align	1
-  93              		.global	EncoderTask
-  94              		.syntax unified
-  95              		.thumb
-  96              		.thumb_func
-  98              	EncoderTask:
-  99              	.LFB75:
-  59:Core/Src/main.c ****     }
-  60:Core/Src/main.c **** 	}
-  61:Core/Src/main.c **** }
-  62:Core/Src/main.c **** 
-  63:Core/Src/main.c **** int16_t countSend = 0;
-  64:Core/Src/main.c **** void EncoderTask(void* vParametes)
-  65:Core/Src/main.c **** {
- 100              		.loc 1 65 1 view -0
- 101              		.cfi_startproc
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s 			page 4
+  51:Core/Src/main.c **** 	{
+  63              		.loc 1 51 2 view .LVU7
+  53:Core/Src/main.c **** 		{
+  64              		.loc 1 53 5 view .LVU8
+  53:Core/Src/main.c **** 		{
+  65              		.loc 1 53 9 is_stmt 0 view .LVU9
+  66 001a 4FF4C872 		mov	r2, #400
+  67 001e 0549     		ldr	r1, .L7
+  68 0020 064B     		ldr	r3, .L7+8
+  69 0022 1868     		ldr	r0, [r3]
+  70 0024 FFF7FEFF 		bl	xQueueReceive
+  71              	.LVL5:
+  53:Core/Src/main.c **** 		{
+  72              		.loc 1 53 8 discriminator 1 view .LVU10
+  73 0028 0128     		cmp	r0, #1
+  74 002a EBD0     		beq	.L6
+  58:Core/Src/main.c **** 
+  59:Core/Src/main.c **** 		}
+  60:Core/Src/main.c ****     else
+  61:Core/Src/main.c ****     {
+  62:Core/Src/main.c ****       SendString("Controller Task\n");
+  75              		.loc 1 62 7 is_stmt 1 view .LVU11
+  76 002c 0448     		ldr	r0, .L7+12
+  77 002e FFF7FEFF 		bl	SendString
+  78              	.LVL6:
+  79 0032 F2E7     		b	.L2
+  80              	.L8:
+  81              		.align	2
+  82              	.L7:
+  83 0034 00000000 		.word	BufferReceive
+  84 0038 00000000 		.word	PWM
+  85 003c 00000000 		.word	UARTQueue
+  86 0040 00000000 		.word	.LC0
+  87              		.cfi_endproc
+  88              	.LFE74:
+  90              		.global	__aeabi_i2d
+  91              		.global	__aeabi_ddiv
+  92              		.global	__aeabi_d2f
+  93              		.section	.text.EncoderTask,"ax",%progbits
+  94              		.align	1
+  95              		.global	EncoderTask
+  96              		.syntax unified
+  97              		.thumb
+  98              		.thumb_func
+ 100              	EncoderTask:
+ 101              	.LFB75:
+  63:Core/Src/main.c ****     }
+  64:Core/Src/main.c **** 	}
+  65:Core/Src/main.c **** }
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s 			page 4
 
 
- 102              		@ args = 0, pretend = 0, frame = 0
- 103              		@ frame_needed = 0, uses_anonymous_args = 0
- 104              	.LVL7:
- 105              		.loc 1 65 1 is_stmt 0 view .LVU13
- 106 0000 08B5     		push	{r3, lr}
- 107              	.LCFI1:
- 108              		.cfi_def_cfa_offset 8
- 109              		.cfi_offset 3, -8
- 110              		.cfi_offset 14, -4
- 111              	.LVL8:
- 112              	.L10:
-  66:Core/Src/main.c **** 	TickType_t MSDelay = pdMS_TO_TICKS(9);
-  67:Core/Src/main.c **** 	for(;;)
- 113              		.loc 1 67 2 is_stmt 1 view .LVU14
-  68:Core/Src/main.c **** 	{
-  69:Core/Src/main.c **** 		countSend = Get_Encoder();
- 114              		.loc 1 69 3 view .LVU15
- 115              		.loc 1 69 15 is_stmt 0 view .LVU16
- 116 0002 FFF7FEFF 		bl	Get_Encoder
- 117              	.LVL9:
- 118              		.loc 1 69 13 discriminator 1 view .LVU17
- 119 0006 0449     		ldr	r1, .L12
- 120 0008 0880     		strh	r0, [r1]	@ movhi
-  70:Core/Src/main.c **** 
-  71:Core/Src/main.c **** 		xQueueSend(EncoderQueue, &countSend, MSDelay);
- 121              		.loc 1 71 3 is_stmt 1 discriminator 1 view .LVU18
- 122 000a 0023     		movs	r3, #0
- 123 000c 0922     		movs	r2, #9
- 124 000e 0348     		ldr	r0, .L12+4
- 125 0010 0068     		ldr	r0, [r0]
- 126 0012 FFF7FEFF 		bl	xQueueGenericSend
- 127              	.LVL10:
-  67:Core/Src/main.c **** 	{
- 128              		.loc 1 67 2 view .LVU19
- 129 0016 F4E7     		b	.L10
- 130              	.L13:
- 131              		.align	2
- 132              	.L12:
- 133 0018 00000000 		.word	countSend
- 134 001c 00000000 		.word	EncoderQueue
- 135              		.cfi_endproc
- 136              	.LFE75:
- 138              		.section	.rodata.CommunicationTask.str1.4,"aMS",%progbits,1
- 139              		.align	2
- 140              	.LC1:
- 141 0000 456E636F 		.ascii	"Encoder: %d\012\000"
- 141      6465723A 
- 141      2025640A 
- 141      00
- 142              		.section	.text.CommunicationTask,"ax",%progbits
- 143              		.align	1
- 144              		.global	CommunicationTask
- 145              		.syntax unified
- 146              		.thumb
- 147              		.thumb_func
- 149              	CommunicationTask:
- 150              	.LFB76:
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s 			page 5
+  66:Core/Src/main.c **** 
+  67:Core/Src/main.c **** int16_t PreCount = 0;
+  68:Core/Src/main.c **** float VelocitySend = 0;
+  69:Core/Src/main.c **** void EncoderTask(void* vParametes)
+  70:Core/Src/main.c **** {
+ 102              		.loc 1 70 1 view -0
+ 103              		.cfi_startproc
+ 104              		@ args = 0, pretend = 0, frame = 0
+ 105              		@ frame_needed = 0, uses_anonymous_args = 0
+ 106              	.LVL7:
+ 107              		.loc 1 70 1 is_stmt 0 view .LVU13
+ 108 0000 38B5     		push	{r3, r4, r5, lr}
+ 109              	.LCFI1:
+ 110              		.cfi_def_cfa_offset 16
+ 111              		.cfi_offset 3, -16
+ 112              		.cfi_offset 4, -12
+ 113              		.cfi_offset 5, -8
+ 114              		.cfi_offset 14, -4
+ 115              	.LVL8:
+ 116              	.L10:
+  71:Core/Src/main.c **** 	TickType_t MSDelay = pdMS_TO_TICKS(9);
+  72:Core/Src/main.c **** 	for(;;)
+ 117              		.loc 1 72 2 is_stmt 1 view .LVU14
+  73:Core/Src/main.c **** 	{
+  74:Core/Src/main.c **** 		
+  75:Core/Src/main.c ****     VelocitySend = (Get_Encoder() - PreCount) / 0.01;
+ 118              		.loc 1 75 5 view .LVU15
+ 119              		.loc 1 75 21 is_stmt 0 view .LVU16
+ 120 0002 FFF7FEFF 		bl	Get_Encoder
+ 121              	.LVL9:
+ 122              		.loc 1 75 35 discriminator 1 view .LVU17
+ 123 0006 124D     		ldr	r5, .L12+8
+ 124 0008 B5F90030 		ldrsh	r3, [r5]
+ 125              		.loc 1 75 47 discriminator 1 view .LVU18
+ 126 000c C01A     		subs	r0, r0, r3
+ 127 000e FFF7FEFF 		bl	__aeabi_i2d
+ 128              	.LVL10:
+ 129 0012 0DA3     		adr	r3, .L12
+ 130 0014 D3E90023 		ldrd	r2, [r3]
+ 131 0018 FFF7FEFF 		bl	__aeabi_ddiv
+ 132              	.LVL11:
+ 133 001c FFF7FEFF 		bl	__aeabi_d2f
+ 134              	.LVL12:
+ 135              		.loc 1 75 18 discriminator 1 view .LVU19
+ 136 0020 0C4C     		ldr	r4, .L12+12
+ 137 0022 2060     		str	r0, [r4]	@ float
+  76:Core/Src/main.c ****     PreCount = Get_Encoder();
+ 138              		.loc 1 76 5 is_stmt 1 view .LVU20
+ 139              		.loc 1 76 16 is_stmt 0 view .LVU21
+ 140 0024 FFF7FEFF 		bl	Get_Encoder
+ 141              	.LVL13:
+ 142              		.loc 1 76 14 discriminator 1 view .LVU22
+ 143 0028 2880     		strh	r0, [r5]	@ movhi
+  77:Core/Src/main.c **** 
+  78:Core/Src/main.c **** 		xQueueSend(EncoderQueue, &VelocitySend, MSDelay);
+ 144              		.loc 1 78 3 is_stmt 1 view .LVU23
+ 145 002a 0023     		movs	r3, #0
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s 			page 5
 
 
-  72:Core/Src/main.c **** 		// xSemaphoreTake(EncoderSemaphore, portMAX_DELAY);
-  73:Core/Src/main.c **** 
-  74:Core/Src/main.c **** 	}
-  75:Core/Src/main.c **** }
-  76:Core/Src/main.c **** 
-  77:Core/Src/main.c **** char buffer[100];
-  78:Core/Src/main.c **** int16_t countReceived = 0;
-  79:Core/Src/main.c **** void CommunicationTask(void* vParametes)
-  80:Core/Src/main.c **** {
- 151              		.loc 1 80 1 view -0
- 152              		.cfi_startproc
- 153              		@ Volatile: function does not return.
- 154              		@ args = 0, pretend = 0, frame = 0
- 155              		@ frame_needed = 0, uses_anonymous_args = 0
- 156              	.LVL11:
- 157              		.loc 1 80 1 is_stmt 0 view .LVU21
- 158 0000 08B5     		push	{r3, lr}
- 159              	.LCFI2:
- 160              		.cfi_def_cfa_offset 8
- 161              		.cfi_offset 3, -8
- 162              		.cfi_offset 14, -4
- 163              	.LVL12:
- 164              	.L15:
-  81:Core/Src/main.c **** 	for(;;)
- 165              		.loc 1 81 2 is_stmt 1 view .LVU22
-  82:Core/Src/main.c **** 	{
-  83:Core/Src/main.c **** 		if (xQueueReceive(EncoderQueue, &countReceived, portMAX_DELAY) == pdTRUE)
- 166              		.loc 1 83 3 view .LVU23
- 167              		.loc 1 83 7 is_stmt 0 view .LVU24
- 168 0002 4FF0FF32 		mov	r2, #-1
- 169 0006 0B49     		ldr	r1, .L18
- 170 0008 0B4B     		ldr	r3, .L18+4
- 171 000a 1868     		ldr	r0, [r3]
- 172 000c FFF7FEFF 		bl	xQueueReceive
- 173              	.LVL13:
- 174              		.loc 1 83 6 discriminator 1 view .LVU25
- 175 0010 0128     		cmp	r0, #1
- 176 0012 F6D1     		bne	.L15
-  84:Core/Src/main.c **** 		{
-  85:Core/Src/main.c **** 			sprintf(buffer, "Encoder: %d\n", countReceived);
- 177              		.loc 1 85 4 is_stmt 1 view .LVU26
- 178 0014 094C     		ldr	r4, .L18+8
- 179 0016 074B     		ldr	r3, .L18
- 180 0018 B3F90020 		ldrsh	r2, [r3]
- 181 001c 0849     		ldr	r1, .L18+12
- 182 001e 2046     		mov	r0, r4
- 183 0020 FFF7FEFF 		bl	sprintf
- 184              	.LVL14:
-  86:Core/Src/main.c **** 			SendString(buffer);
- 185              		.loc 1 86 4 view .LVU27
- 186 0024 2046     		mov	r0, r4
- 187 0026 FFF7FEFF 		bl	SendString
- 188              	.LVL15:
-  87:Core/Src/main.c **** 
-  88:Core/Src/main.c ****       vTaskDelay(pdMS_TO_TICKS(1000));
- 189              		.loc 1 88 7 view .LVU28
- 190 002a 4FF47A70 		mov	r0, #1000
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s 			page 6
+ 146 002c 0922     		movs	r2, #9
+ 147 002e 2146     		mov	r1, r4
+ 148 0030 0948     		ldr	r0, .L12+16
+ 149 0032 0068     		ldr	r0, [r0]
+ 150 0034 FFF7FEFF 		bl	xQueueGenericSend
+ 151              	.LVL14:
+  79:Core/Src/main.c **** 		xSemaphoreTake(EncoderSemaphore, portMAX_DELAY);
+ 152              		.loc 1 79 3 discriminator 1 view .LVU24
+ 153 0038 4FF0FF31 		mov	r1, #-1
+ 154 003c 074B     		ldr	r3, .L12+20
+ 155 003e 1868     		ldr	r0, [r3]
+ 156 0040 FFF7FEFF 		bl	xQueueSemaphoreTake
+ 157              	.LVL15:
+  72:Core/Src/main.c **** 	{
+ 158              		.loc 1 72 2 view .LVU25
+ 159 0044 DDE7     		b	.L10
+ 160              	.L13:
+ 161 0046 00BF     		.align	3
+ 162              	.L12:
+ 163 0048 7B14AE47 		.word	1202590843
+ 164 004c E17A843F 		.word	1065646817
+ 165 0050 00000000 		.word	PreCount
+ 166 0054 00000000 		.word	VelocitySend
+ 167 0058 00000000 		.word	EncoderQueue
+ 168 005c 00000000 		.word	EncoderSemaphore
+ 169              		.cfi_endproc
+ 170              	.LFE75:
+ 172              		.section	.rodata.CommunicationTask.str1.4,"aMS",%progbits,1
+ 173              		.align	2
+ 174              	.LC1:
+ 175 0000 456E636F 		.ascii	"Encoder: %d\012\000"
+ 175      6465723A 
+ 175      2025640A 
+ 175      00
+ 176              		.section	.text.CommunicationTask,"ax",%progbits
+ 177              		.align	1
+ 178              		.global	CommunicationTask
+ 179              		.syntax unified
+ 180              		.thumb
+ 181              		.thumb_func
+ 183              	CommunicationTask:
+ 184              	.LFB76:
+  80:Core/Src/main.c **** 
+  81:Core/Src/main.c **** 	}
+  82:Core/Src/main.c **** }
+  83:Core/Src/main.c **** 
+  84:Core/Src/main.c **** char buffer[100];
+  85:Core/Src/main.c **** int16_t countReceived = 0;
+  86:Core/Src/main.c **** void CommunicationTask(void* vParametes)
+  87:Core/Src/main.c **** {
+ 185              		.loc 1 87 1 view -0
+ 186              		.cfi_startproc
+ 187              		@ Volatile: function does not return.
+ 188              		@ args = 0, pretend = 0, frame = 0
+ 189              		@ frame_needed = 0, uses_anonymous_args = 0
+ 190              	.LVL16:
+ 191              		.loc 1 87 1 is_stmt 0 view .LVU27
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s 			page 6
 
 
- 191 002e FFF7FEFF 		bl	vTaskDelay
- 192              	.LVL16:
- 193 0032 E6E7     		b	.L15
- 194              	.L19:
- 195              		.align	2
- 196              	.L18:
- 197 0034 00000000 		.word	countReceived
- 198 0038 00000000 		.word	EncoderQueue
- 199 003c 00000000 		.word	buffer
- 200 0040 00000000 		.word	.LC1
- 201              		.cfi_endproc
- 202              	.LFE76:
- 204              		.section	.text.main,"ax",%progbits
- 205              		.align	1
- 206              		.global	main
- 207              		.syntax unified
- 208              		.thumb
- 209              		.thumb_func
- 211              	main:
- 212              	.LFB73:
-  17:Core/Src/main.c ****   HAL_Init();
- 213              		.loc 1 17 1 view -0
- 214              		.cfi_startproc
- 215              		@ Volatile: function does not return.
- 216              		@ args = 0, pretend = 0, frame = 0
- 217              		@ frame_needed = 0, uses_anonymous_args = 0
- 218 0000 00B5     		push	{lr}
- 219              	.LCFI3:
- 220              		.cfi_def_cfa_offset 4
- 221              		.cfi_offset 14, -4
- 222 0002 83B0     		sub	sp, sp, #12
- 223              	.LCFI4:
- 224              		.cfi_def_cfa_offset 16
-  18:Core/Src/main.c ****   SystemClock_Config();
- 225              		.loc 1 18 3 view .LVU30
- 226 0004 FFF7FEFF 		bl	HAL_Init
- 227              	.LVL17:
-  19:Core/Src/main.c ****   MX_GPIO_Init();
- 228              		.loc 1 19 3 view .LVU31
- 229 0008 FFF7FEFF 		bl	SystemClock_Config
- 230              	.LVL18:
-  20:Core/Src/main.c ****   USART1_Init();
- 231              		.loc 1 20 3 view .LVU32
- 232 000c FFF7FEFF 		bl	MX_GPIO_Init
- 233              	.LVL19:
-  21:Core/Src/main.c ****   Encoder_Init();
- 234              		.loc 1 21 3 view .LVU33
- 235 0010 FFF7FEFF 		bl	USART1_Init
- 236              	.LVL20:
-  22:Core/Src/main.c ****   PWM_init();
- 237              		.loc 1 22 3 view .LVU34
- 238 0014 FFF7FEFF 		bl	Encoder_Init
- 239              	.LVL21:
-  23:Core/Src/main.c **** 
- 240              		.loc 1 23 3 view .LVU35
- 241 0018 FFF7FEFF 		bl	PWM_init
- 242              	.LVL22:
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s 			page 7
+ 192 0000 08B5     		push	{r3, lr}
+ 193              	.LCFI2:
+ 194              		.cfi_def_cfa_offset 8
+ 195              		.cfi_offset 3, -8
+ 196              		.cfi_offset 14, -4
+ 197              	.LVL17:
+ 198              	.L15:
+  88:Core/Src/main.c **** 	for(;;)
+ 199              		.loc 1 88 2 is_stmt 1 view .LVU28
+  89:Core/Src/main.c **** 	{
+  90:Core/Src/main.c **** 		if (xQueueReceive(EncoderQueue, &countReceived, portMAX_DELAY) == pdTRUE)
+ 200              		.loc 1 90 3 view .LVU29
+ 201              		.loc 1 90 7 is_stmt 0 view .LVU30
+ 202 0002 4FF0FF32 		mov	r2, #-1
+ 203 0006 0B49     		ldr	r1, .L18
+ 204 0008 0B4B     		ldr	r3, .L18+4
+ 205 000a 1868     		ldr	r0, [r3]
+ 206 000c FFF7FEFF 		bl	xQueueReceive
+ 207              	.LVL18:
+ 208              		.loc 1 90 6 discriminator 1 view .LVU31
+ 209 0010 0128     		cmp	r0, #1
+ 210 0012 F6D1     		bne	.L15
+  91:Core/Src/main.c **** 		{
+  92:Core/Src/main.c **** 			sprintf(buffer, "Encoder: %d\n", countReceived);
+ 211              		.loc 1 92 4 is_stmt 1 view .LVU32
+ 212 0014 094C     		ldr	r4, .L18+8
+ 213 0016 074B     		ldr	r3, .L18
+ 214 0018 B3F90020 		ldrsh	r2, [r3]
+ 215 001c 0849     		ldr	r1, .L18+12
+ 216 001e 2046     		mov	r0, r4
+ 217 0020 FFF7FEFF 		bl	sprintf
+ 218              	.LVL19:
+  93:Core/Src/main.c **** 			SendString(buffer);
+ 219              		.loc 1 93 4 view .LVU33
+ 220 0024 2046     		mov	r0, r4
+ 221 0026 FFF7FEFF 		bl	SendString
+ 222              	.LVL20:
+  94:Core/Src/main.c **** 
+  95:Core/Src/main.c ****       vTaskDelay(pdMS_TO_TICKS(1000));
+ 223              		.loc 1 95 7 view .LVU34
+ 224 002a 4FF47A70 		mov	r0, #1000
+ 225 002e FFF7FEFF 		bl	vTaskDelay
+ 226              	.LVL21:
+ 227 0032 E6E7     		b	.L15
+ 228              	.L19:
+ 229              		.align	2
+ 230              	.L18:
+ 231 0034 00000000 		.word	countReceived
+ 232 0038 00000000 		.word	EncoderQueue
+ 233 003c 00000000 		.word	buffer
+ 234 0040 00000000 		.word	.LC1
+ 235              		.cfi_endproc
+ 236              	.LFE76:
+ 238              		.section	.text.main,"ax",%progbits
+ 239              		.align	1
+ 240              		.global	main
+ 241              		.syntax unified
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s 			page 7
 
 
+ 242              		.thumb
+ 243              		.thumb_func
+ 245              	main:
+ 246              	.LFB73:
+  19:Core/Src/main.c ****   HAL_Init();
+ 247              		.loc 1 19 1 view -0
+ 248              		.cfi_startproc
+ 249              		@ Volatile: function does not return.
+ 250              		@ args = 0, pretend = 0, frame = 0
+ 251              		@ frame_needed = 0, uses_anonymous_args = 0
+ 252 0000 00B5     		push	{lr}
+ 253              	.LCFI3:
+ 254              		.cfi_def_cfa_offset 4
+ 255              		.cfi_offset 14, -4
+ 256 0002 83B0     		sub	sp, sp, #12
+ 257              	.LCFI4:
+ 258              		.cfi_def_cfa_offset 16
+  20:Core/Src/main.c ****   SystemClock_Config();
+ 259              		.loc 1 20 3 view .LVU36
+ 260 0004 FFF7FEFF 		bl	HAL_Init
+ 261              	.LVL22:
+  21:Core/Src/main.c ****   MX_GPIO_Init();
+ 262              		.loc 1 21 3 view .LVU37
+ 263 0008 FFF7FEFF 		bl	SystemClock_Config
+ 264              	.LVL23:
+  22:Core/Src/main.c ****   USART1_Init();
+ 265              		.loc 1 22 3 view .LVU38
+ 266 000c FFF7FEFF 		bl	MX_GPIO_Init
+ 267              	.LVL24:
+  23:Core/Src/main.c ****   Encoder_Init();
+ 268              		.loc 1 23 3 view .LVU39
+ 269 0010 FFF7FEFF 		bl	USART1_Init
+ 270              	.LVL25:
+  24:Core/Src/main.c ****   PWM_init();
+ 271              		.loc 1 24 3 view .LVU40
+ 272 0014 FFF7FEFF 		bl	Encoder_Init
+ 273              	.LVL26:
   25:Core/Src/main.c **** 
- 243              		.loc 1 25 3 view .LVU36
- 244 001c FFF7FEFF 		bl	LED_PC13
- 245              	.LVL23:
-  27:Core/Src/main.c ****   UARTQueue = xQueueCreate(1, sizeof(char)*100);
- 246              		.loc 1 27 3 view .LVU37
-  27:Core/Src/main.c ****   UARTQueue = xQueueCreate(1, sizeof(char)*100);
- 247              		.loc 1 27 18 is_stmt 0 view .LVU38
- 248 0020 0022     		movs	r2, #0
- 249 0022 0221     		movs	r1, #2
- 250 0024 0120     		movs	r0, #1
- 251 0026 FFF7FEFF 		bl	xQueueGenericCreate
- 252              	.LVL24:
-  27:Core/Src/main.c ****   UARTQueue = xQueueCreate(1, sizeof(char)*100);
- 253              		.loc 1 27 16 discriminator 1 view .LVU39
- 254 002a 144B     		ldr	r3, .L23
- 255 002c 1860     		str	r0, [r3]
-  28:Core/Src/main.c **** 
- 256              		.loc 1 28 3 is_stmt 1 view .LVU40
-  28:Core/Src/main.c **** 
- 257              		.loc 1 28 15 is_stmt 0 view .LVU41
- 258 002e 0022     		movs	r2, #0
- 259 0030 6421     		movs	r1, #100
- 260 0032 0120     		movs	r0, #1
- 261 0034 FFF7FEFF 		bl	xQueueGenericCreate
- 262              	.LVL25:
-  28:Core/Src/main.c **** 
- 263              		.loc 1 28 13 discriminator 1 view .LVU42
- 264 0038 114B     		ldr	r3, .L23+4
- 265 003a 1860     		str	r0, [r3]
-  30:Core/Src/main.c ****   xTaskCreate(ControllerTask, NULL, configMINIMAL_STACK_SIZE, NULL, 3, NULL);
- 266              		.loc 1 30 3 is_stmt 1 view .LVU43
- 267 003c 0024     		movs	r4, #0
- 268 003e 0194     		str	r4, [sp, #4]
- 269 0040 0423     		movs	r3, #4
- 270 0042 0093     		str	r3, [sp]
- 271 0044 2346     		mov	r3, r4
- 272 0046 8022     		movs	r2, #128
- 273 0048 2146     		mov	r1, r4
- 274 004a 0E48     		ldr	r0, .L23+8
- 275 004c FFF7FEFF 		bl	xTaskCreate
- 276              	.LVL26:
-  31:Core/Src/main.c ****   xTaskCreate(CommunicationTask, NULL, configMINIMAL_STACK_SIZE, NULL, 2, NULL);
- 277              		.loc 1 31 3 view .LVU44
- 278 0050 0194     		str	r4, [sp, #4]
- 279 0052 0323     		movs	r3, #3
- 280 0054 0093     		str	r3, [sp]
- 281 0056 2346     		mov	r3, r4
- 282 0058 8022     		movs	r2, #128
- 283 005a 2146     		mov	r1, r4
- 284 005c 0A48     		ldr	r0, .L23+12
- 285 005e FFF7FEFF 		bl	xTaskCreate
- 286              	.LVL27:
+ 274              		.loc 1 25 3 view .LVU41
+ 275 0018 FFF7FEFF 		bl	PWM_init
+ 276              	.LVL27:
+  27:Core/Src/main.c **** 
+ 277              		.loc 1 27 3 view .LVU42
+ 278 001c FFF7FEFF 		bl	LED_PC13
+ 279              	.LVL28:
+  29:Core/Src/main.c ****   UARTQueue = xQueueCreate(1, sizeof(char)*100);
+ 280              		.loc 1 29 3 view .LVU43
+  29:Core/Src/main.c ****   UARTQueue = xQueueCreate(1, sizeof(char)*100);
+ 281              		.loc 1 29 18 is_stmt 0 view .LVU44
+ 282 0020 0022     		movs	r2, #0
+ 283 0022 0221     		movs	r1, #2
+ 284 0024 0120     		movs	r0, #1
+ 285 0026 FFF7FEFF 		bl	xQueueGenericCreate
+ 286              	.LVL29:
+  29:Core/Src/main.c ****   UARTQueue = xQueueCreate(1, sizeof(char)*100);
+ 287              		.loc 1 29 16 discriminator 1 view .LVU45
+ 288 002a 174B     		ldr	r3, .L23
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s 			page 8
+
+
+ 289 002c 1860     		str	r0, [r3]
+  30:Core/Src/main.c **** 
+ 290              		.loc 1 30 3 is_stmt 1 view .LVU46
+  30:Core/Src/main.c **** 
+ 291              		.loc 1 30 15 is_stmt 0 view .LVU47
+ 292 002e 0022     		movs	r2, #0
+ 293 0030 6421     		movs	r1, #100
+ 294 0032 0120     		movs	r0, #1
+ 295 0034 FFF7FEFF 		bl	xQueueGenericCreate
+ 296              	.LVL30:
+  30:Core/Src/main.c **** 
+ 297              		.loc 1 30 13 discriminator 1 view .LVU48
+ 298 0038 144B     		ldr	r3, .L23+4
+ 299 003a 1860     		str	r0, [r3]
   32:Core/Src/main.c **** 
- 287              		.loc 1 32 3 view .LVU45
- 288 0062 0194     		str	r4, [sp, #4]
- 289 0064 0223     		movs	r3, #2
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s 			page 8
+ 300              		.loc 1 32 3 is_stmt 1 view .LVU49
+  32:Core/Src/main.c **** 
+ 301              		.loc 1 32 22 is_stmt 0 view .LVU50
+ 302 003c 0322     		movs	r2, #3
+ 303 003e 0021     		movs	r1, #0
+ 304 0040 0120     		movs	r0, #1
+ 305 0042 FFF7FEFF 		bl	xQueueGenericCreate
+ 306              	.LVL31:
+  32:Core/Src/main.c **** 
+ 307              		.loc 1 32 20 discriminator 1 view .LVU51
+ 308 0046 124B     		ldr	r3, .L23+8
+ 309 0048 1860     		str	r0, [r3]
+  34:Core/Src/main.c ****   xTaskCreate(ControllerTask, NULL, configMINIMAL_STACK_SIZE, NULL, 3, NULL);
+ 310              		.loc 1 34 3 is_stmt 1 view .LVU52
+ 311 004a 0024     		movs	r4, #0
+ 312 004c 0194     		str	r4, [sp, #4]
+ 313 004e 0423     		movs	r3, #4
+ 314 0050 0093     		str	r3, [sp]
+ 315 0052 2346     		mov	r3, r4
+ 316 0054 8022     		movs	r2, #128
+ 317 0056 2146     		mov	r1, r4
+ 318 0058 0E48     		ldr	r0, .L23+12
+ 319 005a FFF7FEFF 		bl	xTaskCreate
+ 320              	.LVL32:
+  35:Core/Src/main.c ****   xTaskCreate(CommunicationTask, NULL, configMINIMAL_STACK_SIZE, NULL, 2, NULL);
+ 321              		.loc 1 35 3 view .LVU53
+ 322 005e 0194     		str	r4, [sp, #4]
+ 323 0060 0323     		movs	r3, #3
+ 324 0062 0093     		str	r3, [sp]
+ 325 0064 2346     		mov	r3, r4
+ 326 0066 8022     		movs	r2, #128
+ 327 0068 2146     		mov	r1, r4
+ 328 006a 0B48     		ldr	r0, .L23+16
+ 329 006c FFF7FEFF 		bl	xTaskCreate
+ 330              	.LVL33:
+  36:Core/Src/main.c **** 
+ 331              		.loc 1 36 3 view .LVU54
+ 332 0070 0194     		str	r4, [sp, #4]
+ 333 0072 0223     		movs	r3, #2
+ 334 0074 0093     		str	r3, [sp]
+ 335 0076 2346     		mov	r3, r4
+ 336 0078 8022     		movs	r2, #128
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s 			page 9
 
 
- 290 0066 0093     		str	r3, [sp]
- 291 0068 2346     		mov	r3, r4
- 292 006a 8022     		movs	r2, #128
- 293 006c 2146     		mov	r1, r4
- 294 006e 0748     		ldr	r0, .L23+16
- 295 0070 FFF7FEFF 		bl	xTaskCreate
- 296              	.LVL28:
-  35:Core/Src/main.c **** 
- 297              		.loc 1 35 3 view .LVU46
- 298 0074 FFF7FEFF 		bl	vTaskStartScheduler
- 299              	.LVL29:
- 300              	.L21:
-  38:Core/Src/main.c ****   {}
- 301              		.loc 1 38 3 view .LVU47
-  39:Core/Src/main.c **** }
- 302              		.loc 1 39 4 view .LVU48
-  38:Core/Src/main.c ****   {}
- 303              		.loc 1 38 9 view .LVU49
- 304 0078 FEE7     		b	.L21
- 305              	.L24:
- 306 007a 00BF     		.align	2
- 307              	.L23:
- 308 007c 00000000 		.word	EncoderQueue
- 309 0080 00000000 		.word	UARTQueue
- 310 0084 00000000 		.word	EncoderTask
- 311 0088 00000000 		.word	ControllerTask
- 312 008c 00000000 		.word	CommunicationTask
- 313              		.cfi_endproc
- 314              	.LFE73:
- 316              		.global	countReceived
- 317              		.section	.bss.countReceived,"aw",%nobits
- 318              		.align	1
- 321              	countReceived:
- 322 0000 0000     		.space	2
- 323              		.global	buffer
- 324              		.section	.bss.buffer,"aw",%nobits
- 325              		.align	2
- 328              	buffer:
- 329 0000 00000000 		.space	100
- 329      00000000 
- 329      00000000 
- 329      00000000 
- 329      00000000 
- 330              		.global	countSend
- 331              		.section	.bss.countSend,"aw",%nobits
- 332              		.align	1
- 335              	countSend:
- 336 0000 0000     		.space	2
- 337              		.global	BufferReceive
- 338              		.section	.bss.BufferReceive,"aw",%nobits
- 339              		.align	2
- 342              	BufferReceive:
- 343 0000 00000000 		.space	100
- 343      00000000 
- 343      00000000 
- 343      00000000 
- 343      00000000 
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s 			page 9
+ 337 007a 2146     		mov	r1, r4
+ 338 007c 0748     		ldr	r0, .L23+20
+ 339 007e FFF7FEFF 		bl	xTaskCreate
+ 340              	.LVL34:
+  39:Core/Src/main.c **** 
+ 341              		.loc 1 39 3 view .LVU55
+ 342 0082 FFF7FEFF 		bl	vTaskStartScheduler
+ 343              	.LVL35:
+ 344              	.L21:
+  42:Core/Src/main.c ****   {}
+ 345              		.loc 1 42 3 view .LVU56
+  43:Core/Src/main.c **** }
+ 346              		.loc 1 43 4 view .LVU57
+  42:Core/Src/main.c ****   {}
+ 347              		.loc 1 42 9 view .LVU58
+ 348 0086 FEE7     		b	.L21
+ 349              	.L24:
+ 350              		.align	2
+ 351              	.L23:
+ 352 0088 00000000 		.word	EncoderQueue
+ 353 008c 00000000 		.word	UARTQueue
+ 354 0090 00000000 		.word	EncoderSemaphore
+ 355 0094 00000000 		.word	EncoderTask
+ 356 0098 00000000 		.word	ControllerTask
+ 357 009c 00000000 		.word	CommunicationTask
+ 358              		.cfi_endproc
+ 359              	.LFE73:
+ 361              		.global	countReceived
+ 362              		.section	.bss.countReceived,"aw",%nobits
+ 363              		.align	1
+ 366              	countReceived:
+ 367 0000 0000     		.space	2
+ 368              		.global	buffer
+ 369              		.section	.bss.buffer,"aw",%nobits
+ 370              		.align	2
+ 373              	buffer:
+ 374 0000 00000000 		.space	100
+ 374      00000000 
+ 374      00000000 
+ 374      00000000 
+ 374      00000000 
+ 375              		.global	VelocitySend
+ 376              		.section	.bss.VelocitySend,"aw",%nobits
+ 377              		.align	2
+ 380              	VelocitySend:
+ 381 0000 00000000 		.space	4
+ 382              		.global	PreCount
+ 383              		.section	.bss.PreCount,"aw",%nobits
+ 384              		.align	1
+ 387              	PreCount:
+ 388 0000 0000     		.space	2
+ 389              		.global	BufferReceive
+ 390              		.section	.bss.BufferReceive,"aw",%nobits
+ 391              		.align	2
+ 394              	BufferReceive:
+ 395 0000 00000000 		.space	100
+ 395      00000000 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s 			page 10
 
 
- 344              		.global	PWM
- 345              		.section	.bss.PWM,"aw",%nobits
- 346              		.align	2
- 349              	PWM:
- 350 0000 00000000 		.space	4
- 351              		.global	UARTQueue
- 352              		.section	.bss.UARTQueue,"aw",%nobits
- 353              		.align	2
- 356              	UARTQueue:
- 357 0000 00000000 		.space	4
- 358              		.global	EncoderQueue
- 359              		.section	.bss.EncoderQueue,"aw",%nobits
- 360              		.align	2
- 363              	EncoderQueue:
- 364 0000 00000000 		.space	4
- 365              		.text
- 366              	.Letext0:
- 367              		.file 2 "C:/ArmToolChain/arm-none-eabi/include/machine/_default_types.h"
- 368              		.file 3 "C:/ArmToolChain/arm-none-eabi/include/sys/_stdint.h"
- 369              		.file 4 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
- 370              		.file 5 "Core/Src/Drivers/Inc/gpio_Driver.h"
- 371              		.file 6 "ThirdParty/FreeRTOS/include/projdefs.h"
- 372              		.file 7 "ThirdParty/FreeRTOS/portable/GCC/ARM_CM3/portmacro.h"
- 373              		.file 8 "ThirdParty/FreeRTOS/include/task.h"
- 374              		.file 9 "ThirdParty/FreeRTOS/include/queue.h"
- 375              		.file 10 "C:/ArmToolChain/arm-none-eabi/include/stdio.h"
- 376              		.file 11 "Core/Src/Drivers/Inc/usart_Driver.h"
- 377              		.file 12 "Core/Src/Drivers/Inc/timer_Driver.h"
- 378              		.file 13 "Core/Src/Drivers/Inc/SysConfig.h"
- 379              		.file 14 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s 			page 10
+ 395      00000000 
+ 395      00000000 
+ 395      00000000 
+ 396              		.global	PWM
+ 397              		.section	.bss.PWM,"aw",%nobits
+ 398              		.align	2
+ 401              	PWM:
+ 402 0000 00000000 		.space	4
+ 403              		.global	EncoderSemaphore
+ 404              		.section	.bss.EncoderSemaphore,"aw",%nobits
+ 405              		.align	2
+ 408              	EncoderSemaphore:
+ 409 0000 00000000 		.space	4
+ 410              		.global	UARTQueue
+ 411              		.section	.bss.UARTQueue,"aw",%nobits
+ 412              		.align	2
+ 415              	UARTQueue:
+ 416 0000 00000000 		.space	4
+ 417              		.global	EncoderQueue
+ 418              		.section	.bss.EncoderQueue,"aw",%nobits
+ 419              		.align	2
+ 422              	EncoderQueue:
+ 423 0000 00000000 		.space	4
+ 424              		.text
+ 425              	.Letext0:
+ 426              		.file 2 "C:/ArmToolChain/arm-none-eabi/include/machine/_default_types.h"
+ 427              		.file 3 "C:/ArmToolChain/arm-none-eabi/include/sys/_stdint.h"
+ 428              		.file 4 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 429              		.file 5 "Core/Src/Drivers/Inc/gpio_Driver.h"
+ 430              		.file 6 "ThirdParty/FreeRTOS/include/projdefs.h"
+ 431              		.file 7 "ThirdParty/FreeRTOS/portable/GCC/ARM_CM3/portmacro.h"
+ 432              		.file 8 "ThirdParty/FreeRTOS/include/task.h"
+ 433              		.file 9 "ThirdParty/FreeRTOS/include/queue.h"
+ 434              		.file 10 "ThirdParty/FreeRTOS/include/semphr.h"
+ 435              		.file 11 "C:/ArmToolChain/arm-none-eabi/include/stdio.h"
+ 436              		.file 12 "Core/Src/Drivers/Inc/usart_Driver.h"
+ 437              		.file 13 "Core/Src/Drivers/Inc/timer_Driver.h"
+ 438              		.file 14 "C:/ArmToolChain/arm-none-eabi/include/stdlib.h"
+ 439              		.file 15 "Core/Src/Drivers/Inc/SysConfig.h"
+ 440              		.file 16 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s 			page 11
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:19     .rodata.ControllerTask.str1.4:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:23     .text.ControllerTask:00000000 $t
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:29     .text.ControllerTask:00000000 ControllerTask
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:84     .text.ControllerTask:00000034 $d
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:342    .bss.BufferReceive:00000000 BufferReceive
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:349    .bss.PWM:00000000 PWM
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:356    .bss.UARTQueue:00000000 UARTQueue
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:92     .text.EncoderTask:00000000 $t
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:98     .text.EncoderTask:00000000 EncoderTask
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:133    .text.EncoderTask:00000018 $d
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:335    .bss.countSend:00000000 countSend
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:363    .bss.EncoderQueue:00000000 EncoderQueue
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:139    .rodata.CommunicationTask.str1.4:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:143    .text.CommunicationTask:00000000 $t
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:149    .text.CommunicationTask:00000000 CommunicationTask
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:197    .text.CommunicationTask:00000034 $d
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:321    .bss.countReceived:00000000 countReceived
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:328    .bss.buffer:00000000 buffer
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:205    .text.main:00000000 $t
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:211    .text.main:00000000 main
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:308    .text.main:0000007c $d
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:318    .bss.countReceived:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:325    .bss.buffer:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:332    .bss.countSend:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:339    .bss.BufferReceive:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:346    .bss.PWM:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:353    .bss.UARTQueue:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\cc99Mhvd.s:360    .bss.EncoderQueue:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:19     .rodata.ControllerTask.str1.4:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:23     .text.ControllerTask:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:29     .text.ControllerTask:00000000 ControllerTask
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:83     .text.ControllerTask:00000034 $d
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:394    .bss.BufferReceive:00000000 BufferReceive
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:401    .bss.PWM:00000000 PWM
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:415    .bss.UARTQueue:00000000 UARTQueue
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:94     .text.EncoderTask:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:100    .text.EncoderTask:00000000 EncoderTask
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:163    .text.EncoderTask:00000048 $d
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:387    .bss.PreCount:00000000 PreCount
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:380    .bss.VelocitySend:00000000 VelocitySend
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:422    .bss.EncoderQueue:00000000 EncoderQueue
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:408    .bss.EncoderSemaphore:00000000 EncoderSemaphore
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:173    .rodata.CommunicationTask.str1.4:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:177    .text.CommunicationTask:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:183    .text.CommunicationTask:00000000 CommunicationTask
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:231    .text.CommunicationTask:00000034 $d
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:366    .bss.countReceived:00000000 countReceived
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:373    .bss.buffer:00000000 buffer
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:239    .text.main:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:245    .text.main:00000000 main
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:352    .text.main:00000088 $d
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:363    .bss.countReceived:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:370    .bss.buffer:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:377    .bss.VelocitySend:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:384    .bss.PreCount:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:391    .bss.BufferReceive:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:398    .bss.PWM:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:405    .bss.EncoderSemaphore:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:412    .bss.UARTQueue:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s:419    .bss.EncoderQueue:00000000 $d
 
 UNDEFINED SYMBOLS
 atoi
@@ -551,8 +625,12 @@ RotationMode
 PWM_Set
 xQueueReceive
 SendString
+__aeabi_i2d
+__aeabi_ddiv
+__aeabi_d2f
 Get_Encoder
 xQueueGenericSend
+xQueueSemaphoreTake
 sprintf
 vTaskDelay
 HAL_Init
@@ -563,5 +641,8 @@ Encoder_Init
 PWM_init
 LED_PC13
 xQueueGenericCreate
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccyLLiCz.s 			page 12
+
+
 xTaskCreate
 vTaskStartScheduler

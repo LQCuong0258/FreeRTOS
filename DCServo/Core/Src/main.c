@@ -8,6 +8,8 @@
 QueueHandle_t EncoderQueue;
 QueueHandle_t UARTQueue;
 
+SemaphoreHandle_t EncoderSemaphore;
+
 void EncoderTask(void* vParameters);
 void ControllerTask(void* vParametes);
 void CommunicationTask(void* vParameters);
@@ -27,6 +29,8 @@ int main(void)
   EncoderQueue = xQueueCreate(1, sizeof(int16_t));
   UARTQueue = xQueueCreate(1, sizeof(char)*100);
 
+  EncoderSemaphore = xSemaphoreCreateBinary();
+
   xTaskCreate(EncoderTask, NULL, configMINIMAL_STACK_SIZE, NULL, 4, NULL);
   xTaskCreate(ControllerTask, NULL, configMINIMAL_STACK_SIZE, NULL, 3, NULL);
   xTaskCreate(CommunicationTask, NULL, configMINIMAL_STACK_SIZE, NULL, 2, NULL);
@@ -43,7 +47,7 @@ uint32_t PWM = 0;
 char BufferReceive[100];
 void ControllerTask(void* vParametes)
 {
-  TickType_t MSDelay = pdMS_TO_TICKS(100);
+  // TickType_t MSDelay = pdMS_TO_TICKS(100);
 	for(;;)
 	{
     if (xQueueReceive(UARTQueue, &BufferReceive, pdMS_TO_TICKS(400)) == pdTRUE)
@@ -60,16 +64,19 @@ void ControllerTask(void* vParametes)
 	}
 }
 
-int16_t countSend = 0;
+int16_t PreCount = 0;
+float VelocitySend = 0;
 void EncoderTask(void* vParametes)
 {
 	TickType_t MSDelay = pdMS_TO_TICKS(9);
 	for(;;)
 	{
-		countSend = Get_Encoder();
+		
+    VelocitySend = (Get_Encoder() - PreCount) / 0.01;
+    PreCount = Get_Encoder();
 
-		xQueueSend(EncoderQueue, &countSend, MSDelay);
-		// xSemaphoreTake(EncoderSemaphore, portMAX_DELAY);
+		xQueueSend(EncoderQueue, &VelocitySend, MSDelay);
+		xSemaphoreTake(EncoderSemaphore, portMAX_DELAY);
 
 	}
 }

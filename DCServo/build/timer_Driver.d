@@ -24,7 +24,16 @@ build/timer_Driver.o: Core/Src/Drivers/Src/timer_Driver.c \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
  Core/Src/Drivers/Inc/SysConfig.h Core/Src/Drivers/Inc/gpio_Driver.h \
- Core/Src/Drivers/Inc/usart_Driver.h
+ Core/Src/Drivers/Inc/usart_Driver.h \
+ ThirdParty/FreeRTOS/include/FreeRTOS.h \
+ ThirdParty/FreeRTOS/include/FreeRTOSConfig.h \
+ ThirdParty/FreeRTOS/include/projdefs.h \
+ ThirdParty/FreeRTOS/include/portable.h \
+ ThirdParty/FreeRTOS/include/deprecated_definitions.h \
+ ThirdParty/FreeRTOS/portable/GCC/ARM_CM3/portmacro.h \
+ ThirdParty/FreeRTOS/include/mpu_wrappers.h \
+ ThirdParty/FreeRTOS/include/semphr.h ThirdParty/FreeRTOS/include/queue.h \
+ ThirdParty/FreeRTOS/include/task.h ThirdParty/FreeRTOS/include/list.h
 Core/Src/Drivers/Inc/timer_Driver.h:
 Core/Inc/main.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
@@ -55,3 +64,14 @@ Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
 Core/Src/Drivers/Inc/SysConfig.h:
 Core/Src/Drivers/Inc/gpio_Driver.h:
 Core/Src/Drivers/Inc/usart_Driver.h:
+ThirdParty/FreeRTOS/include/FreeRTOS.h:
+ThirdParty/FreeRTOS/include/FreeRTOSConfig.h:
+ThirdParty/FreeRTOS/include/projdefs.h:
+ThirdParty/FreeRTOS/include/portable.h:
+ThirdParty/FreeRTOS/include/deprecated_definitions.h:
+ThirdParty/FreeRTOS/portable/GCC/ARM_CM3/portmacro.h:
+ThirdParty/FreeRTOS/include/mpu_wrappers.h:
+ThirdParty/FreeRTOS/include/semphr.h:
+ThirdParty/FreeRTOS/include/queue.h:
+ThirdParty/FreeRTOS/include/task.h:
+ThirdParty/FreeRTOS/include/list.h:
