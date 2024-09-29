@@ -1,46 +1,46 @@
-void PID(double set_point, double real)
+void PID(float SetPoint, float CurrentValue)
 {
-	double pid, out;
+	uint32_t PWM;
 	
-	High_lim = 400, Low_lim = 0;
-	static double e_pre = 0;
-	static double Ui_pre = 0;
-	static double e_reset = 0;
-	static double Ud_f_pre = 0;
+	High_lim = 3600, Low_lim = 0;
+	static float e_pre = 0, Ui_pre = 0, e_reset = 0, Ud_f_pre = 0;
 	
-	double e;
 	double Up, Ui, Ud, Ud_f;
 	
-	Kp = 0.8746591948;
-	Ki = 1.807511699;
-	Kd = 0.09015969137;
+    	// Kp = 259.0972;
+    	// Ki = 1847.9848;
+    	// Kd = 7.4299;
+    	// Kb = 15.771;
+
+	// Ts = 0.01, alpha = 0.9;
 	
-	Kb = 4.477487171;
+	float Error = SetPoint - CurrentValue;		// error
 	
-	e = set_point - real; // error
+	Up = Kp*Error;
 	
-	Up = Kp*e; //
+	Ui = Ui_pre + Ki*Ts*Error + Kb*Ts*e_reset;	// Anti-Windup
 	
-	Ui = Ui_pre + Ki*Ts*e + Kb*Ts*e_reset; // antiwindup
-	
-	Ud = Kd*(e - e_pre)/Ts;//
-	Ud_f = (1 - alpha)*Ud_f_pre + alpha*Ud; // low pass fillter
+	Ud = Kd*(Error - e_pre)/Ts;
+	Ud_f = (1 - alpha)*Ud_f_pre + alpha*Ud;		// low pass fillter
 
 	// Luu lai cac gia tri
-	e_pre = e;
+	e_pre = Error;
 	Ui_pre = Ui;
 	Ud_f_pre = Ud_f;
 	
-	pid = (Up + Ui + Ud_f);
+	float U = Up + Ui + Ud_f;
 	
 	// set rotations
-	dir(pid);
-	out = abs((int) pid);
+	RotationMode(U);
+
+	uint32_t Uout = abs((int) U);
+
 	// Saturated
-	if (out > High_lim) pwm = High_lim;
-	else if(out < Low_lim) pwm = Low_lim;
-	else pwm = pid;
-	e_reset = pwm - out;
+	if (Uout > High_lim) PWM = High_lim;
+	else if(Uout < Low_lim) PWM = Low_lim;
+
+	e_reset = PWM - Uout;
+
 	// Set value PWM
-	TIM3->CCR1 = pwm;
+	PWM_Set(PWM);
 }

@@ -7,13 +7,8 @@
 
 #include "main.h"
 
-typedef enum {
-	CW,
-	CCW
-} RotaMode_t;
-
 void LED_PC13(void);
 void Rotation_Init(void);
-void RotationMode(RotaMode_t rota);
+void RotationMode(float U);
 
 #endif /* __GPIO_DRIVER_H */

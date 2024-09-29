@@ -32,9 +32,9 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stdint.h"
-#include "stdio.h"
 #include "string.h"
 #include "stdlib.h"
+#include "printf.h"
 
 #include "SysConfig.h"
 #include "gpio_Driver.h"

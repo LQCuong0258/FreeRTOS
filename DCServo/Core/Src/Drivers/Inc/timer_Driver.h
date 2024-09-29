@@ -7,7 +7,7 @@
 
 #include "main.h"
 
-void TIMER4_Init(void);
+void Base_Init(void);
 void Encoder_Init(void);
 int16_t Get_Encoder(void);
 
