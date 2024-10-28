@@ -1,0 +1,247 @@
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccfRYSSn.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_mean_f32.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c"
+  18              		.global	__aeabi_fadd
+  19              		.global	__aeabi_ui2f
+  20              		.global	__aeabi_fdiv
+  21              		.section	.text.arm_mean_f32,"ax",%progbits
+  22              		.align	1
+  23              		.global	arm_mean_f32
+  24              		.syntax unified
+  25              		.thumb
+  26              		.thumb_func
+  28              	arm_mean_f32:
+  29              	.LVL0:
+  30              	.LFB100:
+   1:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** /* ----------------------------------------------------------------------
+   2:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * Project:      CMSIS DSP Library
+   3:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * Title:        arm_mean_f32.c
+   4:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * Description:  Mean value of a floating-point vector
+   5:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  *
+   6:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * $Date:        27. January 2017
+   7:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * $Revision:    V.1.5.1
+   8:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  *
+   9:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * Target Processor: Cortex-M cores
+  10:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * -------------------------------------------------------------------- */
+  11:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** /*
+  12:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * Copyright (C) 2010-2017 ARM Limited or its affiliates. All rights reserved.
+  13:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  *
+  14:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * SPDX-License-Identifier: Apache-2.0
+  15:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  *
+  16:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  17:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * not use this file except in compliance with the License.
+  18:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * You may obtain a copy of the License at
+  19:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  *
+  20:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * www.apache.org/licenses/LICENSE-2.0
+  21:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  *
+  22:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * Unless required by applicable law or agreed to in writing, software
+  23:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  24:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  25:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * See the License for the specific language governing permissions and
+  26:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * limitations under the License.
+  27:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  */
+  28:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccfRYSSn.s 			page 2
+
+
+  29:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** #include "arm_math.h"
+  30:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+  31:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** /**
+  32:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * @ingroup groupStats
+  33:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  */
+  34:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+  35:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** /**
+  36:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * @defgroup mean Mean
+  37:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  *
+  38:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * Calculates the mean of the input vector. Mean is defined as the average of the elements in the v
+  39:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * The underlying algorithm is used:
+  40:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  *
+  41:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * <pre>
+  42:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * 	Result = (pSrc[0] + pSrc[1] + pSrc[2] + ... + pSrc[blockSize-1]) / blockSize;
+  43:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * </pre>
+  44:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  *
+  45:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * There are separate functions for floating-point, Q31, Q15, and Q7 data types.
+  46:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  */
+  47:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+  48:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** /**
+  49:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * @addtogroup mean
+  50:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * @{
+  51:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  */
+  52:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+  53:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+  54:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** /**
+  55:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * @brief Mean value of a floating-point vector.
+  56:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * @param[in]       *pSrc points to the input vector
+  57:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * @param[in]       blockSize length of the input vector
+  58:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * @param[out]      *pResult mean value returned here
+  59:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  * @return none.
+  60:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****  */
+  61:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+  62:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** void arm_mean_f32(
+  63:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   float32_t * pSrc,
+  64:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   uint32_t blockSize,
+  65:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   float32_t * pResult)
+  66:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** {
+  31              		.loc 1 66 1 view -0
+  32              		.cfi_startproc
+  33              		@ args = 0, pretend = 0, frame = 0
+  34              		@ frame_needed = 0, uses_anonymous_args = 0
+  35              		.loc 1 66 1 is_stmt 0 view .LVU1
+  36 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+  37              	.LCFI0:
+  38              		.cfi_def_cfa_offset 24
+  39              		.cfi_offset 4, -24
+  40              		.cfi_offset 5, -20
+  41              		.cfi_offset 6, -16
+  42              		.cfi_offset 7, -12
+  43              		.cfi_offset 8, -8
+  44              		.cfi_offset 14, -4
+  45 0004 0446     		mov	r4, r0
+  46 0006 0F46     		mov	r7, r1
+  47 0008 9046     		mov	r8, r2
+  67:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   float32_t sum = 0.0f;                          /* Temporary result storage */
+  48              		.loc 1 67 3 is_stmt 1 view .LVU2
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccfRYSSn.s 			page 3
+
+
+  49              	.LVL1:
+  68:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   uint32_t blkCnt;                               /* loop counter */
+  50              		.loc 1 68 3 view .LVU3
+  69:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+  70:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** #if defined (ARM_MATH_DSP)
+  71:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   /* Run the below code for Cortex-M4 and Cortex-M3 */
+  72:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+  73:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   float32_t in1, in2, in3, in4;
+  74:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+  75:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   /*loop Unrolling */
+  76:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   blkCnt = blockSize >> 2U;
+  77:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+  78:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   /* First part of the processing with loop unrolling.  Compute 4 outputs at a time.
+  79:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****    ** a second loop below computes the remaining 1 to 3 samples. */
+  80:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   while (blkCnt > 0U)
+  81:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   {
+  82:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****     /* C = (A[0] + A[1] + A[2] + ... + A[blockSize-1]) */
+  83:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****     in1 = *pSrc++;
+  84:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****     in2 = *pSrc++;
+  85:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****     in3 = *pSrc++;
+  86:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****     in4 = *pSrc++;
+  87:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+  88:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****     sum += in1;
+  89:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****     sum += in2;
+  90:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****     sum += in3;
+  91:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****     sum += in4;
+  92:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+  93:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****     /* Decrement the loop counter */
+  94:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****     blkCnt--;
+  95:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   }
+  96:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+  97:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   /* If the blockSize is not a multiple of 4, compute any remaining output samples here.
+  98:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****    ** No loop unrolling is used. */
+  99:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   blkCnt = blockSize % 0x4U;
+ 100:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+ 101:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** #else
+ 102:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   /* Run the below code for Cortex-M0 */
+ 103:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+ 104:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   /* Loop over blockSize number of values */
+ 105:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   blkCnt = blockSize;
+  51              		.loc 1 105 3 view .LVU4
+ 106:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+ 107:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** #endif /* #if defined (ARM_MATH_DSP) */
+ 108:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+ 109:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   while (blkCnt > 0U)
+  52              		.loc 1 109 3 view .LVU5
+ 105:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+  53              		.loc 1 105 10 is_stmt 0 view .LVU6
+  54 000a 0E46     		mov	r6, r1
+  67:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   uint32_t blkCnt;                               /* loop counter */
+  55              		.loc 1 67 13 view .LVU7
+  56 000c 0025     		movs	r5, #0
+  57              		.loc 1 109 9 view .LVU8
+  58 000e 06E0     		b	.L2
+  59              	.LVL2:
+  60              	.L3:
+ 110:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   {
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccfRYSSn.s 			page 4
+
+
+ 111:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****     /* C = (A[0] + A[1] + A[2] + ... + A[blockSize-1]) */
+ 112:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****     sum += *pSrc++;
+  61              		.loc 1 112 5 is_stmt 1 view .LVU9
+  62              		.loc 1 112 9 is_stmt 0 view .LVU10
+  63 0010 54F8041B 		ldr	r1, [r4], #4	@ float
+  64              	.LVL3:
+  65              		.loc 1 112 9 view .LVU11
+  66 0014 2846     		mov	r0, r5
+  67 0016 FFF7FEFF 		bl	__aeabi_fadd
+  68              	.LVL4:
+  69 001a 0546     		mov	r5, r0
+  70              	.LVL5:
+ 113:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+ 114:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****     /* Decrement the loop counter */
+ 115:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****     blkCnt--;
+  71              		.loc 1 115 5 is_stmt 1 view .LVU12
+  72              		.loc 1 115 11 is_stmt 0 view .LVU13
+  73 001c 013E     		subs	r6, r6, #1
+  74              	.LVL6:
+  75              	.L2:
+ 109:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   {
+  76              		.loc 1 109 17 is_stmt 1 view .LVU14
+  77 001e 002E     		cmp	r6, #0
+  78 0020 F6D1     		bne	.L3
+ 116:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   }
+ 117:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** 
+ 118:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   /* C = (A[0] + A[1] + A[2] + ... + A[blockSize-1]) / blockSize  */
+ 119:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   /* Store the result to the destination */
+ 120:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c ****   *pResult = sum / (float32_t) blockSize;
+  79              		.loc 1 120 3 view .LVU15
+  80              		.loc 1 120 20 is_stmt 0 view .LVU16
+  81 0022 3846     		mov	r0, r7
+  82 0024 FFF7FEFF 		bl	__aeabi_ui2f
+  83              	.LVL7:
+  84 0028 0146     		mov	r1, r0
+  85              		.loc 1 120 18 view .LVU17
+  86 002a 2846     		mov	r0, r5
+  87 002c FFF7FEFF 		bl	__aeabi_fdiv
+  88              	.LVL8:
+  89              		.loc 1 120 12 view .LVU18
+  90 0030 C8F80000 		str	r0, [r8]	@ float
+ 121:Drivers/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.c **** }
+  91              		.loc 1 121 1 view .LVU19
+  92 0034 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+  93              		.loc 1 121 1 view .LVU20
+  94              		.cfi_endproc
+  95              	.LFE100:
+  97              		.text
+  98              	.Letext0:
+  99              		.file 2 "C:/ARM GNU Toolchain/arm-none-eabi/include/machine/_default_types.h"
+ 100              		.file 3 "C:/ARM GNU Toolchain/arm-none-eabi/include/sys/_stdint.h"
+ 101              		.file 4 "Drivers/CMSIS/DSP/Include/arm_math.h"
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccfRYSSn.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 arm_mean_f32.c
+C:\Users\Lamp\AppData\Local\Temp\ccfRYSSn.s:22     .text.arm_mean_f32:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccfRYSSn.s:28     .text.arm_mean_f32:00000000 arm_mean_f32
+
+UNDEFINED SYMBOLS
+__aeabi_fadd
+__aeabi_ui2f
+__aeabi_fdiv

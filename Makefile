@@ -42,6 +42,11 @@ $(wildcard ThirdParty/FreeRTOS/*.c) \
 ThirdParty/FreeRTOS/portable/GCC/ARM_CM3/port.c \
 ThirdParty/FreeRTOS/portable/MemMang/heap_4.c \
 $(wildcard Core/Src/Drivers/Src/*.c) \
+$(wildcard Drivers/CMSIS/DSP/Source/*.c) \
+$(wildcard Drivers/CMSIS/DSP/Source/**/*.c) \
+Core/Src/Middleware/ActiveObject.c \
+Core/Src/Application/Estimator/Estimator.c \
+
 
 
 # ASM sources
@@ -82,7 +87,7 @@ CPU = -mcpu=cortex-m3
 # NONE for Cortex-M0/M0+/M3
 
 # float-abi
-
+FLOAT-ABI = -mfloat-abi=soft
 
 # mcu
 MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
@@ -94,7 +99,8 @@ AS_DEFS =
 # C defines
 C_DEFS =  \
 -DUSE_HAL_DRIVER \
--DSTM32F103xB
+-DSTM32F103xB \
+-DARM_MATH_CM3 \
 
 
 # AS includes
@@ -103,13 +109,17 @@ AS_INCLUDES =
 # C includes
 C_INCLUDES =  \
 -ICore/Inc \
+-ICore/Src \
 -IDrivers/STM32F1xx_HAL_Driver/Inc \
 -IDrivers/STM32F1xx_HAL_Driver/Inc/Legacy \
 -IDrivers/CMSIS/Device/ST/STM32F1xx/Include \
 -IDrivers/CMSIS/Include \
+-IDrivers/CMSIS/DSP/Include \
 -IThirdParty/FreeRTOS/include \
 -IThirdParty/FreeRTOS/portable/GCC/ARM_CM3 \
--ICore/Src/Drivers/Inc
+-ICore/Src/Drivers/Inc \
+-ICore/Src/Middleware \
+-ICore/Src/Application/Estimator \
 
 
 # compile gcc flags

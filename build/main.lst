@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 1
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 1
 
 
    1              		.cpu cortex-m3
@@ -18,13 +18,14 @@ ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 1
   15              	.Ltext0:
   16              		.cfi_sections	.debug_frame
   17              		.file 1 "Core/Src/main.c"
-  18              		.section	.rodata.CommunicationTask.str1.4,"aMS",%progbits,1
-  19              		.align	2
-  20              	.LC0:
-  21 0000 25642C25 		.ascii	"%d,%0.2f\012\000"
-  21      302E3266 
-  21      0A00
-  22              		.global	__aeabi_f2d
+  18              		.global	__aeabi_f2d
+  19              		.section	.rodata.CommunicationTask.str1.4,"aMS",%progbits,1
+  20              		.align	2
+  21              	.LC0:
+  22 0000 25302E32 		.ascii	"%0.2f,%0.2f\012\000"
+  22      662C2530 
+  22      2E32660A 
+  22      00
   23              		.section	.text.CommunicationTask,"ax",%progbits
   24              		.align	1
   25              		.global	CommunicationTask
@@ -57,10 +58,10 @@ ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 1
   22:Core/Src/main.c **** 
   23:Core/Src/main.c **** /**
   24:Core/Src/main.c ****  * 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 2
+
+
   25:Core/Src/main.c ****  */
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 2
-
-
   26:Core/Src/main.c **** void MainTask(void * xTaskParameters) {
   27:Core/Src/main.c ****   data dataToSend;
   28:Core/Src/main.c ****   for(;;) {
@@ -70,869 +71,910 @@ ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 1
   32:Core/Src/main.c ****     // position = encoder * 360.0 / (4.0 * 11 * 45);
   33:Core/Src/main.c ****     PID_Vel(&dataToSend);
   34:Core/Src/main.c **** 
-  35:Core/Src/main.c ****     xQueueSend(CommuniQueue, (void *)&dataToSend, portMAX_DELAY);
-  36:Core/Src/main.c **** 
-  37:Core/Src/main.c ****     vTaskDelay(pdMS_TO_TICKS(Ts));
-  38:Core/Src/main.c ****   }
-  39:Core/Src/main.c **** }
-  40:Core/Src/main.c **** 
-  41:Core/Src/main.c **** /**
-  42:Core/Src/main.c ****  * 
-  43:Core/Src/main.c ****  */
-  44:Core/Src/main.c **** char buffer[50];
-  45:Core/Src/main.c **** void CommunicationTask(void * xTaskParameters) {
-  32              		.loc 1 45 48 view -0
+  35:Core/Src/main.c ****     xQueueSendToBack(CommuniQueue, (void *)&dataToSend, portMAX_DELAY);
+  36:Core/Src/main.c ****     xSemaphoreGive(CommuniSemaphore);
+  37:Core/Src/main.c **** 
+  38:Core/Src/main.c ****     vTaskDelay(pdMS_TO_TICKS(Ts));
+  39:Core/Src/main.c ****   }
+  40:Core/Src/main.c **** }
+  41:Core/Src/main.c **** 
+  42:Core/Src/main.c **** /**
+  43:Core/Src/main.c ****  * 
+  44:Core/Src/main.c ****  */
+  45:Core/Src/main.c **** char buffer[100];
+  46:Core/Src/main.c **** void CommunicationTask(void * xTaskParameters) {
+  32              		.loc 1 46 48 view -0
   33              		.cfi_startproc
   34              		@ Volatile: function does not return.
-  35              		@ args = 0, pretend = 0, frame = 0
+  35              		@ args = 0, pretend = 0, frame = 8
   36              		@ frame_needed = 0, uses_anonymous_args = 0
   37              	.LVL0:
-  38              		.loc 1 45 48 is_stmt 0 view .LVU1
+  38              		.loc 1 46 48 is_stmt 0 view .LVU1
   39 0000 00B5     		push	{lr}
   40              	.LCFI0:
   41              		.cfi_def_cfa_offset 4
   42              		.cfi_offset 14, -4
-  43 0002 83B0     		sub	sp, sp, #12
+  43 0002 85B0     		sub	sp, sp, #20
   44              	.LCFI1:
-  45              		.cfi_def_cfa_offset 16
+  45              		.cfi_def_cfa_offset 24
   46              	.LVL1:
   47              	.L2:
-  46:Core/Src/main.c ****   for(;;) {
-  48              		.loc 1 46 3 is_stmt 1 view .LVU2
-  47:Core/Src/main.c ****     sprintf(buffer, "%d,%0.2f\n", pwm, velocity);
-  49              		.loc 1 47 5 view .LVU3
-  50 0004 084B     		ldr	r3, .L4
-  51 0006 1D78     		ldrb	r5, [r3]	@ zero_extendqisi2
-  52 0008 084C     		ldr	r4, .L4+4
-  53 000a 094B     		ldr	r3, .L4+8
-  54 000c 1868     		ldr	r0, [r3]	@ float
-  55 000e FFF7FEFF 		bl	__aeabi_f2d
+  47:Core/Src/main.c ****   data dataToReceive;
+  48              		.loc 1 47 3 is_stmt 1 view .LVU2
+  48:Core/Src/main.c ****   for(;;) {
+  49              		.loc 1 48 3 view .LVU3
+  49:Core/Src/main.c ****     if (xSemaphoreTake(CommuniSemaphore, portMAX_DELAY) && xQueueReceive(CommuniQueue, &dataToRecei
+  50              		.loc 1 49 5 view .LVU4
+  51              		.loc 1 49 9 is_stmt 0 view .LVU5
+  52 0004 4FF0FF31 		mov	r1, #-1
+  53 0008 114B     		ldr	r3, .L6
+  54 000a 1868     		ldr	r0, [r3]
+  55 000c FFF7FEFF 		bl	xQueueSemaphoreTake
   56              	.LVL2:
-  57 0012 CDE90001 		strd	r0, [sp]
-  58 0016 2A46     		mov	r2, r5
-  59 0018 0649     		ldr	r1, .L4+12
-  60 001a 2046     		mov	r0, r4
-  61 001c FFF7FEFF 		bl	sprintf_
-  62              	.LVL3:
-  48:Core/Src/main.c ****     SendString(buffer);
-  63              		.loc 1 48 5 discriminator 1 view .LVU4
-  64 0020 2046     		mov	r0, r4
-  65 0022 FFF7FEFF 		bl	SendString
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 3
+  57              		.loc 1 49 8 discriminator 1 view .LVU6
+  58 0010 0028     		cmp	r0, #0
+  59 0012 F7D0     		beq	.L2
+  60              		.loc 1 49 60 discriminator 1 view .LVU7
+  61 0014 4FF0FF32 		mov	r2, #-1
+  62 0018 02A9     		add	r1, sp, #8
+  63 001a 0E4B     		ldr	r3, .L6+4
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 3
 
 
-  66              	.LVL4:
-  46:Core/Src/main.c ****   for(;;) {
-  67              		.loc 1 46 3 view .LVU5
-  68 0026 EDE7     		b	.L2
-  69              	.L5:
-  70              		.align	2
-  71              	.L4:
-  72 0028 00000000 		.word	pwm
-  73 002c 00000000 		.word	buffer
-  74 0030 00000000 		.word	velocity
-  75 0034 00000000 		.word	.LC0
-  76              		.cfi_endproc
-  77              	.LFE74:
-  79              		.section	.text.main,"ax",%progbits
-  80              		.align	1
-  81              		.global	main
-  82              		.syntax unified
-  83              		.thumb
-  84              		.thumb_func
-  86              	main:
-  87              	.LFB75:
-  49:Core/Src/main.c ****   }
-  50:Core/Src/main.c **** }
-  51:Core/Src/main.c **** 
-  52:Core/Src/main.c **** int main(void)
-  53:Core/Src/main.c **** {
-  88              		.loc 1 53 1 view -0
-  89              		.cfi_startproc
-  90              		@ Volatile: function does not return.
-  91              		@ args = 0, pretend = 0, frame = 0
-  92              		@ frame_needed = 0, uses_anonymous_args = 0
-  93 0000 00B5     		push	{lr}
-  94              	.LCFI2:
-  95              		.cfi_def_cfa_offset 4
-  96              		.cfi_offset 14, -4
-  97 0002 83B0     		sub	sp, sp, #12
-  98              	.LCFI3:
-  99              		.cfi_def_cfa_offset 16
-  54:Core/Src/main.c ****   HAL_Init();
- 100              		.loc 1 54 3 view .LVU7
- 101 0004 FFF7FEFF 		bl	HAL_Init
- 102              	.LVL5:
-  55:Core/Src/main.c ****   SystemClock_Config();
- 103              		.loc 1 55 3 view .LVU8
- 104 0008 FFF7FEFF 		bl	SystemClock_Config
- 105              	.LVL6:
-  56:Core/Src/main.c ****   MX_GPIO_Init();
- 106              		.loc 1 56 3 view .LVU9
- 107 000c FFF7FEFF 		bl	MX_GPIO_Init
- 108              	.LVL7:
-  57:Core/Src/main.c **** 
-  58:Core/Src/main.c ****   Encoder_Init();
- 109              		.loc 1 58 3 view .LVU10
- 110 0010 FFF7FEFF 		bl	Encoder_Init
- 111              	.LVL8:
-  59:Core/Src/main.c ****   PWM_init();
- 112              		.loc 1 59 3 view .LVU11
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 4
+  64 001c 1868     		ldr	r0, [r3]
+  65 001e FFF7FEFF 		bl	xQueueReceive
+  66              	.LVL3:
+  67              		.loc 1 49 57 discriminator 1 view .LVU8
+  68 0022 0128     		cmp	r0, #1
+  69 0024 EED1     		bne	.L2
+  50:Core/Src/main.c ****       sprintf(buffer, "%0.2f,%0.2f\n", dataToReceive.setpoint, dataToReceive.velocity);
+  70              		.loc 1 50 7 is_stmt 1 view .LVU9
+  71 0026 0298     		ldr	r0, [sp, #8]	@ float
+  72 0028 FFF7FEFF 		bl	__aeabi_f2d
+  73              	.LVL4:
+  74 002c 0446     		mov	r4, r0
+  75 002e 0D46     		mov	r5, r1
+  76 0030 094E     		ldr	r6, .L6+8
+  77 0032 0398     		ldr	r0, [sp, #12]	@ float
+  78 0034 FFF7FEFF 		bl	__aeabi_f2d
+  79              	.LVL5:
+  80 0038 CDE90001 		strd	r0, [sp]
+  81 003c 2246     		mov	r2, r4
+  82 003e 2B46     		mov	r3, r5
+  83 0040 0649     		ldr	r1, .L6+12
+  84 0042 3046     		mov	r0, r6
+  85 0044 FFF7FEFF 		bl	sprintf_
+  86              	.LVL6:
+  51:Core/Src/main.c ****       SendString(buffer);
+  87              		.loc 1 51 7 view .LVU10
+  88 0048 3046     		mov	r0, r6
+  89 004a FFF7FEFF 		bl	SendString
+  90              	.LVL7:
+  91 004e D9E7     		b	.L2
+  92              	.L7:
+  93              		.align	2
+  94              	.L6:
+  95 0050 00000000 		.word	CommuniSemaphore
+  96 0054 00000000 		.word	CommuniQueue
+  97 0058 00000000 		.word	buffer
+  98 005c 00000000 		.word	.LC0
+  99              		.cfi_endproc
+ 100              	.LFE74:
+ 102              		.section	.text.main,"ax",%progbits
+ 103              		.align	1
+ 104              		.global	main
+ 105              		.syntax unified
+ 106              		.thumb
+ 107              		.thumb_func
+ 109              	main:
+ 110              	.LFB75:
+  52:Core/Src/main.c ****     }
+  53:Core/Src/main.c ****   }
+  54:Core/Src/main.c **** }
+  55:Core/Src/main.c **** 
+  56:Core/Src/main.c **** int main(void)
+  57:Core/Src/main.c **** {
+ 111              		.loc 1 57 1 view -0
+ 112              		.cfi_startproc
+ 113              		@ Volatile: function does not return.
+ 114              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 4
 
 
- 113 0014 FFF7FEFF 		bl	PWM_init
- 114              	.LVL9:
-  60:Core/Src/main.c ****   USART1_Init();
- 115              		.loc 1 60 3 view .LVU12
- 116 0018 FFF7FEFF 		bl	USART1_Init
- 117              	.LVL10:
+ 115              		@ frame_needed = 0, uses_anonymous_args = 0
+ 116 0000 00B5     		push	{lr}
+ 117              	.LCFI2:
+ 118              		.cfi_def_cfa_offset 4
+ 119              		.cfi_offset 14, -4
+ 120 0002 83B0     		sub	sp, sp, #12
+ 121              	.LCFI3:
+ 122              		.cfi_def_cfa_offset 16
+  58:Core/Src/main.c ****   HAL_Init();
+ 123              		.loc 1 58 3 view .LVU12
+ 124 0004 FFF7FEFF 		bl	HAL_Init
+ 125              	.LVL8:
+  59:Core/Src/main.c ****   SystemClock_Config();
+ 126              		.loc 1 59 3 view .LVU13
+ 127 0008 FFF7FEFF 		bl	SystemClock_Config
+ 128              	.LVL9:
+  60:Core/Src/main.c ****   MX_GPIO_Init();
+ 129              		.loc 1 60 3 view .LVU14
+ 130 000c FFF7FEFF 		bl	MX_GPIO_Init
+ 131              	.LVL10:
   61:Core/Src/main.c **** 
-  62:Core/Src/main.c ****   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
- 118              		.loc 1 62 3 view .LVU13
- 119 001c 1A4C     		ldr	r4, .L10
- 120 001e 0022     		movs	r2, #0
- 121 0020 0121     		movs	r1, #1
- 122 0022 2046     		mov	r0, r4
- 123 0024 FFF7FEFF 		bl	HAL_GPIO_WritePin
- 124              	.LVL11:
-  63:Core/Src/main.c **** 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);	
- 125              		.loc 1 63 2 view .LVU14
- 126 0028 0122     		movs	r2, #1
- 127 002a 0221     		movs	r1, #2
- 128 002c 2046     		mov	r0, r4
- 129 002e FFF7FEFF 		bl	HAL_GPIO_WritePin
- 130              	.LVL12:
-  64:Core/Src/main.c ****   /* USER CODE BEGIN 2 */
+  62:Core/Src/main.c ****   Encoder_Init();
+ 132              		.loc 1 62 3 view .LVU15
+ 133 0010 FFF7FEFF 		bl	Encoder_Init
+ 134              	.LVL11:
+  63:Core/Src/main.c ****   PWM_init();
+ 135              		.loc 1 63 3 view .LVU16
+ 136 0014 FFF7FEFF 		bl	PWM_init
+ 137              	.LVL12:
+  64:Core/Src/main.c ****   USART1_Init();
+ 138              		.loc 1 64 3 view .LVU17
+ 139 0018 FFF7FEFF 		bl	USART1_Init
+ 140              	.LVL13:
   65:Core/Src/main.c **** 
-  66:Core/Src/main.c ****   CommuniQueue = xQueueCreate(10, sizeof(data));
- 131              		.loc 1 66 3 view .LVU15
- 132              		.loc 1 66 18 is_stmt 0 view .LVU16
- 133 0032 0022     		movs	r2, #0
- 134 0034 0821     		movs	r1, #8
- 135 0036 0A20     		movs	r0, #10
- 136 0038 FFF7FEFF 		bl	xQueueGenericCreate
- 137              	.LVL13:
- 138              		.loc 1 66 16 discriminator 1 view .LVU17
- 139 003c 134B     		ldr	r3, .L10+4
- 140 003e 1860     		str	r0, [r3]
-  67:Core/Src/main.c ****   vSemaphoreCreateBinary(CommuniSemaphore);
- 141              		.loc 1 67 3 is_stmt 1 view .LVU18
- 142 0040 0322     		movs	r2, #3
- 143 0042 0021     		movs	r1, #0
- 144 0044 0120     		movs	r0, #1
- 145 0046 FFF7FEFF 		bl	xQueueGenericCreate
- 146              	.LVL14:
- 147              		.loc 1 67 3 is_stmt 0 discriminator 1 view .LVU19
- 148 004a 114B     		ldr	r3, .L10+8
- 149 004c 1860     		str	r0, [r3]
- 150              		.loc 1 67 3 is_stmt 1 discriminator 1 view .LVU20
- 151 004e 20B1     		cbz	r0, .L7
- 152              		.loc 1 67 3 discriminator 1 view .LVU21
- 153 0050 0023     		movs	r3, #0
- 154 0052 1A46     		mov	r2, r3
- 155 0054 1946     		mov	r1, r3
- 156 0056 FFF7FEFF 		bl	xQueueGenericSend
- 157              	.LVL15:
- 158              	.L7:
- 159              		.loc 1 67 43 discriminator 3 view .LVU22
-  68:Core/Src/main.c **** 
-  69:Core/Src/main.c ****   xTaskCreate(MainTask, NULL, configMINIMAL_STACK_SIZE, NULL, 3, NULL);
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 5
+  66:Core/Src/main.c ****   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+ 141              		.loc 1 66 3 view .LVU18
+ 142 001c 1A4C     		ldr	r4, .L12
+ 143 001e 0022     		movs	r2, #0
+ 144 0020 0121     		movs	r1, #1
+ 145 0022 2046     		mov	r0, r4
+ 146 0024 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 147              	.LVL14:
+  67:Core/Src/main.c **** 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);	
+ 148              		.loc 1 67 2 view .LVU19
+ 149 0028 0122     		movs	r2, #1
+ 150 002a 0221     		movs	r1, #2
+ 151 002c 2046     		mov	r0, r4
+ 152 002e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 153              	.LVL15:
+  68:Core/Src/main.c ****   /* USER CODE BEGIN 2 */
+  69:Core/Src/main.c **** 
+  70:Core/Src/main.c ****   CommuniQueue = xQueueCreate(10, sizeof(data));
+ 154              		.loc 1 70 3 view .LVU20
+ 155              		.loc 1 70 18 is_stmt 0 view .LVU21
+ 156 0032 0022     		movs	r2, #0
+ 157 0034 0821     		movs	r1, #8
+ 158 0036 0A20     		movs	r0, #10
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 5
 
 
- 160              		.loc 1 69 3 view .LVU23
- 161 005a 0024     		movs	r4, #0
- 162 005c 0194     		str	r4, [sp, #4]
- 163 005e 0323     		movs	r3, #3
- 164 0060 0093     		str	r3, [sp]
- 165 0062 2346     		mov	r3, r4
- 166 0064 8022     		movs	r2, #128
- 167 0066 2146     		mov	r1, r4
- 168 0068 0A48     		ldr	r0, .L10+12
- 169 006a FFF7FEFF 		bl	xTaskCreate
- 170              	.LVL16:
-  70:Core/Src/main.c ****   xTaskCreate(CommunicationTask, NULL, configMINIMAL_STACK_SIZE, NULL, 2, NULL);
- 171              		.loc 1 70 3 view .LVU24
- 172 006e 0194     		str	r4, [sp, #4]
- 173 0070 0223     		movs	r3, #2
- 174 0072 0093     		str	r3, [sp]
- 175 0074 2346     		mov	r3, r4
- 176 0076 8022     		movs	r2, #128
- 177 0078 2146     		mov	r1, r4
- 178 007a 0748     		ldr	r0, .L10+16
- 179 007c FFF7FEFF 		bl	xTaskCreate
- 180              	.LVL17:
-  71:Core/Src/main.c **** 
-  72:Core/Src/main.c ****   vTaskStartScheduler();
- 181              		.loc 1 72 3 view .LVU25
- 182 0080 FFF7FEFF 		bl	vTaskStartScheduler
- 183              	.LVL18:
- 184              	.L8:
-  73:Core/Src/main.c **** 
-  74:Core/Src/main.c ****   /* USER CODE END 2 */
+ 159 0038 FFF7FEFF 		bl	xQueueGenericCreate
+ 160              	.LVL16:
+ 161              		.loc 1 70 16 discriminator 1 view .LVU22
+ 162 003c 134B     		ldr	r3, .L12+4
+ 163 003e 1860     		str	r0, [r3]
+  71:Core/Src/main.c ****   vSemaphoreCreateBinary(CommuniSemaphore);
+ 164              		.loc 1 71 3 is_stmt 1 view .LVU23
+ 165 0040 0322     		movs	r2, #3
+ 166 0042 0021     		movs	r1, #0
+ 167 0044 0120     		movs	r0, #1
+ 168 0046 FFF7FEFF 		bl	xQueueGenericCreate
+ 169              	.LVL17:
+ 170              		.loc 1 71 3 is_stmt 0 discriminator 1 view .LVU24
+ 171 004a 114B     		ldr	r3, .L12+8
+ 172 004c 1860     		str	r0, [r3]
+ 173              		.loc 1 71 3 is_stmt 1 discriminator 1 view .LVU25
+ 174 004e 20B1     		cbz	r0, .L9
+ 175              		.loc 1 71 3 discriminator 1 view .LVU26
+ 176 0050 0023     		movs	r3, #0
+ 177 0052 1A46     		mov	r2, r3
+ 178 0054 1946     		mov	r1, r3
+ 179 0056 FFF7FEFF 		bl	xQueueGenericSend
+ 180              	.LVL18:
+ 181              	.L9:
+ 182              		.loc 1 71 43 discriminator 3 view .LVU27
+  72:Core/Src/main.c **** 
+  73:Core/Src/main.c ****   xTaskCreate(MainTask, NULL, configMINIMAL_STACK_SIZE, NULL, 3, NULL);
+ 183              		.loc 1 73 3 view .LVU28
+ 184 005a 0024     		movs	r4, #0
+ 185 005c 0194     		str	r4, [sp, #4]
+ 186 005e 0323     		movs	r3, #3
+ 187 0060 0093     		str	r3, [sp]
+ 188 0062 2346     		mov	r3, r4
+ 189 0064 8022     		movs	r2, #128
+ 190 0066 2146     		mov	r1, r4
+ 191 0068 0A48     		ldr	r0, .L12+12
+ 192 006a FFF7FEFF 		bl	xTaskCreate
+ 193              	.LVL19:
+  74:Core/Src/main.c ****   xTaskCreate(CommunicationTask, NULL, configMINIMAL_STACK_SIZE, NULL, 2, NULL);
+ 194              		.loc 1 74 3 view .LVU29
+ 195 006e 0194     		str	r4, [sp, #4]
+ 196 0070 0223     		movs	r3, #2
+ 197 0072 0093     		str	r3, [sp]
+ 198 0074 2346     		mov	r3, r4
+ 199 0076 8022     		movs	r2, #128
+ 200 0078 2146     		mov	r1, r4
+ 201 007a 0748     		ldr	r0, .L12+16
+ 202 007c FFF7FEFF 		bl	xTaskCreate
+ 203              	.LVL20:
   75:Core/Src/main.c **** 
-  76:Core/Src/main.c ****   /* Infinite loop */
-  77:Core/Src/main.c ****   while (1) {}
- 185              		.loc 1 77 3 view .LVU26
- 186              		.loc 1 77 14 view .LVU27
- 187              		.loc 1 77 9 view .LVU28
- 188 0084 FEE7     		b	.L8
- 189              	.L11:
- 190 0086 00BF     		.align	2
- 191              	.L10:
- 192 0088 000C0140 		.word	1073810432
- 193 008c 00000000 		.word	CommuniQueue
- 194 0090 00000000 		.word	CommuniSemaphore
- 195 0094 00000000 		.word	MainTask
- 196 0098 00000000 		.word	CommunicationTask
- 197              		.cfi_endproc
- 198              	.LFE75:
- 200              		.global	__aeabi_fsub
- 201              		.global	__aeabi_fmul
- 202              		.global	__aeabi_i2f
- 203              		.global	__aeabi_dmul
- 204              		.global	__aeabi_dadd
- 205              		.global	__aeabi_d2f
- 206              		.global	__aeabi_fadd
- 207              		.global	__aeabi_f2lz
- 208              		.global	__aeabi_l2f
- 209              		.section	.text.PID_Vel,"ax",%progbits
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 6
+  76:Core/Src/main.c ****   vTaskStartScheduler();
+ 204              		.loc 1 76 3 view .LVU30
+ 205 0080 FFF7FEFF 		bl	vTaskStartScheduler
+ 206              	.LVL21:
+ 207              	.L10:
+  77:Core/Src/main.c **** 
+  78:Core/Src/main.c ****   /* USER CODE END 2 */
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 6
 
 
- 210              		.align	1
- 211              		.global	PID_Vel
- 212              		.syntax unified
- 213              		.thumb
- 214              		.thumb_func
- 216              	PID_Vel:
- 217              	.LVL19:
- 218              	.LFB76:
-  78:Core/Src/main.c **** }
   79:Core/Src/main.c **** 
-  80:Core/Src/main.c **** void PID_Vel(data* value) {
- 219              		.loc 1 80 27 view -0
- 220              		.cfi_startproc
- 221              		@ args = 0, pretend = 0, frame = 0
- 222              		@ frame_needed = 0, uses_anonymous_args = 0
- 223              		.loc 1 80 27 is_stmt 0 view .LVU30
- 224 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
- 225              	.LCFI4:
- 226              		.cfi_def_cfa_offset 24
- 227              		.cfi_offset 4, -24
- 228              		.cfi_offset 5, -20
- 229              		.cfi_offset 6, -16
- 230              		.cfi_offset 7, -12
- 231              		.cfi_offset 8, -8
- 232              		.cfi_offset 14, -4
-  81:Core/Src/main.c ****   float error = value->setpoint - value->velocity;
- 233              		.loc 1 81 3 is_stmt 1 view .LVU31
- 234              		.loc 1 81 9 is_stmt 0 view .LVU32
- 235 0004 4168     		ldr	r1, [r0, #4]	@ float
- 236 0006 0068     		ldr	r0, [r0]	@ float
- 237              	.LVL20:
- 238              		.loc 1 81 9 view .LVU33
- 239 0008 FFF7FEFF 		bl	__aeabi_fsub
- 240              	.LVL21:
- 241 000c 0646     		mov	r6, r0
- 242              	.LVL22:
-  82:Core/Src/main.c ****   static float up, ui, errorReset;
- 243              		.loc 1 82 3 is_stmt 1 view .LVU34
-  83:Core/Src/main.c ****   int64_t pwm;
- 244              		.loc 1 83 3 view .LVU35
-  84:Core/Src/main.c **** 
-  85:Core/Src/main.c ****   int64_t Hlim = 100;
- 245              		.loc 1 85 3 view .LVU36
-  86:Core/Src/main.c ****   int64_t Llim = -100;
- 246              		.loc 1 86 3 view .LVU37
-  87:Core/Src/main.c **** 
-  88:Core/Src/main.c ****   float Kp = 0.7397;
- 247              		.loc 1 88 3 view .LVU38
-  89:Core/Src/main.c ****   float Ki = 8.0296;
- 248              		.loc 1 89 3 view .LVU39
-  90:Core/Src/main.c ****   float Kb = 0;
- 249              		.loc 1 90 3 view .LVU40
-  91:Core/Src/main.c ****   
-  92:Core/Src/main.c ****   up = Kp * error;
- 250              		.loc 1 92 3 view .LVU41
- 251              		.loc 1 92 11 is_stmt 0 view .LVU42
- 252 000e 4E49     		ldr	r1, .L23+8
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 7
+  80:Core/Src/main.c ****   /* Infinite loop */
+  81:Core/Src/main.c ****   while (1) {}
+ 208              		.loc 1 81 3 view .LVU31
+ 209              		.loc 1 81 14 view .LVU32
+ 210              		.loc 1 81 9 view .LVU33
+ 211 0084 FEE7     		b	.L10
+ 212              	.L13:
+ 213 0086 00BF     		.align	2
+ 214              	.L12:
+ 215 0088 000C0140 		.word	1073810432
+ 216 008c 00000000 		.word	CommuniQueue
+ 217 0090 00000000 		.word	CommuniSemaphore
+ 218 0094 00000000 		.word	MainTask
+ 219 0098 00000000 		.word	CommunicationTask
+ 220              		.cfi_endproc
+ 221              	.LFE75:
+ 223              		.global	__aeabi_fsub
+ 224              		.global	__aeabi_fmul
+ 225              		.global	__aeabi_i2f
+ 226              		.global	__aeabi_dmul
+ 227              		.global	__aeabi_dadd
+ 228              		.global	__aeabi_d2f
+ 229              		.global	__aeabi_fadd
+ 230              		.global	__aeabi_f2lz
+ 231              		.global	__aeabi_l2f
+ 232              		.section	.text.PID_Vel,"ax",%progbits
+ 233              		.align	1
+ 234              		.global	PID_Vel
+ 235              		.syntax unified
+ 236              		.thumb
+ 237              		.thumb_func
+ 239              	PID_Vel:
+ 240              	.LVL22:
+ 241              	.LFB76:
+  82:Core/Src/main.c **** }
+  83:Core/Src/main.c **** 
+  84:Core/Src/main.c **** void PID_Vel(data* value) {
+ 242              		.loc 1 84 27 view -0
+ 243              		.cfi_startproc
+ 244              		@ args = 0, pretend = 0, frame = 0
+ 245              		@ frame_needed = 0, uses_anonymous_args = 0
+ 246              		.loc 1 84 27 is_stmt 0 view .LVU35
+ 247 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 248              	.LCFI4:
+ 249              		.cfi_def_cfa_offset 24
+ 250              		.cfi_offset 4, -24
+ 251              		.cfi_offset 5, -20
+ 252              		.cfi_offset 6, -16
+ 253              		.cfi_offset 7, -12
+ 254              		.cfi_offset 8, -8
+ 255              		.cfi_offset 14, -4
+  85:Core/Src/main.c ****   float error = value->setpoint - value->velocity;
+ 256              		.loc 1 85 3 is_stmt 1 view .LVU36
+ 257              		.loc 1 85 9 is_stmt 0 view .LVU37
+ 258 0004 4168     		ldr	r1, [r0, #4]	@ float
+ 259 0006 0068     		ldr	r0, [r0]	@ float
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 7
 
 
- 253 0010 FFF7FEFF 		bl	__aeabi_fmul
- 254              	.LVL23:
- 255              		.loc 1 92 11 view .LVU43
- 256 0014 0446     		mov	r4, r0
- 257              		.loc 1 92 6 view .LVU44
- 258 0016 4D4B     		ldr	r3, .L23+12
- 259 0018 1860     		str	r0, [r3]	@ float
-  93:Core/Src/main.c ****   ui += Ki * error * Ts * 0.001 + Kb * errorReset * Ts;
- 260              		.loc 1 93 3 is_stmt 1 view .LVU45
- 261              		.loc 1 93 12 is_stmt 0 view .LVU46
- 262 001a 4D49     		ldr	r1, .L23+16
- 263 001c 3046     		mov	r0, r6
- 264 001e FFF7FEFF 		bl	__aeabi_fmul
- 265              	.LVL24:
- 266 0022 0646     		mov	r6, r0
- 267              	.LVL25:
- 268              		.loc 1 93 20 view .LVU47
- 269 0024 4B4B     		ldr	r3, .L23+20
- 270 0026 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
- 271 0028 FFF7FEFF 		bl	__aeabi_i2f
- 272              	.LVL26:
- 273 002c 0546     		mov	r5, r0
- 274 002e 0146     		mov	r1, r0
- 275 0030 3046     		mov	r0, r6
- 276 0032 FFF7FEFF 		bl	__aeabi_fmul
- 277              	.LVL27:
- 278 0036 FFF7FEFF 		bl	__aeabi_f2d
- 279              	.LVL28:
- 280              		.loc 1 93 25 view .LVU48
- 281 003a 41A3     		adr	r3, .L23
- 282 003c D3E90023 		ldrd	r2, [r3]
- 283 0040 FFF7FEFF 		bl	__aeabi_dmul
- 284              	.LVL29:
- 285 0044 0646     		mov	r6, r0
- 286 0046 0F46     		mov	r7, r1
- 287              		.loc 1 93 38 view .LVU49
- 288 0048 0021     		movs	r1, #0
- 289 004a 434B     		ldr	r3, .L23+24
- 290 004c 1868     		ldr	r0, [r3]	@ float
- 291 004e FFF7FEFF 		bl	__aeabi_fmul
- 292              	.LVL30:
- 293 0052 0146     		mov	r1, r0
- 294              		.loc 1 93 51 view .LVU50
- 295 0054 2846     		mov	r0, r5
- 296 0056 FFF7FEFF 		bl	__aeabi_fmul
- 297              	.LVL31:
- 298 005a FFF7FEFF 		bl	__aeabi_f2d
- 299              	.LVL32:
- 300 005e 0246     		mov	r2, r0
- 301 0060 0B46     		mov	r3, r1
- 302              		.loc 1 93 33 view .LVU51
- 303 0062 3046     		mov	r0, r6
- 304 0064 3946     		mov	r1, r7
- 305 0066 FFF7FEFF 		bl	__aeabi_dadd
- 306              	.LVL33:
- 307 006a 0646     		mov	r6, r0
- 308 006c 0F46     		mov	r7, r1
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 8
+ 260              	.LVL23:
+ 261              		.loc 1 85 9 view .LVU38
+ 262 0008 FFF7FEFF 		bl	__aeabi_fsub
+ 263              	.LVL24:
+ 264 000c 0646     		mov	r6, r0
+ 265              	.LVL25:
+  86:Core/Src/main.c ****   static float up, ui, errorReset;
+ 266              		.loc 1 86 3 is_stmt 1 view .LVU39
+  87:Core/Src/main.c ****   int64_t pwm;
+ 267              		.loc 1 87 3 view .LVU40
+  88:Core/Src/main.c **** 
+  89:Core/Src/main.c ****   int64_t Hlim = 100;
+ 268              		.loc 1 89 3 view .LVU41
+  90:Core/Src/main.c ****   int64_t Llim = -100;
+ 269              		.loc 1 90 3 view .LVU42
+  91:Core/Src/main.c **** 
+  92:Core/Src/main.c ****   float Kp = 0.7397;
+ 270              		.loc 1 92 3 view .LVU43
+  93:Core/Src/main.c ****   float Ki = 8.0296;
+ 271              		.loc 1 93 3 view .LVU44
+  94:Core/Src/main.c ****   float Kb = 0;
+ 272              		.loc 1 94 3 view .LVU45
+  95:Core/Src/main.c ****   
+  96:Core/Src/main.c ****   up = Kp * error;
+ 273              		.loc 1 96 3 view .LVU46
+ 274              		.loc 1 96 11 is_stmt 0 view .LVU47
+ 275 000e 4E49     		ldr	r1, .L25+8
+ 276 0010 FFF7FEFF 		bl	__aeabi_fmul
+ 277              	.LVL26:
+ 278              		.loc 1 96 11 view .LVU48
+ 279 0014 0446     		mov	r4, r0
+ 280              		.loc 1 96 6 view .LVU49
+ 281 0016 4D4B     		ldr	r3, .L25+12
+ 282 0018 1860     		str	r0, [r3]	@ float
+  97:Core/Src/main.c ****   ui += Ki * error * Ts * 0.001 + Kb * errorReset * Ts;
+ 283              		.loc 1 97 3 is_stmt 1 view .LVU50
+ 284              		.loc 1 97 12 is_stmt 0 view .LVU51
+ 285 001a 4D49     		ldr	r1, .L25+16
+ 286 001c 3046     		mov	r0, r6
+ 287 001e FFF7FEFF 		bl	__aeabi_fmul
+ 288              	.LVL27:
+ 289 0022 0646     		mov	r6, r0
+ 290              	.LVL28:
+ 291              		.loc 1 97 20 view .LVU52
+ 292 0024 4B4B     		ldr	r3, .L25+20
+ 293 0026 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 294 0028 FFF7FEFF 		bl	__aeabi_i2f
+ 295              	.LVL29:
+ 296 002c 0546     		mov	r5, r0
+ 297 002e 0146     		mov	r1, r0
+ 298 0030 3046     		mov	r0, r6
+ 299 0032 FFF7FEFF 		bl	__aeabi_fmul
+ 300              	.LVL30:
+ 301 0036 FFF7FEFF 		bl	__aeabi_f2d
+ 302              	.LVL31:
+ 303              		.loc 1 97 25 view .LVU53
+ 304 003a 41A3     		adr	r3, .L25
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 8
 
 
- 309              		.loc 1 93 6 view .LVU52
- 310 006e 3B4D     		ldr	r5, .L23+28
- 311 0070 2868     		ldr	r0, [r5]	@ float
- 312 0072 FFF7FEFF 		bl	__aeabi_f2d
- 313              	.LVL34:
- 314 0076 3246     		mov	r2, r6
- 315 0078 3B46     		mov	r3, r7
- 316 007a FFF7FEFF 		bl	__aeabi_dadd
- 317              	.LVL35:
- 318 007e FFF7FEFF 		bl	__aeabi_d2f
- 319              	.LVL36:
- 320 0082 0146     		mov	r1, r0
- 321 0084 2860     		str	r0, [r5]	@ float
-  94:Core/Src/main.c **** 
-  95:Core/Src/main.c ****   int64_t uout = (int64_t)(up + ui);
- 322              		.loc 1 95 3 is_stmt 1 view .LVU53
- 323              		.loc 1 95 31 is_stmt 0 view .LVU54
- 324 0086 2046     		mov	r0, r4
- 325 0088 FFF7FEFF 		bl	__aeabi_fadd
- 326              	.LVL37:
- 327              		.loc 1 95 11 view .LVU55
- 328 008c FFF7FEFF 		bl	__aeabi_f2lz
- 329              	.LVL38:
- 330 0090 0446     		mov	r4, r0
- 331 0092 0D46     		mov	r5, r1
- 332 0094 0746     		mov	r7, r0
- 333 0096 0E46     		mov	r6, r1
- 334              	.LVL39:
-  96:Core/Src/main.c **** 
-  97:Core/Src/main.c ****   if (uout > 0) {
- 335              		.loc 1 97 3 is_stmt 1 view .LVU56
- 336              		.loc 1 97 6 is_stmt 0 view .LVU57
- 337 0098 0128     		cmp	r0, #1
- 338 009a 71F10003 		sbcs	r3, r1, #0
- 339 009e 15DA     		bge	.L21
-  98:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
-  99:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
+ 305 003c D3E90023 		ldrd	r2, [r3]
+ 306 0040 FFF7FEFF 		bl	__aeabi_dmul
+ 307              	.LVL32:
+ 308 0044 0646     		mov	r6, r0
+ 309 0046 0F46     		mov	r7, r1
+ 310              		.loc 1 97 38 view .LVU54
+ 311 0048 0021     		movs	r1, #0
+ 312 004a 434B     		ldr	r3, .L25+24
+ 313 004c 1868     		ldr	r0, [r3]	@ float
+ 314 004e FFF7FEFF 		bl	__aeabi_fmul
+ 315              	.LVL33:
+ 316 0052 0146     		mov	r1, r0
+ 317              		.loc 1 97 51 view .LVU55
+ 318 0054 2846     		mov	r0, r5
+ 319 0056 FFF7FEFF 		bl	__aeabi_fmul
+ 320              	.LVL34:
+ 321 005a FFF7FEFF 		bl	__aeabi_f2d
+ 322              	.LVL35:
+ 323 005e 0246     		mov	r2, r0
+ 324 0060 0B46     		mov	r3, r1
+ 325              		.loc 1 97 33 view .LVU56
+ 326 0062 3046     		mov	r0, r6
+ 327 0064 3946     		mov	r1, r7
+ 328 0066 FFF7FEFF 		bl	__aeabi_dadd
+ 329              	.LVL36:
+ 330 006a 0646     		mov	r6, r0
+ 331 006c 0F46     		mov	r7, r1
+ 332              		.loc 1 97 6 view .LVU57
+ 333 006e 3B4D     		ldr	r5, .L25+28
+ 334 0070 2868     		ldr	r0, [r5]	@ float
+ 335 0072 FFF7FEFF 		bl	__aeabi_f2d
+ 336              	.LVL37:
+ 337 0076 3246     		mov	r2, r6
+ 338 0078 3B46     		mov	r3, r7
+ 339 007a FFF7FEFF 		bl	__aeabi_dadd
+ 340              	.LVL38:
+ 341 007e FFF7FEFF 		bl	__aeabi_d2f
+ 342              	.LVL39:
+ 343 0082 0146     		mov	r1, r0
+ 344 0084 2860     		str	r0, [r5]	@ float
+  98:Core/Src/main.c **** 
+  99:Core/Src/main.c ****   int64_t uout = (int64_t)(up + ui);
+ 345              		.loc 1 99 3 is_stmt 1 view .LVU58
+ 346              		.loc 1 99 31 is_stmt 0 view .LVU59
+ 347 0086 2046     		mov	r0, r4
+ 348 0088 FFF7FEFF 		bl	__aeabi_fadd
+ 349              	.LVL40:
+ 350              		.loc 1 99 11 view .LVU60
+ 351 008c FFF7FEFF 		bl	__aeabi_f2lz
+ 352              	.LVL41:
+ 353 0090 0446     		mov	r4, r0
+ 354 0092 0D46     		mov	r5, r1
+ 355 0094 0746     		mov	r7, r0
+ 356 0096 0E46     		mov	r6, r1
+ 357              	.LVL42:
  100:Core/Src/main.c **** 
- 101:Core/Src/main.c ****     if (uout > Hlim) pwm = Hlim;
- 102:Core/Src/main.c ****     else pwm = uout;
+ 101:Core/Src/main.c ****   if (uout > 0) {
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 9
+
+
+ 358              		.loc 1 101 3 is_stmt 1 view .LVU61
+ 359              		.loc 1 101 6 is_stmt 0 view .LVU62
+ 360 0098 0128     		cmp	r0, #1
+ 361 009a 71F10003 		sbcs	r3, r1, #0
+ 362 009e 15DA     		bge	.L23
+ 102:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+ 103:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
+ 104:Core/Src/main.c **** 
+ 105:Core/Src/main.c ****     if (uout > Hlim) pwm = Hlim;
+ 106:Core/Src/main.c ****     else pwm = uout;
+ 107:Core/Src/main.c **** 
+ 108:Core/Src/main.c ****     errorReset = pwm - uout;
+ 109:Core/Src/main.c ****   }
+ 110:Core/Src/main.c ****   else if (uout < 0) {
+ 363              		.loc 1 110 8 is_stmt 1 view .LVU63
+ 364              		.loc 1 110 11 is_stmt 0 view .LVU64
+ 365 00a0 0029     		cmp	r1, #0
+ 366 00a2 30DB     		blt	.L24
+ 111:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
+ 112:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
+ 113:Core/Src/main.c **** 
+ 114:Core/Src/main.c ****     if (uout < Hlim) pwm = Llim;
+ 115:Core/Src/main.c ****     else pwm = uout;
+ 116:Core/Src/main.c **** 
+ 117:Core/Src/main.c ****     errorReset = pwm - uout;
+ 118:Core/Src/main.c **** 
+ 119:Core/Src/main.c ****     uout *= -1;
+ 120:Core/Src/main.c ****   }
+ 121:Core/Src/main.c ****   else {
+ 122:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+ 367              		.loc 1 122 5 is_stmt 1 view .LVU65
+ 368 00a4 2E4C     		ldr	r4, .L25+32
+ 369 00a6 0022     		movs	r2, #0
+ 370 00a8 0121     		movs	r1, #1
+ 371              	.LVL43:
+ 372              		.loc 1 122 5 is_stmt 0 view .LVU66
+ 373 00aa 2046     		mov	r0, r4
+ 374              	.LVL44:
+ 375              		.loc 1 122 5 view .LVU67
+ 376 00ac FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 377              	.LVL45:
+ 123:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);    
+ 378              		.loc 1 123 5 is_stmt 1 view .LVU68
+ 379 00b0 0022     		movs	r2, #0
+ 380 00b2 0221     		movs	r1, #2
+ 381 00b4 2046     		mov	r0, r4
+ 382 00b6 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 383              	.LVL46:
+ 124:Core/Src/main.c ****     pwm = 0;
+ 384              		.loc 1 124 5 view .LVU69
+ 125:Core/Src/main.c **** 
+ 126:Core/Src/main.c ****     errorReset = pwm - uout;
+ 385              		.loc 1 126 5 view .LVU70
+ 386              		.loc 1 126 22 is_stmt 0 view .LVU71
+ 387 00ba 7842     		negs	r0, r7
+ 388              		.loc 1 126 16 view .LVU72
+ 389 00bc 65EB4501 		sbc	r1, r5, r5, lsl #1
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 10
+
+
+ 390 00c0 FFF7FEFF 		bl	__aeabi_l2f
+ 391              	.LVL47:
+ 392 00c4 244B     		ldr	r3, .L25+24
+ 393 00c6 1860     		str	r0, [r3]	@ float
+ 124:Core/Src/main.c ****     pwm = 0;
+ 394              		.loc 1 124 9 view .LVU73
+ 395 00c8 0024     		movs	r4, #0
+ 396 00ca 18E0     		b	.L17
+ 397              	.LVL48:
+ 398              	.L23:
+ 102:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
+ 399              		.loc 1 102 5 is_stmt 1 view .LVU74
+ 400 00cc DFF89080 		ldr	r8, .L25+32
+ 401 00d0 0022     		movs	r2, #0
+ 402 00d2 0121     		movs	r1, #1
+ 403              	.LVL49:
+ 102:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
+ 404              		.loc 1 102 5 is_stmt 0 view .LVU75
+ 405 00d4 4046     		mov	r0, r8
+ 406              	.LVL50:
+ 102:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
+ 407              		.loc 1 102 5 view .LVU76
+ 408 00d6 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 409              	.LVL51:
  103:Core/Src/main.c **** 
- 104:Core/Src/main.c ****     errorReset = pwm - uout;
- 105:Core/Src/main.c ****   }
- 106:Core/Src/main.c ****   else if (uout < 0) {
- 340              		.loc 1 106 8 is_stmt 1 view .LVU58
- 341              		.loc 1 106 11 is_stmt 0 view .LVU59
- 342 00a0 0029     		cmp	r1, #0
- 343 00a2 30DB     		blt	.L22
- 107:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
- 108:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
- 109:Core/Src/main.c **** 
- 110:Core/Src/main.c ****     if (uout < Hlim) pwm = Llim;
- 111:Core/Src/main.c ****     else pwm = uout;
+ 410              		.loc 1 103 5 is_stmt 1 view .LVU77
+ 411 00da 0122     		movs	r2, #1
+ 412 00dc 0221     		movs	r1, #2
+ 413 00de 4046     		mov	r0, r8
+ 414 00e0 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 415              	.LVL52:
+ 105:Core/Src/main.c ****     else pwm = uout;
+ 416              		.loc 1 105 5 view .LVU78
+ 105:Core/Src/main.c ****     else pwm = uout;
+ 417              		.loc 1 105 8 is_stmt 0 view .LVU79
+ 418 00e4 652C     		cmp	r4, #101
+ 419 00e6 75F10003 		sbcs	r3, r5, #0
+ 420 00ea 01DB     		blt	.L16
+ 105:Core/Src/main.c ****     else pwm = uout;
+ 421              		.loc 1 105 26 discriminator 1 view .LVU80
+ 422 00ec 6424     		movs	r4, #100
+ 423              	.LVL53:
+ 105:Core/Src/main.c ****     else pwm = uout;
+ 424              		.loc 1 105 26 discriminator 1 view .LVU81
+ 425 00ee 0025     		movs	r5, #0
+ 426              	.LVL54:
+ 427              	.L16:
+ 108:Core/Src/main.c ****   }
+ 428              		.loc 1 108 5 is_stmt 1 view .LVU82
+ 108:Core/Src/main.c ****   }
+ 429              		.loc 1 108 22 is_stmt 0 view .LVU83
+ 430 00f0 E01B     		subs	r0, r4, r7
+ 108:Core/Src/main.c ****   }
+ 431              		.loc 1 108 16 view .LVU84
+ 432 00f2 65EB0601 		sbc	r1, r5, r6
+ 433 00f6 FFF7FEFF 		bl	__aeabi_l2f
+ 434              	.LVL55:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 11
+
+
+ 435 00fa 174B     		ldr	r3, .L25+24
+ 436 00fc 1860     		str	r0, [r3]	@ float
+ 437              	.LVL56:
+ 438              	.L17:
+ 127:Core/Src/main.c ****   }
+ 128:Core/Src/main.c **** 
+ 129:Core/Src/main.c ****   TIM3->CCR1 = pwm;
+ 439              		.loc 1 129 3 is_stmt 1 view .LVU85
+ 440              		.loc 1 129 14 is_stmt 0 view .LVU86
+ 441 00fe 194B     		ldr	r3, .L25+36
+ 442 0100 5C63     		str	r4, [r3, #52]
+ 130:Core/Src/main.c **** }
+ 443              		.loc 1 130 1 view .LVU87
+ 444 0102 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 445              	.LVL57:
+ 446              	.L24:
+ 111:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
+ 447              		.loc 1 111 5 is_stmt 1 view .LVU88
+ 448 0106 DFF85880 		ldr	r8, .L25+32
+ 449 010a 0122     		movs	r2, #1
+ 450 010c 1146     		mov	r1, r2
+ 451              	.LVL58:
+ 111:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
+ 452              		.loc 1 111 5 is_stmt 0 view .LVU89
+ 453 010e 4046     		mov	r0, r8
+ 454              	.LVL59:
+ 111:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
+ 455              		.loc 1 111 5 view .LVU90
+ 456 0110 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 457              	.LVL60:
  112:Core/Src/main.c **** 
- 113:Core/Src/main.c ****     errorReset = pwm - uout;
- 114:Core/Src/main.c **** 
- 115:Core/Src/main.c ****     uout *= -1;
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 9
+ 458              		.loc 1 112 5 is_stmt 1 view .LVU91
+ 459 0114 0022     		movs	r2, #0
+ 460 0116 0221     		movs	r1, #2
+ 461 0118 4046     		mov	r0, r8
+ 462 011a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 463              	.LVL61:
+ 114:Core/Src/main.c ****     else pwm = uout;
+ 464              		.loc 1 114 5 view .LVU92
+ 114:Core/Src/main.c ****     else pwm = uout;
+ 465              		.loc 1 114 8 is_stmt 0 view .LVU93
+ 466 011e 642C     		cmp	r4, #100
+ 467 0120 75F10003 		sbcs	r3, r5, #0
+ 468 0124 03DA     		bge	.L19
+ 114:Core/Src/main.c ****     else pwm = uout;
+ 469              		.loc 1 114 26 discriminator 1 view .LVU94
+ 470 0126 6FF06304 		mvn	r4, #99
+ 471              	.LVL62:
+ 114:Core/Src/main.c ****     else pwm = uout;
+ 472              		.loc 1 114 26 discriminator 1 view .LVU95
+ 473 012a 4FF0FF35 		mov	r5, #-1
+ 474              	.LVL63:
+ 475              	.L19:
+ 117:Core/Src/main.c **** 
+ 476              		.loc 1 117 5 is_stmt 1 view .LVU96
+ 117:Core/Src/main.c **** 
+ 477              		.loc 1 117 22 is_stmt 0 view .LVU97
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 12
 
 
- 116:Core/Src/main.c ****   }
- 117:Core/Src/main.c ****   else {
- 118:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
- 344              		.loc 1 118 5 is_stmt 1 view .LVU60
- 345 00a4 2E4C     		ldr	r4, .L23+32
- 346 00a6 0022     		movs	r2, #0
- 347 00a8 0121     		movs	r1, #1
- 348              	.LVL40:
- 349              		.loc 1 118 5 is_stmt 0 view .LVU61
- 350 00aa 2046     		mov	r0, r4
- 351              	.LVL41:
- 352              		.loc 1 118 5 view .LVU62
- 353 00ac FFF7FEFF 		bl	HAL_GPIO_WritePin
- 354              	.LVL42:
- 119:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);    
- 355              		.loc 1 119 5 is_stmt 1 view .LVU63
- 356 00b0 0022     		movs	r2, #0
- 357 00b2 0221     		movs	r1, #2
- 358 00b4 2046     		mov	r0, r4
- 359 00b6 FFF7FEFF 		bl	HAL_GPIO_WritePin
- 360              	.LVL43:
- 120:Core/Src/main.c ****     pwm = 0;
- 361              		.loc 1 120 5 view .LVU64
- 121:Core/Src/main.c **** 
- 122:Core/Src/main.c ****     errorReset = pwm - uout;
- 362              		.loc 1 122 5 view .LVU65
- 363              		.loc 1 122 22 is_stmt 0 view .LVU66
- 364 00ba 7842     		negs	r0, r7
- 365              		.loc 1 122 16 view .LVU67
- 366 00bc 65EB4501 		sbc	r1, r5, r5, lsl #1
- 367 00c0 FFF7FEFF 		bl	__aeabi_l2f
- 368              	.LVL44:
- 369 00c4 244B     		ldr	r3, .L23+24
- 370 00c6 1860     		str	r0, [r3]	@ float
- 120:Core/Src/main.c ****     pwm = 0;
- 371              		.loc 1 120 9 view .LVU68
- 372 00c8 0024     		movs	r4, #0
- 373 00ca 18E0     		b	.L15
- 374              	.LVL45:
- 375              	.L21:
-  98:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
- 376              		.loc 1 98 5 is_stmt 1 view .LVU69
- 377 00cc DFF89080 		ldr	r8, .L23+32
- 378 00d0 0022     		movs	r2, #0
- 379 00d2 0121     		movs	r1, #1
- 380              	.LVL46:
-  98:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
- 381              		.loc 1 98 5 is_stmt 0 view .LVU70
- 382 00d4 4046     		mov	r0, r8
- 383              	.LVL47:
-  98:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
- 384              		.loc 1 98 5 view .LVU71
- 385 00d6 FFF7FEFF 		bl	HAL_GPIO_WritePin
- 386              	.LVL48:
-  99:Core/Src/main.c **** 
- 387              		.loc 1 99 5 is_stmt 1 view .LVU72
- 388 00da 0122     		movs	r2, #1
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 10
-
-
- 389 00dc 0221     		movs	r1, #2
- 390 00de 4046     		mov	r0, r8
- 391 00e0 FFF7FEFF 		bl	HAL_GPIO_WritePin
- 392              	.LVL49:
- 101:Core/Src/main.c ****     else pwm = uout;
- 393              		.loc 1 101 5 view .LVU73
- 101:Core/Src/main.c ****     else pwm = uout;
- 394              		.loc 1 101 8 is_stmt 0 view .LVU74
- 395 00e4 652C     		cmp	r4, #101
- 396 00e6 75F10003 		sbcs	r3, r5, #0
- 397 00ea 01DB     		blt	.L14
- 101:Core/Src/main.c ****     else pwm = uout;
- 398              		.loc 1 101 26 discriminator 1 view .LVU75
- 399 00ec 6424     		movs	r4, #100
- 400              	.LVL50:
- 101:Core/Src/main.c ****     else pwm = uout;
- 401              		.loc 1 101 26 discriminator 1 view .LVU76
- 402 00ee 0025     		movs	r5, #0
- 403              	.LVL51:
- 404              	.L14:
- 104:Core/Src/main.c ****   }
- 405              		.loc 1 104 5 is_stmt 1 view .LVU77
- 104:Core/Src/main.c ****   }
- 406              		.loc 1 104 22 is_stmt 0 view .LVU78
- 407 00f0 E01B     		subs	r0, r4, r7
- 104:Core/Src/main.c ****   }
- 408              		.loc 1 104 16 view .LVU79
- 409 00f2 65EB0601 		sbc	r1, r5, r6
- 410 00f6 FFF7FEFF 		bl	__aeabi_l2f
- 411              	.LVL52:
- 412 00fa 174B     		ldr	r3, .L23+24
- 413 00fc 1860     		str	r0, [r3]	@ float
- 414              	.LVL53:
- 415              	.L15:
- 123:Core/Src/main.c ****   }
- 124:Core/Src/main.c **** 
- 125:Core/Src/main.c ****   TIM3->CCR1 = pwm;
- 416              		.loc 1 125 3 is_stmt 1 view .LVU80
- 417              		.loc 1 125 14 is_stmt 0 view .LVU81
- 418 00fe 194B     		ldr	r3, .L23+36
- 419 0100 5C63     		str	r4, [r3, #52]
- 126:Core/Src/main.c **** }
- 420              		.loc 1 126 1 view .LVU82
- 421 0102 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
- 422              	.LVL54:
- 423              	.L22:
- 107:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
- 424              		.loc 1 107 5 is_stmt 1 view .LVU83
- 425 0106 DFF85880 		ldr	r8, .L23+32
- 426 010a 0122     		movs	r2, #1
- 427 010c 1146     		mov	r1, r2
- 428              	.LVL55:
- 107:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
- 429              		.loc 1 107 5 is_stmt 0 view .LVU84
- 430 010e 4046     		mov	r0, r8
- 431              	.LVL56:
- 107:Core/Src/main.c ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 11
-
-
- 432              		.loc 1 107 5 view .LVU85
- 433 0110 FFF7FEFF 		bl	HAL_GPIO_WritePin
- 434              	.LVL57:
- 108:Core/Src/main.c **** 
- 435              		.loc 1 108 5 is_stmt 1 view .LVU86
- 436 0114 0022     		movs	r2, #0
- 437 0116 0221     		movs	r1, #2
- 438 0118 4046     		mov	r0, r8
- 439 011a FFF7FEFF 		bl	HAL_GPIO_WritePin
- 440              	.LVL58:
- 110:Core/Src/main.c ****     else pwm = uout;
- 441              		.loc 1 110 5 view .LVU87
- 110:Core/Src/main.c ****     else pwm = uout;
- 442              		.loc 1 110 8 is_stmt 0 view .LVU88
- 443 011e 642C     		cmp	r4, #100
- 444 0120 75F10003 		sbcs	r3, r5, #0
- 445 0124 03DA     		bge	.L17
- 110:Core/Src/main.c ****     else pwm = uout;
- 446              		.loc 1 110 26 discriminator 1 view .LVU89
- 447 0126 6FF06304 		mvn	r4, #99
- 448              	.LVL59:
- 110:Core/Src/main.c ****     else pwm = uout;
- 449              		.loc 1 110 26 discriminator 1 view .LVU90
- 450 012a 4FF0FF35 		mov	r5, #-1
- 451              	.LVL60:
- 452              	.L17:
- 113:Core/Src/main.c **** 
- 453              		.loc 1 113 5 is_stmt 1 view .LVU91
- 113:Core/Src/main.c **** 
- 454              		.loc 1 113 22 is_stmt 0 view .LVU92
- 455 012e E01B     		subs	r0, r4, r7
- 113:Core/Src/main.c **** 
- 456              		.loc 1 113 16 view .LVU93
- 457 0130 65EB0601 		sbc	r1, r5, r6
- 458 0134 FFF7FEFF 		bl	__aeabi_l2f
- 459              	.LVL61:
- 460 0138 074B     		ldr	r3, .L23+24
- 461 013a 1860     		str	r0, [r3]	@ float
- 115:Core/Src/main.c ****   }
- 462              		.loc 1 115 5 is_stmt 1 view .LVU94
- 463              	.LVL62:
- 115:Core/Src/main.c ****   }
- 464              		.loc 1 115 5 is_stmt 0 view .LVU95
- 465 013c DFE7     		b	.L15
- 466              	.L24:
- 467 013e 00BF     		.align	3
- 468              	.L23:
- 469 0140 FCA9F1D2 		.word	-755914244
- 470 0144 4D62503F 		.word	1062232653
- 471 0148 FB5C3D3F 		.word	1060986107
- 472 014c 00000000 		.word	up.2
- 473 0150 3E790041 		.word	1090550078
- 474 0154 00000000 		.word	Ts
- 475 0158 00000000 		.word	errorReset.0
- 476 015c 00000000 		.word	ui.1
- 477 0160 000C0140 		.word	1073810432
- 478 0164 00040040 		.word	1073742848
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 12
-
-
- 479              		.cfi_endproc
- 480              	.LFE76:
- 482              		.global	__aeabi_i2d
- 483              		.global	__aeabi_ddiv
- 484              		.section	.text.MainTask,"ax",%progbits
- 485              		.align	1
- 486              		.global	MainTask
- 487              		.syntax unified
- 488              		.thumb
- 489              		.thumb_func
- 491              	MainTask:
- 492              	.LFB73:
+ 478 012e E01B     		subs	r0, r4, r7
+ 117:Core/Src/main.c **** 
+ 479              		.loc 1 117 16 view .LVU98
+ 480 0130 65EB0601 		sbc	r1, r5, r6
+ 481 0134 FFF7FEFF 		bl	__aeabi_l2f
+ 482              	.LVL64:
+ 483 0138 074B     		ldr	r3, .L25+24
+ 484 013a 1860     		str	r0, [r3]	@ float
+ 119:Core/Src/main.c ****   }
+ 485              		.loc 1 119 5 is_stmt 1 view .LVU99
+ 486              	.LVL65:
+ 119:Core/Src/main.c ****   }
+ 487              		.loc 1 119 5 is_stmt 0 view .LVU100
+ 488 013c DFE7     		b	.L17
+ 489              	.L26:
+ 490 013e 00BF     		.align	3
+ 491              	.L25:
+ 492 0140 FCA9F1D2 		.word	-755914244
+ 493 0144 4D62503F 		.word	1062232653
+ 494 0148 FB5C3D3F 		.word	1060986107
+ 495 014c 00000000 		.word	up.2
+ 496 0150 3E790041 		.word	1090550078
+ 497 0154 00000000 		.word	Ts
+ 498 0158 00000000 		.word	errorReset.0
+ 499 015c 00000000 		.word	ui.1
+ 500 0160 000C0140 		.word	1073810432
+ 501 0164 00040040 		.word	1073742848
+ 502              		.cfi_endproc
+ 503              	.LFE76:
+ 505              		.global	__aeabi_i2d
+ 506              		.global	__aeabi_ddiv
+ 507              		.section	.text.MainTask,"ax",%progbits
+ 508              		.align	1
+ 509              		.global	MainTask
+ 510              		.syntax unified
+ 511              		.thumb
+ 512              		.thumb_func
+ 514              	MainTask:
+ 515              	.LFB73:
   26:Core/Src/main.c ****   data dataToSend;
- 493              		.loc 1 26 39 is_stmt 1 view -0
- 494              		.cfi_startproc
- 495              		@ Volatile: function does not return.
- 496              		@ args = 0, pretend = 0, frame = 8
- 497              		@ frame_needed = 0, uses_anonymous_args = 0
- 498              	.LVL63:
+ 516              		.loc 1 26 39 is_stmt 1 view -0
+ 517              		.cfi_startproc
+ 518              		@ Volatile: function does not return.
+ 519              		@ args = 0, pretend = 0, frame = 8
+ 520              		@ frame_needed = 0, uses_anonymous_args = 0
+ 521              	.LVL66:
   26:Core/Src/main.c ****   data dataToSend;
- 499              		.loc 1 26 39 is_stmt 0 view .LVU97
- 500 0000 80B5     		push	{r7, lr}
- 501              	.LCFI5:
- 502              		.cfi_def_cfa_offset 8
- 503              		.cfi_offset 7, -8
- 504              		.cfi_offset 14, -4
- 505 0002 82B0     		sub	sp, sp, #8
- 506              	.LCFI6:
- 507              		.cfi_def_cfa_offset 16
- 508              	.LVL64:
- 509              	.L26:
+ 522              		.loc 1 26 39 is_stmt 0 view .LVU102
+ 523 0000 80B5     		push	{r7, lr}
+ 524              	.LCFI5:
+ 525              		.cfi_def_cfa_offset 8
+ 526              		.cfi_offset 7, -8
+ 527              		.cfi_offset 14, -4
+ 528 0002 82B0     		sub	sp, sp, #8
+ 529              	.LCFI6:
+ 530              		.cfi_def_cfa_offset 16
+ 531              	.LVL67:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 13
+
+
+ 532              	.L28:
   27:Core/Src/main.c ****   for(;;) {
- 510              		.loc 1 27 3 is_stmt 1 view .LVU98
+ 533              		.loc 1 27 3 is_stmt 1 view .LVU103
   28:Core/Src/main.c ****     dataToSend.setpoint = Setpoint;
- 511              		.loc 1 28 3 view .LVU99
+ 534              		.loc 1 28 3 view .LVU104
   29:Core/Src/main.c ****     dataToSend.velocity = delta_encoder * 60 / (Ts * 0.001 * 4.0 * 11 * 45);
- 512              		.loc 1 29 5 view .LVU100
+ 535              		.loc 1 29 5 view .LVU105
   29:Core/Src/main.c ****     dataToSend.velocity = delta_encoder * 60 / (Ts * 0.001 * 4.0 * 11 * 45);
- 513              		.loc 1 29 25 is_stmt 0 view .LVU101
- 514 0004 244B     		ldr	r3, .L28+8
- 515 0006 1B68     		ldr	r3, [r3]	@ float
- 516 0008 0093     		str	r3, [sp]	@ float
+ 536              		.loc 1 29 25 is_stmt 0 view .LVU106
+ 537 0004 284B     		ldr	r3, .L30+8
+ 538 0006 1B68     		ldr	r3, [r3]	@ float
+ 539 0008 0093     		str	r3, [sp]	@ float
   30:Core/Src/main.c ****     pre_encoder = encoder;
- 517              		.loc 1 30 5 is_stmt 1 view .LVU102
+ 540              		.loc 1 30 5 is_stmt 1 view .LVU107
   30:Core/Src/main.c ****     pre_encoder = encoder;
- 518              		.loc 1 30 41 is_stmt 0 view .LVU103
- 519 000a 244B     		ldr	r3, .L28+12
- 520 000c B3F90000 		ldrsh	r0, [r3]
- 521 0010 C0EB0010 		rsb	r0, r0, r0, lsl #4
- 522 0014 8400     		lsls	r4, r0, #2
+ 541              		.loc 1 30 41 is_stmt 0 view .LVU108
+ 542 000a 284B     		ldr	r3, .L30+12
+ 543 000c B3F90000 		ldrsh	r0, [r3]
+ 544 0010 C0EB0010 		rsb	r0, r0, r0, lsl #4
+ 545 0014 8400     		lsls	r4, r0, #2
   30:Core/Src/main.c ****     pre_encoder = encoder;
- 523              		.loc 1 30 52 view .LVU104
- 524 0016 224D     		ldr	r5, .L28+16
- 525 0018 2878     		ldrb	r0, [r5]	@ zero_extendqisi2
- 526 001a FFF7FEFF 		bl	__aeabi_i2d
- 527              	.LVL65:
- 528 001e 1CA3     		adr	r3, .L28
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 13
+ 546              		.loc 1 30 52 view .LVU109
+ 547 0016 264D     		ldr	r5, .L30+16
+ 548 0018 2878     		ldrb	r0, [r5]	@ zero_extendqisi2
+ 549 001a FFF7FEFF 		bl	__aeabi_i2d
+ 550              	.LVL68:
+ 551 001e 20A3     		adr	r3, .L30
+ 552 0020 D3E90023 		ldrd	r2, [r3]
+ 553 0024 FFF7FEFF 		bl	__aeabi_dmul
+ 554              	.LVL69:
+  30:Core/Src/main.c ****     pre_encoder = encoder;
+ 555              		.loc 1 30 60 view .LVU110
+ 556 0028 0022     		movs	r2, #0
+ 557 002a 224B     		ldr	r3, .L30+20
+ 558 002c FFF7FEFF 		bl	__aeabi_dmul
+ 559              	.LVL70:
+  30:Core/Src/main.c ****     pre_encoder = encoder;
+ 560              		.loc 1 30 66 view .LVU111
+ 561 0030 0022     		movs	r2, #0
+ 562 0032 214B     		ldr	r3, .L30+24
+ 563 0034 FFF7FEFF 		bl	__aeabi_dmul
+ 564              	.LVL71:
+  30:Core/Src/main.c ****     pre_encoder = encoder;
+ 565              		.loc 1 30 71 view .LVU112
+ 566 0038 0022     		movs	r2, #0
+ 567 003a 204B     		ldr	r3, .L30+28
+ 568 003c FFF7FEFF 		bl	__aeabi_dmul
+ 569              	.LVL72:
+ 570 0040 0646     		mov	r6, r0
+ 571 0042 0F46     		mov	r7, r1
+  30:Core/Src/main.c ****     pre_encoder = encoder;
+ 572              		.loc 1 30 46 view .LVU113
+ 573 0044 2046     		mov	r0, r4
+ 574 0046 FFF7FEFF 		bl	__aeabi_i2d
+ 575              	.LVL73:
+ 576 004a 3246     		mov	r2, r6
+ 577 004c 3B46     		mov	r3, r7
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 14
 
 
- 529 0020 D3E90023 		ldrd	r2, [r3]
- 530 0024 FFF7FEFF 		bl	__aeabi_dmul
- 531              	.LVL66:
+ 578 004e FFF7FEFF 		bl	__aeabi_ddiv
+ 579              	.LVL74:
+ 580 0052 FFF7FEFF 		bl	__aeabi_d2f
+ 581              	.LVL75:
   30:Core/Src/main.c ****     pre_encoder = encoder;
- 532              		.loc 1 30 60 view .LVU105
- 533 0028 0022     		movs	r2, #0
- 534 002a 1E4B     		ldr	r3, .L28+20
- 535 002c FFF7FEFF 		bl	__aeabi_dmul
- 536              	.LVL67:
-  30:Core/Src/main.c ****     pre_encoder = encoder;
- 537              		.loc 1 30 66 view .LVU106
- 538 0030 0022     		movs	r2, #0
- 539 0032 1D4B     		ldr	r3, .L28+24
- 540 0034 FFF7FEFF 		bl	__aeabi_dmul
- 541              	.LVL68:
-  30:Core/Src/main.c ****     pre_encoder = encoder;
- 542              		.loc 1 30 71 view .LVU107
- 543 0038 0022     		movs	r2, #0
- 544 003a 1C4B     		ldr	r3, .L28+28
- 545 003c FFF7FEFF 		bl	__aeabi_dmul
- 546              	.LVL69:
- 547 0040 0646     		mov	r6, r0
- 548 0042 0F46     		mov	r7, r1
-  30:Core/Src/main.c ****     pre_encoder = encoder;
- 549              		.loc 1 30 46 view .LVU108
- 550 0044 2046     		mov	r0, r4
- 551 0046 FFF7FEFF 		bl	__aeabi_i2d
- 552              	.LVL70:
- 553 004a 3246     		mov	r2, r6
- 554 004c 3B46     		mov	r3, r7
- 555 004e FFF7FEFF 		bl	__aeabi_ddiv
- 556              	.LVL71:
- 557 0052 FFF7FEFF 		bl	__aeabi_d2f
- 558              	.LVL72:
-  30:Core/Src/main.c ****     pre_encoder = encoder;
- 559              		.loc 1 30 25 view .LVU109
- 560 0056 0190     		str	r0, [sp, #4]	@ float
+ 582              		.loc 1 30 25 view .LVU114
+ 583 0056 0190     		str	r0, [sp, #4]	@ float
   31:Core/Src/main.c ****     // position = encoder * 360.0 / (4.0 * 11 * 45);
- 561              		.loc 1 31 5 is_stmt 1 view .LVU110
+ 584              		.loc 1 31 5 is_stmt 1 view .LVU115
   31:Core/Src/main.c ****     // position = encoder * 360.0 / (4.0 * 11 * 45);
- 562              		.loc 1 31 17 is_stmt 0 view .LVU111
- 563 0058 154B     		ldr	r3, .L28+32
- 564 005a 1A88     		ldrh	r2, [r3]
- 565 005c 154B     		ldr	r3, .L28+36
- 566 005e 1A80     		strh	r2, [r3]	@ movhi
+ 585              		.loc 1 31 17 is_stmt 0 view .LVU116
+ 586 0058 194B     		ldr	r3, .L30+32
+ 587 005a 1A88     		ldrh	r2, [r3]
+ 588 005c 194B     		ldr	r3, .L30+36
+ 589 005e 1A80     		strh	r2, [r3]	@ movhi
   33:Core/Src/main.c **** 
- 567              		.loc 1 33 5 is_stmt 1 view .LVU112
- 568 0060 6846     		mov	r0, sp
- 569 0062 FFF7FEFF 		bl	PID_Vel
- 570              	.LVL73:
-  35:Core/Src/main.c **** 
- 571              		.loc 1 35 5 view .LVU113
- 572 0066 0023     		movs	r3, #0
- 573 0068 4FF0FF32 		mov	r2, #-1
- 574 006c 6946     		mov	r1, sp
- 575 006e 1248     		ldr	r0, .L28+40
- 576 0070 0068     		ldr	r0, [r0]
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 14
-
-
- 577 0072 FFF7FEFF 		bl	xQueueGenericSend
- 578              	.LVL74:
-  37:Core/Src/main.c ****   }
- 579              		.loc 1 37 5 discriminator 1 view .LVU114
-  37:Core/Src/main.c ****   }
- 580              		.loc 1 37 16 is_stmt 0 discriminator 1 view .LVU115
- 581 0076 2878     		ldrb	r0, [r5]	@ zero_extendqisi2
- 582 0078 4FF47A73 		mov	r3, #1000
- 583 007c 03FB00F0 		mul	r0, r3, r0
-  37:Core/Src/main.c ****   }
- 584              		.loc 1 37 5 discriminator 1 view .LVU116
- 585 0080 0E4B     		ldr	r3, .L28+44
- 586 0082 A3FB0030 		umull	r3, r0, r3, r0
- 587 0086 8009     		lsrs	r0, r0, #6
- 588 0088 FFF7FEFF 		bl	vTaskDelay
- 589              	.LVL75:
+ 590              		.loc 1 33 5 is_stmt 1 view .LVU117
+ 591 0060 6846     		mov	r0, sp
+ 592 0062 FFF7FEFF 		bl	PID_Vel
+ 593              	.LVL76:
+  35:Core/Src/main.c ****     xSemaphoreGive(CommuniSemaphore);
+ 594              		.loc 1 35 5 view .LVU118
+ 595 0066 0023     		movs	r3, #0
+ 596 0068 4FF0FF32 		mov	r2, #-1
+ 597 006c 6946     		mov	r1, sp
+ 598 006e 1648     		ldr	r0, .L30+40
+ 599 0070 0068     		ldr	r0, [r0]
+ 600 0072 FFF7FEFF 		bl	xQueueGenericSend
+ 601              	.LVL77:
+  36:Core/Src/main.c **** 
+ 602              		.loc 1 36 5 view .LVU119
+ 603 0076 0023     		movs	r3, #0
+ 604 0078 1A46     		mov	r2, r3
+ 605 007a 1946     		mov	r1, r3
+ 606 007c 1348     		ldr	r0, .L30+44
+ 607 007e 0068     		ldr	r0, [r0]
+ 608 0080 FFF7FEFF 		bl	xQueueGenericSend
+ 609              	.LVL78:
+  38:Core/Src/main.c ****   }
+ 610              		.loc 1 38 5 discriminator 1 view .LVU120
+  38:Core/Src/main.c ****   }
+ 611              		.loc 1 38 16 is_stmt 0 discriminator 1 view .LVU121
+ 612 0084 2878     		ldrb	r0, [r5]	@ zero_extendqisi2
+ 613 0086 4FF47A73 		mov	r3, #1000
+ 614 008a 03FB00F0 		mul	r0, r3, r0
+  38:Core/Src/main.c ****   }
+ 615              		.loc 1 38 5 discriminator 1 view .LVU122
+ 616 008e 104B     		ldr	r3, .L30+48
+ 617 0090 A3FB0030 		umull	r3, r0, r3, r0
+ 618 0094 8009     		lsrs	r0, r0, #6
+ 619 0096 FFF7FEFF 		bl	vTaskDelay
+ 620              	.LVL79:
   28:Core/Src/main.c ****     dataToSend.setpoint = Setpoint;
- 590              		.loc 1 28 3 is_stmt 1 view .LVU117
- 591 008c BAE7     		b	.L26
- 592              	.L29:
- 593 008e 00BF     		.align	3
- 594              	.L28:
- 595 0090 FCA9F1D2 		.word	-755914244
- 596 0094 4D62503F 		.word	1062232653
- 597 0098 00000000 		.word	Setpoint
- 598 009c 00000000 		.word	delta_encoder
- 599 00a0 00000000 		.word	Ts
- 600 00a4 00001040 		.word	1074790400
- 601 00a8 00002640 		.word	1076232192
- 602 00ac 00804640 		.word	1078362112
- 603 00b0 00000000 		.word	encoder
- 604 00b4 00000000 		.word	pre_encoder
- 605 00b8 00000000 		.word	CommuniQueue
- 606 00bc D34D6210 		.word	274877907
- 607              		.cfi_endproc
- 608              	.LFE73:
- 610              		.section	.bss.errorReset.0,"aw",%nobits
- 611              		.align	2
- 614              	errorReset.0:
- 615 0000 00000000 		.space	4
- 616              		.section	.bss.ui.1,"aw",%nobits
- 617              		.align	2
- 620              	ui.1:
- 621 0000 00000000 		.space	4
- 622              		.section	.bss.up.2,"aw",%nobits
- 623              		.align	2
- 626              	up.2:
- 627 0000 00000000 		.space	4
- 628              		.global	buffer
- 629              		.section	.bss.buffer,"aw",%nobits
- 630              		.align	2
- 633              	buffer:
- 634 0000 00000000 		.space	50
- 634      00000000 
- 634      00000000 
- 634      00000000 
- 634      00000000 
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 15
+ 621              		.loc 1 28 3 is_stmt 1 view .LVU123
+ 622 009a B3E7     		b	.L28
+ 623              	.L31:
+ 624 009c AFF30080 		.align	3
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 15
 
 
- 635              		.global	Ts
- 636              		.section	.data.Ts,"aw"
- 639              	Ts:
- 640 0000 64       		.byte	100
- 641              		.global	position
- 642              		.section	.bss.position,"aw",%nobits
+ 625              	.L30:
+ 626 00a0 FCA9F1D2 		.word	-755914244
+ 627 00a4 4D62503F 		.word	1062232653
+ 628 00a8 00000000 		.word	Setpoint
+ 629 00ac 00000000 		.word	delta_encoder
+ 630 00b0 00000000 		.word	Ts
+ 631 00b4 00001040 		.word	1074790400
+ 632 00b8 00002640 		.word	1076232192
+ 633 00bc 00804640 		.word	1078362112
+ 634 00c0 00000000 		.word	encoder
+ 635 00c4 00000000 		.word	pre_encoder
+ 636 00c8 00000000 		.word	CommuniQueue
+ 637 00cc 00000000 		.word	CommuniSemaphore
+ 638 00d0 D34D6210 		.word	274877907
+ 639              		.cfi_endproc
+ 640              	.LFE73:
+ 642              		.section	.bss.errorReset.0,"aw",%nobits
  643              		.align	2
- 646              	position:
+ 646              	errorReset.0:
  647 0000 00000000 		.space	4
- 648              		.global	velocity
- 649              		.section	.bss.velocity,"aw",%nobits
- 650              		.align	2
- 653              	velocity:
- 654 0000 00000000 		.space	4
- 655              		.global	Setpoint
- 656              		.section	.bss.Setpoint,"aw",%nobits
- 657              		.align	2
- 660              	Setpoint:
- 661 0000 00000000 		.space	4
- 662              		.global	pwm
- 663              		.section	.bss.pwm,"aw",%nobits
- 666              	pwm:
- 667 0000 00       		.space	1
- 668              		.global	CommuniSemaphore
- 669              		.section	.bss.CommuniSemaphore,"aw",%nobits
- 670              		.align	2
- 673              	CommuniSemaphore:
- 674 0000 00000000 		.space	4
- 675              		.global	CommuniQueue
- 676              		.section	.bss.CommuniQueue,"aw",%nobits
- 677              		.align	2
- 680              	CommuniQueue:
- 681 0000 00000000 		.space	4
- 682              		.text
- 683              	.Letext0:
- 684              		.file 2 "C:/ARM GNU Toolchain/arm-none-eabi/include/machine/_default_types.h"
- 685              		.file 3 "C:/ARM GNU Toolchain/arm-none-eabi/include/sys/_stdint.h"
- 686              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
- 687              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
- 688              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h"
- 689              		.file 7 "ThirdParty/FreeRTOS/include/projdefs.h"
- 690              		.file 8 "ThirdParty/FreeRTOS/portable/GCC/ARM_CM3/portmacro.h"
- 691              		.file 9 "ThirdParty/FreeRTOS/include/task.h"
- 692              		.file 10 "ThirdParty/FreeRTOS/include/queue.h"
- 693              		.file 11 "ThirdParty/FreeRTOS/include/semphr.h"
- 694              		.file 12 "Core/Src/Drivers/Inc/usart.h"
- 695              		.file 13 "Core/Src/Drivers/Inc/timer.h"
- 696              		.file 14 "Core/Src/Drivers/Inc/SysConfig.h"
- 697              		.file 15 "Core/Inc/printf.h"
- 698              		.file 16 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 16
+ 648              		.section	.bss.ui.1,"aw",%nobits
+ 649              		.align	2
+ 652              	ui.1:
+ 653 0000 00000000 		.space	4
+ 654              		.section	.bss.up.2,"aw",%nobits
+ 655              		.align	2
+ 658              	up.2:
+ 659 0000 00000000 		.space	4
+ 660              		.global	buffer
+ 661              		.section	.bss.buffer,"aw",%nobits
+ 662              		.align	2
+ 665              	buffer:
+ 666 0000 00000000 		.space	100
+ 666      00000000 
+ 666      00000000 
+ 666      00000000 
+ 666      00000000 
+ 667              		.global	Ts
+ 668              		.section	.data.Ts,"aw"
+ 671              	Ts:
+ 672 0000 64       		.byte	100
+ 673              		.global	position
+ 674              		.section	.bss.position,"aw",%nobits
+ 675              		.align	2
+ 678              	position:
+ 679 0000 00000000 		.space	4
+ 680              		.global	velocity
+ 681              		.section	.bss.velocity,"aw",%nobits
+ 682              		.align	2
+ 685              	velocity:
+ 686 0000 00000000 		.space	4
+ 687              		.global	Setpoint
+ 688              		.section	.bss.Setpoint,"aw",%nobits
+ 689              		.align	2
+ 692              	Setpoint:
+ 693 0000 00000000 		.space	4
+ 694              		.global	pwm
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 16
+
+
+ 695              		.section	.bss.pwm,"aw",%nobits
+ 698              	pwm:
+ 699 0000 00       		.space	1
+ 700              		.global	CommuniSemaphore
+ 701              		.section	.bss.CommuniSemaphore,"aw",%nobits
+ 702              		.align	2
+ 705              	CommuniSemaphore:
+ 706 0000 00000000 		.space	4
+ 707              		.global	CommuniQueue
+ 708              		.section	.bss.CommuniQueue,"aw",%nobits
+ 709              		.align	2
+ 712              	CommuniQueue:
+ 713 0000 00000000 		.space	4
+ 714              		.text
+ 715              	.Letext0:
+ 716              		.file 2 "C:/ARM GNU Toolchain/arm-none-eabi/include/machine/_default_types.h"
+ 717              		.file 3 "C:/ARM GNU Toolchain/arm-none-eabi/include/sys/_stdint.h"
+ 718              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 719              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 720              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h"
+ 721              		.file 7 "ThirdParty/FreeRTOS/include/projdefs.h"
+ 722              		.file 8 "ThirdParty/FreeRTOS/portable/GCC/ARM_CM3/portmacro.h"
+ 723              		.file 9 "ThirdParty/FreeRTOS/include/task.h"
+ 724              		.file 10 "ThirdParty/FreeRTOS/include/queue.h"
+ 725              		.file 11 "ThirdParty/FreeRTOS/include/semphr.h"
+ 726              		.file 12 "Core/Src/Drivers/Inc/usart.h"
+ 727              		.file 13 "Core/Src/Drivers/Inc/timer.h"
+ 728              		.file 14 "Core/Src/Drivers/Inc/SysConfig.h"
+ 729              		.file 15 "Core/Src/printf.h"
+ 730              		.file 16 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 17
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:19     .rodata.CommunicationTask.str1.4:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:24     .text.CommunicationTask:00000000 $t
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:30     .text.CommunicationTask:00000000 CommunicationTask
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:72     .text.CommunicationTask:00000028 $d
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:666    .bss.pwm:00000000 pwm
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:633    .bss.buffer:00000000 buffer
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:653    .bss.velocity:00000000 velocity
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:80     .text.main:00000000 $t
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:86     .text.main:00000000 main
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:192    .text.main:00000088 $d
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:680    .bss.CommuniQueue:00000000 CommuniQueue
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:673    .bss.CommuniSemaphore:00000000 CommuniSemaphore
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:491    .text.MainTask:00000000 MainTask
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:210    .text.PID_Vel:00000000 $t
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:216    .text.PID_Vel:00000000 PID_Vel
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:469    .text.PID_Vel:00000140 $d
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:626    .bss.up.2:00000000 up.2
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:639    .data.Ts:00000000 Ts
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:614    .bss.errorReset.0:00000000 errorReset.0
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:620    .bss.ui.1:00000000 ui.1
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:485    .text.MainTask:00000000 $t
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:595    .text.MainTask:00000090 $d
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:660    .bss.Setpoint:00000000 Setpoint
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:611    .bss.errorReset.0:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:617    .bss.ui.1:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:623    .bss.up.2:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:630    .bss.buffer:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:646    .bss.position:00000000 position
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:643    .bss.position:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:650    .bss.velocity:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:657    .bss.Setpoint:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:667    .bss.pwm:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:670    .bss.CommuniSemaphore:00000000 $d
-C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s:677    .bss.CommuniQueue:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:20     .rodata.CommunicationTask.str1.4:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:24     .text.CommunicationTask:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:30     .text.CommunicationTask:00000000 CommunicationTask
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:95     .text.CommunicationTask:00000050 $d
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:705    .bss.CommuniSemaphore:00000000 CommuniSemaphore
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:712    .bss.CommuniQueue:00000000 CommuniQueue
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:665    .bss.buffer:00000000 buffer
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:103    .text.main:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:109    .text.main:00000000 main
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:215    .text.main:00000088 $d
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:514    .text.MainTask:00000000 MainTask
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:233    .text.PID_Vel:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:239    .text.PID_Vel:00000000 PID_Vel
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:492    .text.PID_Vel:00000140 $d
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:658    .bss.up.2:00000000 up.2
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:671    .data.Ts:00000000 Ts
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:646    .bss.errorReset.0:00000000 errorReset.0
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:652    .bss.ui.1:00000000 ui.1
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:508    .text.MainTask:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:626    .text.MainTask:000000a0 $d
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:692    .bss.Setpoint:00000000 Setpoint
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:643    .bss.errorReset.0:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:649    .bss.ui.1:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:655    .bss.up.2:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:662    .bss.buffer:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:678    .bss.position:00000000 position
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:675    .bss.position:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:685    .bss.velocity:00000000 velocity
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:682    .bss.velocity:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:689    .bss.Setpoint:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:698    .bss.pwm:00000000 pwm
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:699    .bss.pwm:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:702    .bss.CommuniSemaphore:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s:709    .bss.CommuniQueue:00000000 $d
 
 UNDEFINED SYMBOLS
 __aeabi_f2d
+xQueueSemaphoreTake
+xQueueReceive
 sprintf_
 SendString
 HAL_Init
@@ -949,11 +991,11 @@ vTaskStartScheduler
 __aeabi_fsub
 __aeabi_fmul
 __aeabi_i2f
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccHzKCff.s 			page 18
+
+
 __aeabi_dmul
 __aeabi_dadd
-ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccpxhZ9O.s 			page 17
-
-
 __aeabi_d2f
 __aeabi_fadd
 __aeabi_f2lz

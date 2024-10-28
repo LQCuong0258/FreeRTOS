@@ -1,0 +1,629 @@
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccwKDMXm.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_fir_lattice_q31.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c"
+  18              		.section	.text.arm_fir_lattice_q31,"ax",%progbits
+  19              		.align	1
+  20              		.global	arm_fir_lattice_q31
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	arm_fir_lattice_q31:
+  26              	.LVL0:
+  27              	.LFB100:
+   1:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** /* ----------------------------------------------------------------------
+   2:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * Project:      CMSIS DSP Library
+   3:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * Title:        arm_fir_lattice_q31.c
+   4:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * Description:  Q31 FIR lattice filter processing function
+   5:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  *
+   6:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * $Date:        27. January 2017
+   7:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * $Revision:    V.1.5.1
+   8:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  *
+   9:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * Target Processor: Cortex-M cores
+  10:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * -------------------------------------------------------------------- */
+  11:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** /*
+  12:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * Copyright (C) 2010-2017 ARM Limited or its affiliates. All rights reserved.
+  13:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  *
+  14:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * SPDX-License-Identifier: Apache-2.0
+  15:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  *
+  16:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  17:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * not use this file except in compliance with the License.
+  18:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * You may obtain a copy of the License at
+  19:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  *
+  20:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * www.apache.org/licenses/LICENSE-2.0
+  21:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  *
+  22:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * Unless required by applicable law or agreed to in writing, software
+  23:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  24:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  25:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * See the License for the specific language governing permissions and
+  26:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * limitations under the License.
+  27:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  */
+  28:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+  29:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** #include "arm_math.h"
+  30:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+  31:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** /**
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccwKDMXm.s 			page 2
+
+
+  32:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * @ingroup groupFilters
+  33:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  */
+  34:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+  35:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** /**
+  36:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * @addtogroup FIR_Lattice
+  37:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * @{
+  38:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  */
+  39:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+  40:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+  41:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** /**
+  42:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * @brief Processing function for the Q31 FIR lattice filter.
+  43:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * @param[in]  *S        points to an instance of the Q31 FIR lattice structure.
+  44:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * @param[in]  *pSrc     points to the block of input data.
+  45:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * @param[out] *pDst     points to the block of output data
+  46:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * @param[in]  blockSize number of samples to process.
+  47:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * @return none.
+  48:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  *
+  49:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * @details
+  50:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * <b>Scaling and Overflow Behavior:</b>
+  51:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  * In order to avoid overflows the input signal must be scaled down by 2*log2(numStages) bits.
+  52:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****  */
+  53:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+  54:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** #if defined (ARM_MATH_DSP)
+  55:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+  56:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   /* Run the below code for Cortex-M4 and Cortex-M3 */
+  57:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+  58:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** void arm_fir_lattice_q31(
+  59:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   const arm_fir_lattice_instance_q31 * S,
+  60:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   q31_t * pSrc,
+  61:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   q31_t * pDst,
+  62:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   uint32_t blockSize)
+  63:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** {
+  64:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   q31_t *pState;                                 /* State pointer */
+  65:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   q31_t *pCoeffs = S->pCoeffs;                   /* Coefficient pointer */
+  66:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   q31_t *px;                                     /* temporary state pointer */
+  67:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   q31_t *pk;                                     /* temporary coefficient pointer */
+  68:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   q31_t fcurr1, fnext1, gcurr1 = 0, gnext1;      /* temporary variables for first sample in loop un
+  69:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   q31_t fcurr2, fnext2, gnext2;                  /* temporary variables for second sample in loop u
+  70:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   uint32_t numStages = S->numStages;             /* Length of the filter */
+  71:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   uint32_t blkCnt, stageCnt;                     /* temporary variables for counts */
+  72:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   q31_t k;
+  73:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+  74:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   pState = &S->pState[0];
+  75:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+  76:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   blkCnt = blockSize >> 1U;
+  77:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+  78:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   /* First part of the processing with loop unrolling.  Compute 2 outputs at a time.
+  79:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****      a second loop below computes the remaining 1 sample. */
+  80:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   while (blkCnt > 0U)
+  81:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   {
+  82:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* f0(n) = x(n) */
+  83:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     fcurr1 = *pSrc++;
+  84:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+  85:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* f0(n) = x(n) */
+  86:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     fcurr2 = *pSrc++;
+  87:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+  88:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* Initialize coeff pointer */
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccwKDMXm.s 			page 3
+
+
+  89:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     pk = (pCoeffs);
+  90:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+  91:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* Initialize state pointer */
+  92:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     px = pState;
+  93:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+  94:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* read g0(n - 1) from state buffer */
+  95:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     gcurr1 = *px;
+  96:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+  97:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* Read the reflection coefficient */
+  98:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     k = *pk++;
+  99:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 100:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* for sample 1 processing */
+ 101:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* f1(n) = f0(n) +  K1 * g0(n-1) */
+ 102:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     fnext1 = (q31_t) (((q63_t) gcurr1 * k) >> 32);
+ 103:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 104:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* g1(n) = f0(n) * K1  +  g0(n-1) */
+ 105:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     gnext1 = (q31_t) (((q63_t) fcurr1 * (k)) >> 32);
+ 106:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     fnext1 = fcurr1 + (fnext1 << 1U);
+ 107:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     gnext1 = gcurr1 + (gnext1 << 1U);
+ 108:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 109:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* for sample 1 processing */
+ 110:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* f1(n) = f0(n) +  K1 * g0(n-1) */
+ 111:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     fnext2 = (q31_t) (((q63_t) fcurr1 * k) >> 32);
+ 112:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 113:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* g1(n) = f0(n) * K1  +  g0(n-1) */
+ 114:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     gnext2 = (q31_t) (((q63_t) fcurr2 * (k)) >> 32);
+ 115:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     fnext2 = fcurr2 + (fnext2 << 1U);
+ 116:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     gnext2 = fcurr1 + (gnext2 << 1U);
+ 117:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 118:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* save g1(n) in state buffer */
+ 119:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     *px++ = fcurr2;
+ 120:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 121:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* f1(n) is saved in fcurr1
+ 122:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****        for next stage processing */
+ 123:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     fcurr1 = fnext1;
+ 124:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     fcurr2 = fnext2;
+ 125:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 126:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     stageCnt = (numStages - 1U);
+ 127:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 128:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* stage loop */
+ 129:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     while (stageCnt > 0U)
+ 130:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     {
+ 131:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 132:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* Read the reflection coefficient */
+ 133:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       k = *pk++;
+ 134:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 135:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* read g2(n) from state buffer */
+ 136:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       gcurr1 = *px;
+ 137:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 138:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* save g1(n) in state buffer */
+ 139:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       *px++ = gnext2;
+ 140:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 141:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* Sample processing for K2, K3.... */
+ 142:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* f2(n) = f1(n) +  K2 * g1(n-1) */
+ 143:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       fnext1 = (q31_t) (((q63_t) gcurr1 * k) >> 32);
+ 144:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       fnext2 = (q31_t) (((q63_t) gnext1 * k) >> 32);
+ 145:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccwKDMXm.s 			page 4
+
+
+ 146:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       fnext1 = fcurr1 + (fnext1 << 1U);
+ 147:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       fnext2 = fcurr2 + (fnext2 << 1U);
+ 148:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 149:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* g2(n) = f1(n) * K2  +  g1(n-1) */
+ 150:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       gnext2 = (q31_t) (((q63_t) fcurr2 * (k)) >> 32);
+ 151:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       gnext2 = gnext1 + (gnext2 << 1U);
+ 152:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 153:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* g2(n) = f1(n) * K2  +  g1(n-1) */
+ 154:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       gnext1 = (q31_t) (((q63_t) fcurr1 * (k)) >> 32);
+ 155:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       gnext1 = gcurr1 + (gnext1 << 1U);
+ 156:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 157:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* f1(n) is saved in fcurr1
+ 158:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****          for next stage processing */
+ 159:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       fcurr1 = fnext1;
+ 160:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       fcurr2 = fnext2;
+ 161:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 162:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       stageCnt--;
+ 163:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 164:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     }
+ 165:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 166:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* y(n) = fN(n) */
+ 167:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     *pDst++ = fcurr1;
+ 168:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     *pDst++ = fcurr2;
+ 169:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 170:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     blkCnt--;
+ 171:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 172:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   }
+ 173:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 174:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   /* If the blockSize is not a multiple of 4, compute any remaining output samples here.
+ 175:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****    ** No loop unrolling is used. */
+ 176:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   blkCnt = blockSize % 0x2U;
+ 177:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 178:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   while (blkCnt > 0U)
+ 179:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   {
+ 180:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* f0(n) = x(n) */
+ 181:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     fcurr1 = *pSrc++;
+ 182:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 183:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* Initialize coeff pointer */
+ 184:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     pk = (pCoeffs);
+ 185:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 186:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* Initialize state pointer */
+ 187:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     px = pState;
+ 188:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 189:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* read g0(n - 1) from state buffer */
+ 190:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     gcurr1 = *px;
+ 191:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 192:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* Read the reflection coefficient */
+ 193:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     k = *pk++;
+ 194:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 195:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* for sample 1 processing */
+ 196:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* f1(n) = f0(n) +  K1 * g0(n-1) */
+ 197:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     fnext1 = (q31_t) (((q63_t) gcurr1 * k) >> 32);
+ 198:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     fnext1 = fcurr1 + (fnext1 << 1U);
+ 199:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 200:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* g1(n) = f0(n) * K1  +  g0(n-1) */
+ 201:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     gnext1 = (q31_t) (((q63_t) fcurr1 * (k)) >> 32);
+ 202:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     gnext1 = gcurr1 + (gnext1 << 1U);
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccwKDMXm.s 			page 5
+
+
+ 203:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 204:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* save g1(n) in state buffer */
+ 205:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     *px++ = fcurr1;
+ 206:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 207:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* f1(n) is saved in fcurr1
+ 208:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****        for next stage processing */
+ 209:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     fcurr1 = fnext1;
+ 210:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 211:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     stageCnt = (numStages - 1U);
+ 212:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 213:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* stage loop */
+ 214:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     while (stageCnt > 0U)
+ 215:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     {
+ 216:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* Read the reflection coefficient */
+ 217:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       k = *pk++;
+ 218:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 219:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* read g2(n) from state buffer */
+ 220:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       gcurr1 = *px;
+ 221:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 222:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* save g1(n) in state buffer */
+ 223:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       *px++ = gnext1;
+ 224:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 225:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* Sample processing for K2, K3.... */
+ 226:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* f2(n) = f1(n) +  K2 * g1(n-1) */
+ 227:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       fnext1 = (q31_t) (((q63_t) gcurr1 * k) >> 32);
+ 228:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       fnext1 = fcurr1 + (fnext1 << 1U);
+ 229:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 230:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* g2(n) = f1(n) * K2  +  g1(n-1) */
+ 231:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       gnext1 = (q31_t) (((q63_t) fcurr1 * (k)) >> 32);
+ 232:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       gnext1 = gcurr1 + (gnext1 << 1U);
+ 233:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 234:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* f1(n) is saved in fcurr1
+ 235:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****          for next stage processing */
+ 236:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       fcurr1 = fnext1;
+ 237:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 238:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       stageCnt--;
+ 239:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 240:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     }
+ 241:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 242:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 243:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* y(n) = fN(n) */
+ 244:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     *pDst++ = fcurr1;
+ 245:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 246:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     blkCnt--;
+ 247:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 248:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   }
+ 249:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 250:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 251:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** }
+ 252:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 253:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 254:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** #else
+ 255:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 256:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** /* Run the below code for Cortex-M0 */
+ 257:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 258:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** void arm_fir_lattice_q31(
+ 259:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   const arm_fir_lattice_instance_q31 * S,
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccwKDMXm.s 			page 6
+
+
+ 260:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   q31_t * pSrc,
+ 261:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   q31_t * pDst,
+ 262:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   uint32_t blockSize)
+ 263:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** {
+  28              		.loc 1 263 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 8
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		.loc 1 263 1 is_stmt 0 view .LVU1
+  33 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 36
+  36              		.cfi_offset 4, -36
+  37              		.cfi_offset 5, -32
+  38              		.cfi_offset 6, -28
+  39              		.cfi_offset 7, -24
+  40              		.cfi_offset 8, -20
+  41              		.cfi_offset 9, -16
+  42              		.cfi_offset 10, -12
+  43              		.cfi_offset 11, -8
+  44              		.cfi_offset 14, -4
+  45 0004 83B0     		sub	sp, sp, #12
+  46              	.LCFI1:
+  47              		.cfi_def_cfa_offset 48
+  48 0006 1C46     		mov	r4, r3
+ 264:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   q31_t *pState;                                 /* State pointer */
+  49              		.loc 1 264 3 is_stmt 1 view .LVU2
+ 265:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   q31_t *pCoeffs = S->pCoeffs;                   /* Coefficient pointer */
+  50              		.loc 1 265 3 view .LVU3
+  51              		.loc 1 265 10 is_stmt 0 view .LVU4
+  52 0008 D0F808A0 		ldr	r10, [r0, #8]
+  53              	.LVL1:
+ 266:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   q31_t *px;                                     /* temporary state pointer */
+  54              		.loc 1 266 3 is_stmt 1 view .LVU5
+ 267:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   q31_t *pk;                                     /* temporary coefficient pointer */
+  55              		.loc 1 267 3 view .LVU6
+ 268:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   q31_t fcurr, fnext, gcurr, gnext;              /* temporary variables */
+  56              		.loc 1 268 3 view .LVU7
+ 269:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   uint32_t numStages = S->numStages;             /* Length of the filter */
+  57              		.loc 1 269 3 view .LVU8
+  58              		.loc 1 269 25 is_stmt 0 view .LVU9
+  59 000c B0F80090 		ldrh	r9, [r0]
+  60              	.LVL2:
+ 270:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   uint32_t blkCnt, stageCnt;                     /* temporary variables for counts */
+  61              		.loc 1 270 3 is_stmt 1 view .LVU10
+ 271:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 272:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   pState = &S->pState[0];
+  62              		.loc 1 272 3 view .LVU11
+  63              		.loc 1 272 10 is_stmt 0 view .LVU12
+  64 0010 4768     		ldr	r7, [r0, #4]
+  65              	.LVL3:
+ 273:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 274:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   blkCnt = blockSize;
+  66              		.loc 1 274 3 is_stmt 1 view .LVU13
+ 275:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 276:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   while (blkCnt > 0U)
+  67              		.loc 1 276 3 view .LVU14
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccwKDMXm.s 			page 7
+
+
+  68 0012 CDF800A0 		str	r10, [sp]
+  69 0016 CDF80490 		str	r9, [sp, #4]
+  70 001a 0E46     		mov	r6, r1
+  71 001c 9046     		mov	r8, r2
+  72              		.loc 1 276 9 is_stmt 0 view .LVU15
+  73 001e 28E0     		b	.L2
+  74              	.LVL4:
+  75              	.L4:
+ 277:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   {
+ 278:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* f0(n) = x(n) */
+ 279:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     fcurr = *pSrc++;
+ 280:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 281:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* Initialize coeff pointer */
+ 282:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     pk = (pCoeffs);
+ 283:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 284:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* Initialize state pointer */
+ 285:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     px = pState;
+ 286:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 287:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* read g0(n-1) from state buffer */
+ 288:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     gcurr = *px;
+ 289:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 290:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* for sample 1 processing */
+ 291:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* f1(n) = f0(n) +  K1 * g0(n-1) */
+ 292:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     fnext = (q31_t) (((q63_t) gcurr * (*pk)) >> 31) + fcurr;
+ 293:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* g1(n) = f0(n) * K1  +  g0(n-1) */
+ 294:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     gnext = (q31_t) (((q63_t) fcurr * (*pk++)) >> 31) + gcurr;
+ 295:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* save g1(n) in state buffer */
+ 296:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     *px++ = fcurr;
+ 297:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 298:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* f1(n) is saved in fcurr1
+ 299:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****        for next stage processing */
+ 300:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     fcurr = fnext;
+ 301:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 302:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     stageCnt = (numStages - 1U);
+ 303:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 304:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* stage loop */
+ 305:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     while (stageCnt > 0U)
+ 306:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     {
+ 307:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* read g2(n) from state buffer */
+ 308:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       gcurr = *px;
+  76              		.loc 1 308 7 is_stmt 1 view .LVU16
+  77              		.loc 1 308 13 is_stmt 0 view .LVU17
+  78 0020 1168     		ldr	r1, [r2]
+  79              	.LVL5:
+ 309:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 310:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* save g1(n) in state buffer */
+ 311:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       *px++ = gnext;
+  80              		.loc 1 311 7 is_stmt 1 view .LVU18
+  81              		.loc 1 311 13 is_stmt 0 view .LVU19
+  82 0022 42F8043B 		str	r3, [r2], #4
+  83              	.LVL6:
+ 312:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 313:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* Sample processing for K2, K3.... */
+ 314:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* f2(n) = f1(n) +  K2 * g1(n-1) */
+ 315:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       fnext = (q31_t) (((q63_t) gcurr * (*pk)) >> 31) + fcurr;
+  84              		.loc 1 315 7 is_stmt 1 view .LVU20
+  85              		.loc 1 315 25 is_stmt 0 view .LVU21
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccwKDMXm.s 			page 8
+
+
+  86 0026 CD17     		asrs	r5, r1, #31
+  87              		.loc 1 315 42 view .LVU22
+  88 0028 5AF8043B 		ldr	r3, [r10], #4
+  89              	.LVL7:
+  90              		.loc 1 315 42 view .LVU23
+  91 002c 4FEAE379 		asr	r9, r3, #31
+  92              		.loc 1 315 39 view .LVU24
+  93 0030 01FB09FE 		mul	lr, r1, r9
+  94 0034 03FB05EE 		mla	lr, r3, r5, lr
+  95 0038 A1FB035C 		umull	r5, ip, r1, r3
+  96 003c F444     		add	ip, ip, lr
+  97              		.loc 1 315 48 view .LVU25
+  98 003e ED0F     		lsrs	r5, r5, #31
+  99 0040 45EA4C05 		orr	r5, r5, ip, lsl #1
+ 100              	.LVL8:
+ 316:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* g2(n) = f1(n) * K2  +  g1(n-1) */
+ 317:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       gnext = (q31_t) (((q63_t) fcurr * (*pk++)) >> 31) + gcurr;
+ 101              		.loc 1 317 7 is_stmt 1 view .LVU26
+ 102              		.loc 1 317 25 is_stmt 0 view .LVU27
+ 103 0044 4FEAE07C 		asr	ip, r0, #31
+ 104              	.LVL9:
+ 105              		.loc 1 317 39 view .LVU28
+ 106 0048 03FB0CFC 		mul	ip, r3, ip
+ 107 004c 00FB09CC 		mla	ip, r0, r9, ip
+ 108 0050 A3FB003E 		umull	r3, lr, r3, r0
+ 109 0054 E644     		add	lr, lr, ip
+ 110              		.loc 1 317 50 view .LVU29
+ 111 0056 DB0F     		lsrs	r3, r3, #31
+ 112 0058 43EA4E03 		orr	r3, r3, lr, lsl #1
+ 113              		.loc 1 317 13 view .LVU30
+ 114 005c 0B44     		add	r3, r3, r1
+ 115              	.LVL10:
+ 318:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 319:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       /* f1(n) is saved in fcurr1
+ 320:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****          for next stage processing */
+ 321:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       fcurr = fnext;
+ 116              		.loc 1 321 7 is_stmt 1 view .LVU31
+ 322:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 323:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****       stageCnt--;
+ 117              		.loc 1 323 7 view .LVU32
+ 118              		.loc 1 323 15 is_stmt 0 view .LVU33
+ 119 005e 013C     		subs	r4, r4, #1
+ 120              	.LVL11:
+ 321:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 121              		.loc 1 321 13 view .LVU34
+ 122 0060 2844     		add	r0, r0, r5
+ 123              	.LVL12:
+ 124              	.L3:
+ 305:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     {
+ 125              		.loc 1 305 21 is_stmt 1 view .LVU35
+ 126 0062 002C     		cmp	r4, #0
+ 127 0064 DCD1     		bne	.L4
+ 324:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 325:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     }
+ 326:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 327:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* y(n) = fN(n) */
+ 328:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     *pDst++ = fcurr;
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccwKDMXm.s 			page 9
+
+
+ 128              		.loc 1 328 5 view .LVU36
+ 129              		.loc 1 328 10 is_stmt 0 view .LVU37
+ 130 0066 4346     		mov	r3, r8
+ 131              	.LVL13:
+ 132              		.loc 1 328 13 view .LVU38
+ 133 0068 43F8040B 		str	r0, [r3], #4
+ 134              	.LVL14:
+ 329:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 330:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     blkCnt--;
+ 135              		.loc 1 330 5 is_stmt 1 view .LVU39
+ 136              		.loc 1 330 11 is_stmt 0 view .LVU40
+ 137 006c 0BF1FF34 		add	r4, fp, #-1
+ 138              	.LVL15:
+ 328:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 139              		.loc 1 328 10 view .LVU41
+ 140 0070 9846     		mov	r8, r3
+ 141              	.LVL16:
+ 142              	.L2:
+ 276:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   {
+ 143              		.loc 1 276 17 is_stmt 1 view .LVU42
+ 144 0072 44B3     		cbz	r4, .L7
+ 279:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 145              		.loc 1 279 5 view .LVU43
+ 146              	.LVL17:
+ 279:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 147              		.loc 1 279 11 is_stmt 0 view .LVU44
+ 148 0074 56F8041B 		ldr	r1, [r6], #4
+ 149              	.LVL18:
+ 282:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 150              		.loc 1 282 5 is_stmt 1 view .LVU45
+ 285:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 151              		.loc 1 285 5 view .LVU46
+ 288:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 152              		.loc 1 288 5 view .LVU47
+ 288:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 153              		.loc 1 288 11 is_stmt 0 view .LVU48
+ 154 0078 3D68     		ldr	r5, [r7]
+ 155              	.LVL19:
+ 292:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* g1(n) = f0(n) * K1  +  g0(n-1) */
+ 156              		.loc 1 292 5 is_stmt 1 view .LVU49
+ 292:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* g1(n) = f0(n) * K1  +  g0(n-1) */
+ 157              		.loc 1 292 23 is_stmt 0 view .LVU50
+ 158 007a E817     		asrs	r0, r5, #31
+ 292:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* g1(n) = f0(n) * K1  +  g0(n-1) */
+ 159              		.loc 1 292 40 view .LVU51
+ 160 007c DDF800A0 		ldr	r10, [sp]
+ 161 0080 5AF8043B 		ldr	r3, [r10], #4
+ 162 0084 4FEAE37E 		asr	lr, r3, #31
+ 292:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* g1(n) = f0(n) * K1  +  g0(n-1) */
+ 163              		.loc 1 292 37 view .LVU52
+ 164 0088 05FB0EF2 		mul	r2, r5, lr
+ 165 008c 03FB0022 		mla	r2, r3, r0, r2
+ 166 0090 A5FB030B 		umull	r0, fp, r5, r3
+ 167 0094 5A44     		add	r2, r2, fp
+ 292:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* g1(n) = f0(n) * K1  +  g0(n-1) */
+ 168              		.loc 1 292 46 view .LVU53
+ 169 0096 C00F     		lsrs	r0, r0, #31
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccwKDMXm.s 			page 10
+
+
+ 170 0098 40EA4200 		orr	r0, r0, r2, lsl #1
+ 292:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* g1(n) = f0(n) * K1  +  g0(n-1) */
+ 171              		.loc 1 292 11 view .LVU54
+ 172 009c 0844     		add	r0, r0, r1
+ 173              	.LVL20:
+ 294:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* save g1(n) in state buffer */
+ 174              		.loc 1 294 5 is_stmt 1 view .LVU55
+ 294:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* save g1(n) in state buffer */
+ 175              		.loc 1 294 23 is_stmt 0 view .LVU56
+ 176 009e CA17     		asrs	r2, r1, #31
+ 177              	.LVL21:
+ 294:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* save g1(n) in state buffer */
+ 178              		.loc 1 294 37 view .LVU57
+ 179 00a0 03FB02F2 		mul	r2, r3, r2
+ 180 00a4 01FB0E22 		mla	r2, r1, lr, r2
+ 181 00a8 A3FB013E 		umull	r3, lr, r3, r1
+ 182 00ac 7244     		add	r2, r2, lr
+ 294:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* save g1(n) in state buffer */
+ 183              		.loc 1 294 48 view .LVU58
+ 184 00ae DB0F     		lsrs	r3, r3, #31
+ 185 00b0 43EA4203 		orr	r3, r3, r2, lsl #1
+ 294:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     /* save g1(n) in state buffer */
+ 186              		.loc 1 294 11 view .LVU59
+ 187 00b4 2B44     		add	r3, r3, r5
+ 188              	.LVL22:
+ 296:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 189              		.loc 1 296 5 is_stmt 1 view .LVU60
+ 296:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 190              		.loc 1 296 8 is_stmt 0 view .LVU61
+ 191 00b6 3A46     		mov	r2, r7
+ 192              	.LVL23:
+ 296:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 193              		.loc 1 296 11 view .LVU62
+ 194 00b8 42F8041B 		str	r1, [r2], #4
+ 195              	.LVL24:
+ 300:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 196              		.loc 1 300 5 is_stmt 1 view .LVU63
+ 302:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 197              		.loc 1 302 5 view .LVU64
+ 302:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 198              		.loc 1 302 14 is_stmt 0 view .LVU65
+ 199 00bc 0199     		ldr	r1, [sp, #4]
+ 200 00be 0139     		subs	r1, r1, #1
+ 201              	.LVL25:
+ 305:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     {
+ 202              		.loc 1 305 5 is_stmt 1 view .LVU66
+ 203 00c0 A346     		mov	fp, r4
+ 204 00c2 0C46     		mov	r4, r1
+ 205              	.LVL26:
+ 305:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****     {
+ 206              		.loc 1 305 11 is_stmt 0 view .LVU67
+ 207 00c4 CDE7     		b	.L3
+ 208              	.LVL27:
+ 209              	.L7:
+ 331:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ 332:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c ****   }
+ 333:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccwKDMXm.s 			page 11
+
+
+ 334:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_fir_lattice_q31.c **** }
+ 210              		.loc 1 334 1 view .LVU68
+ 211 00c6 03B0     		add	sp, sp, #12
+ 212              	.LCFI2:
+ 213              		.cfi_def_cfa_offset 36
+ 214              	.LVL28:
+ 215              		.loc 1 334 1 view .LVU69
+ 216              		@ sp needed
+ 217 00c8 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 218              		.loc 1 334 1 view .LVU70
+ 219              		.cfi_endproc
+ 220              	.LFE100:
+ 222              		.text
+ 223              	.Letext0:
+ 224              		.file 2 "C:/ARM GNU Toolchain/arm-none-eabi/include/machine/_default_types.h"
+ 225              		.file 3 "C:/ARM GNU Toolchain/arm-none-eabi/include/sys/_stdint.h"
+ 226              		.file 4 "Drivers/CMSIS/DSP/Include/arm_math.h"
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccwKDMXm.s 			page 12
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 arm_fir_lattice_q31.c
+C:\Users\Lamp\AppData\Local\Temp\ccwKDMXm.s:19     .text.arm_fir_lattice_q31:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccwKDMXm.s:25     .text.arm_fir_lattice_q31:00000000 arm_fir_lattice_q31
+
+NO UNDEFINED SYMBOLS

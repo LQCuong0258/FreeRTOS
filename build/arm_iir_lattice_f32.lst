@@ -1,0 +1,787 @@
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cclI0jbr.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_iir_lattice_f32.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c"
+  18              		.global	__aeabi_fmul
+  19              		.global	__aeabi_fsub
+  20              		.global	__aeabi_fadd
+  21              		.section	.text.arm_iir_lattice_f32,"ax",%progbits
+  22              		.align	1
+  23              		.global	arm_iir_lattice_f32
+  24              		.syntax unified
+  25              		.thumb
+  26              		.thumb_func
+  28              	arm_iir_lattice_f32:
+  29              	.LVL0:
+  30              	.LFB100:
+   1:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** /* ----------------------------------------------------------------------
+   2:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * Project:      CMSIS DSP Library
+   3:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * Title:        arm_iir_lattice_f32.c
+   4:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * Description:  Floating-point IIR Lattice filter processing function
+   5:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  *
+   6:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * $Date:        27. January 2017
+   7:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * $Revision:    V.1.5.1
+   8:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  *
+   9:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * Target Processor: Cortex-M cores
+  10:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * -------------------------------------------------------------------- */
+  11:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** /*
+  12:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * Copyright (C) 2010-2017 ARM Limited or its affiliates. All rights reserved.
+  13:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  *
+  14:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * SPDX-License-Identifier: Apache-2.0
+  15:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  *
+  16:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  17:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * not use this file except in compliance with the License.
+  18:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * You may obtain a copy of the License at
+  19:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  *
+  20:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * www.apache.org/licenses/LICENSE-2.0
+  21:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  *
+  22:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * Unless required by applicable law or agreed to in writing, software
+  23:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  24:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  25:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * See the License for the specific language governing permissions and
+  26:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * limitations under the License.
+  27:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  */
+  28:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cclI0jbr.s 			page 2
+
+
+  29:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** #include "arm_math.h"
+  30:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+  31:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** /**
+  32:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * @ingroup groupFilters
+  33:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  */
+  34:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+  35:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** /**
+  36:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * @defgroup IIR_Lattice Infinite Impulse Response (IIR) Lattice Filters
+  37:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  *
+  38:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * This set of functions implements lattice filters
+  39:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * for Q15, Q31 and floating-point data types.  Lattice filters are used in a
+  40:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * variety of adaptive filter applications.  The filter structure has feedforward and
+  41:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * feedback components and the net impulse response is infinite length.
+  42:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * The functions operate on blocks
+  43:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * of input and output data and each call to the function processes
+  44:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * <code>blockSize</code> samples through the filter.  <code>pSrc</code> and
+  45:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * <code>pDst</code> point to input and output arrays containing <code>blockSize</code> values.
+  46:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+  47:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par Algorithm:
+  48:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * \image html IIRLattice.gif "Infinite Impulse Response Lattice filter"
+  49:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * <pre>
+  50:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  *    fN(n)   =  x(n)
+  51:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  *    fm-1(n) = fm(n) - km * gm-1(n-1)   for m = N, N-1, ...1
+  52:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  *    gm(n)   = km * fm-1(n) + gm-1(n-1) for m = N, N-1, ...1
+  53:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  *    y(n)    = vN * gN(n) + vN-1 * gN-1(n) + ...+ v0 * g0(n)
+  54:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * </pre>
+  55:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par
+  56:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * <code>pkCoeffs</code> points to array of reflection coefficients of size <code>numStages</code>.
+  57:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * Reflection coefficients are stored in time-reversed order.
+  58:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par
+  59:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * <pre>
+  60:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  *    {kN, kN-1, ....k1}
+  61:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * </pre>
+  62:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * <code>pvCoeffs</code> points to the array of ladder coefficients of size <code>(numStages+1)</co
+  63:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * Ladder coefficients are stored in time-reversed order.
+  64:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par
+  65:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * <pre>
+  66:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  *    {vN, vN-1, ...v0}
+  67:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * </pre>
+  68:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * <code>pState</code> points to a state array of size <code>numStages + blockSize</code>.
+  69:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * The state variables shown in the figure above (the g values) are stored in the <code>pState</cod
+  70:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * The state variables are updated after each block of data is processed; the coefficients are unto
+  71:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par Instance Structure
+  72:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * The coefficients and state variables for a filter are stored together in an instance data struct
+  73:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * A separate instance structure must be defined for each filter.
+  74:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * Coefficient arrays may be shared among several instances while state variable arrays cannot be s
+  75:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * There are separate instance structure declarations for each of the 3 supported data types.
+  76:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   *
+  77:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par Initialization Functions
+  78:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * There is also an associated initialization function for each data type.
+  79:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * The initialization function performs the following operations:
+  80:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * - Sets the values of the internal structure fields.
+  81:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * - Zeros out the values in the state buffer.
+  82:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * To do this manually without calling the init function, assign the follow subfields of the instan
+  83:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * numStages, pkCoeffs, pvCoeffs, pState. Also set all of the values in pState to zero.
+  84:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  *
+  85:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cclI0jbr.s 			page 3
+
+
+  86:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * Use of the initialization function is optional.
+  87:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * However, if the initialization function is used, then the instance structure cannot be placed in
+  88:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * To place an instance structure into a const data section, the instance structure must be manuall
+  89:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * Set the values in the state buffer to zeros and then manually initialize the instance structure 
+  90:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * <pre>
+  91:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  *arm_iir_lattice_instance_f32 S = {numStages, pState, pkCoeffs, pvCoeffs};
+  92:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  *arm_iir_lattice_instance_q31 S = {numStages, pState, pkCoeffs, pvCoeffs};
+  93:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  *arm_iir_lattice_instance_q15 S = {numStages, pState, pkCoeffs, pvCoeffs};
+  94:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * </pre>
+  95:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par
+  96:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * where <code>numStages</code> is the number of stages in the filter; <code>pState</code> points t
+  97:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * <code>pkCoeffs</code> points to array of the reflection coefficients; <code>pvCoeffs</code> poin
+  98:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par Fixed-Point Behavior
+  99:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * Care must be taken when using the fixed-point versions of the IIR lattice filter functions.
+ 100:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * In particular, the overflow and saturation behavior of the accumulator used in each function mus
+ 101:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * Refer to the function specific documentation below for usage guidelines.
+ 102:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  */
+ 103:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 104:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** /**
+ 105:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * @addtogroup IIR_Lattice
+ 106:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * @{
+ 107:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  */
+ 108:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 109:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** /**
+ 110:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * @brief Processing function for the floating-point IIR lattice filter.
+ 111:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * @param[in] *S points to an instance of the floating-point IIR lattice structure.
+ 112:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * @param[in] *pSrc points to the block of input data.
+ 113:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * @param[out] *pDst points to the block of output data.
+ 114:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * @param[in] blockSize number of samples to process.
+ 115:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  * @return none.
+ 116:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****  */
+ 117:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 118:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** #if defined (ARM_MATH_DSP)
+ 119:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 120:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   /* Run the below code for Cortex-M4 and Cortex-M3 */
+ 121:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 122:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** void arm_iir_lattice_f32(
+ 123:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   const arm_iir_lattice_instance_f32 * S,
+ 124:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t * pSrc,
+ 125:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t * pDst,
+ 126:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   uint32_t blockSize)
+ 127:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** {
+ 128:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t fnext1, gcurr1, gnext;               /* Temporary variables for lattice stages */
+ 129:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t acc;                                 /* Accumlator */
+ 130:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   uint32_t blkCnt, tapCnt;                       /* temporary variables for counts */
+ 131:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t *px1, *px2, *pk, *pv;                /* temporary pointers for state and coef */
+ 132:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   uint32_t numStages = S->numStages;             /* number of stages */
+ 133:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t *pState;                             /* State pointer */
+ 134:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t *pStateCurnt;                        /* State current pointer */
+ 135:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t k1, k2;
+ 136:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t v1, v2, v3, v4;
+ 137:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t gcurr2;
+ 138:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t fnext2;
+ 139:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 140:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   /* initialise loop count */
+ 141:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   blkCnt = blockSize;
+ 142:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cclI0jbr.s 			page 4
+
+
+ 143:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   /* initialise state pointer */
+ 144:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   pState = &S->pState[0];
+ 145:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 146:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   /* Sample processing */
+ 147:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   while (blkCnt > 0U)
+ 148:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   {
+ 149:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Read Sample from input buffer */
+ 150:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* fN(n) = x(n) */
+ 151:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     fnext2 = *pSrc++;
+ 152:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 153:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Initialize Ladder coeff pointer */
+ 154:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     pv = &S->pvCoeffs[0];
+ 155:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Initialize Reflection coeff pointer */
+ 156:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     pk = &S->pkCoeffs[0];
+ 157:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 158:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Initialize state read pointer */
+ 159:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     px1 = pState;
+ 160:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Initialize state write pointer */
+ 161:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     px2 = pState;
+ 162:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 163:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Set accumulator to zero */
+ 164:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     acc = 0.0;
+ 165:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 166:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Loop unrolling.  Process 4 taps at a time. */
+ 167:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     tapCnt = (numStages) >> 2;
+ 168:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 169:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     while (tapCnt > 0U)
+ 170:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     {
+ 171:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* Read gN-1(n-1) from state buffer */
+ 172:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       gcurr1 = *px1;
+ 173:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 174:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* read reflection coefficient kN */
+ 175:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       k1 = *pk;
+ 176:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 177:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* fN-1(n) = fN(n) - kN * gN-1(n-1) */
+ 178:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       fnext1 = fnext2 - (k1 * gcurr1);
+ 179:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 180:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* read ladder coefficient vN */
+ 181:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       v1 = *pv;
+ 182:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 183:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* read next reflection coefficient kN-1 */
+ 184:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       k2 = *(pk + 1U);
+ 185:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 186:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* Read gN-2(n-1) from state buffer */
+ 187:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       gcurr2 = *(px1 + 1U);
+ 188:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 189:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* read next ladder coefficient vN-1 */
+ 190:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       v2 = *(pv + 1U);
+ 191:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 192:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* fN-2(n) = fN-1(n) - kN-1 * gN-2(n-1) */
+ 193:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       fnext2 = fnext1 - (k2 * gcurr2);
+ 194:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 195:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* gN(n)   = kN * fN-1(n) + gN-1(n-1) */
+ 196:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       gnext = gcurr1 + (k1 * fnext1);
+ 197:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 198:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* read reflection coefficient kN-2 */
+ 199:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       k1 = *(pk + 2U);
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cclI0jbr.s 			page 5
+
+
+ 200:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 201:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* write gN(n) into state for next sample processing */
+ 202:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       *px2++ = gnext;
+ 203:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 204:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* Read gN-3(n-1) from state buffer */
+ 205:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       gcurr1 = *(px1 + 2U);
+ 206:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 207:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* y(n) += gN(n) * vN  */
+ 208:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       acc += (gnext * v1);
+ 209:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 210:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* fN-3(n) = fN-2(n) - kN-2 * gN-3(n-1) */
+ 211:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       fnext1 = fnext2 - (k1 * gcurr1);
+ 212:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 213:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* gN-1(n)   = kN-1 * fN-2(n) + gN-2(n-1) */
+ 214:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       gnext = gcurr2 + (k2 * fnext2);
+ 215:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 216:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* Read gN-4(n-1) from state buffer */
+ 217:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       gcurr2 = *(px1 + 3U);
+ 218:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 219:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* y(n) += gN-1(n) * vN-1  */
+ 220:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       acc += (gnext * v2);
+ 221:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 222:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* read reflection coefficient kN-3 */
+ 223:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       k2 = *(pk + 3U);
+ 224:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 225:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* write gN-1(n) into state for next sample processing */
+ 226:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       *px2++ = gnext;
+ 227:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 228:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* fN-4(n) = fN-3(n) - kN-3 * gN-4(n-1) */
+ 229:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       fnext2 = fnext1 - (k2 * gcurr2);
+ 230:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 231:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* gN-2(n) = kN-2 * fN-3(n) + gN-3(n-1) */
+ 232:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       gnext = gcurr1 + (k1 * fnext1);
+ 233:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 234:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* read ladder coefficient vN-2 */
+ 235:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       v3 = *(pv + 2U);
+ 236:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 237:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* y(n) += gN-2(n) * vN-2  */
+ 238:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       acc += (gnext * v3);
+ 239:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 240:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* write gN-2(n) into state for next sample processing */
+ 241:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       *px2++ = gnext;
+ 242:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 243:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* update pointer */
+ 244:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       pk += 4U;
+ 245:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 246:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* gN-3(n) = kN-3 * fN-4(n) + gN-4(n-1) */
+ 247:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       gnext = (fnext2 * k2) + gcurr2;
+ 248:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 249:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* read next ladder coefficient vN-3 */
+ 250:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       v4 = *(pv + 3U);
+ 251:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 252:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* y(n) += gN-4(n) * vN-4  */
+ 253:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       acc += (gnext * v4);
+ 254:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 255:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* write gN-3(n) into state for next sample processing */
+ 256:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       *px2++ = gnext;
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cclI0jbr.s 			page 6
+
+
+ 257:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 258:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* update pointers */
+ 259:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       px1 += 4U;
+ 260:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       pv += 4U;
+ 261:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 262:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       tapCnt--;
+ 263:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 264:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     }
+ 265:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 266:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* If the filter length is not a multiple of 4, compute the remaining filter taps */
+ 267:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     tapCnt = (numStages) % 0x4U;
+ 268:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 269:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     while (tapCnt > 0U)
+ 270:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     {
+ 271:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       gcurr1 = *px1++;
+ 272:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* Process sample for last taps */
+ 273:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       fnext1 = fnext2 - ((*pk) * gcurr1);
+ 274:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       gnext = (fnext1 * (*pk++)) + gcurr1;
+ 275:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* Output samples for last taps */
+ 276:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       acc += (gnext * (*pv++));
+ 277:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       *px2++ = gnext;
+ 278:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       fnext2 = fnext1;
+ 279:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 280:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       tapCnt--;
+ 281:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 282:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     }
+ 283:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 284:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* y(n) += g0(n) * v0 */
+ 285:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     acc += (fnext2 * (*pv));
+ 286:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 287:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     *px2++ = fnext2;
+ 288:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 289:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* write out into pDst */
+ 290:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     *pDst++ = acc;
+ 291:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 292:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Advance the state pointer by 4 to process the next group of 4 samples */
+ 293:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     pState = pState + 1U;
+ 294:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 295:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     blkCnt--;
+ 296:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 297:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   }
+ 298:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 299:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   /* Processing is complete. Now copy last S->numStages samples to start of the buffer
+ 300:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****      for the preperation of next frame process */
+ 301:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 302:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   /* Points to the start of the state buffer */
+ 303:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   pStateCurnt = &S->pState[0];
+ 304:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   pState = &S->pState[blockSize];
+ 305:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 306:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   tapCnt = numStages >> 2U;
+ 307:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 308:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   /* copy data */
+ 309:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   while (tapCnt > 0U)
+ 310:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   {
+ 311:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     *pStateCurnt++ = *pState++;
+ 312:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     *pStateCurnt++ = *pState++;
+ 313:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     *pStateCurnt++ = *pState++;
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cclI0jbr.s 			page 7
+
+
+ 314:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     *pStateCurnt++ = *pState++;
+ 315:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 316:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Decrement the loop counter */
+ 317:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     tapCnt--;
+ 318:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 319:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   }
+ 320:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 321:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   /* Calculate remaining number of copies */
+ 322:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   tapCnt = (numStages) % 0x4U;
+ 323:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 324:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   /* Copy the remaining q31_t data */
+ 325:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   while (tapCnt > 0U)
+ 326:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   {
+ 327:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     *pStateCurnt++ = *pState++;
+ 328:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 329:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Decrement the loop counter */
+ 330:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     tapCnt--;
+ 331:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   }
+ 332:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** }
+ 333:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 334:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** #else
+ 335:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 336:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** void arm_iir_lattice_f32(
+ 337:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   const arm_iir_lattice_instance_f32 * S,
+ 338:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t * pSrc,
+ 339:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t * pDst,
+ 340:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   uint32_t blockSize)
+ 341:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** {
+  31              		.loc 1 341 1 view -0
+  32              		.cfi_startproc
+  33              		@ args = 0, pretend = 0, frame = 40
+  34              		@ frame_needed = 0, uses_anonymous_args = 0
+  35              		.loc 1 341 1 is_stmt 0 view .LVU1
+  36 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  37              	.LCFI0:
+  38              		.cfi_def_cfa_offset 36
+  39              		.cfi_offset 4, -36
+  40              		.cfi_offset 5, -32
+  41              		.cfi_offset 6, -28
+  42              		.cfi_offset 7, -24
+  43              		.cfi_offset 8, -20
+  44              		.cfi_offset 9, -16
+  45              		.cfi_offset 10, -12
+  46              		.cfi_offset 11, -8
+  47              		.cfi_offset 14, -4
+  48 0004 8BB0     		sub	sp, sp, #44
+  49              	.LCFI1:
+  50              		.cfi_def_cfa_offset 80
+  51 0006 0790     		str	r0, [sp, #28]
+  52 0008 0492     		str	r2, [sp, #16]
+  53 000a 9946     		mov	r9, r3
+ 342:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t fcurr, fnext = 0, gcurr, gnext;      /* Temporary variables for lattice stages */
+  54              		.loc 1 342 3 is_stmt 1 view .LVU2
+  55              	.LVL1:
+ 343:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t acc;                                 /* Accumlator */
+  56              		.loc 1 343 3 view .LVU3
+ 344:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   uint32_t blkCnt, tapCnt;                       /* temporary variables for counts */
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cclI0jbr.s 			page 8
+
+
+  57              		.loc 1 344 3 view .LVU4
+ 345:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t *px1, *px2, *pk, *pv;                /* temporary pointers for state and coef */
+  58              		.loc 1 345 3 view .LVU5
+ 346:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   uint32_t numStages = S->numStages;             /* number of stages */
+  59              		.loc 1 346 3 view .LVU6
+  60              		.loc 1 346 25 is_stmt 0 view .LVU7
+  61 000c 0388     		ldrh	r3, [r0]
+  62              	.LVL2:
+ 347:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t *pState;                             /* State pointer */
+  63              		.loc 1 347 3 is_stmt 1 view .LVU8
+ 348:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t *pStateCurnt;                        /* State current pointer */
+  64              		.loc 1 348 3 view .LVU9
+ 349:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 350:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 351:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   /* Run the below code for Cortex-M0 */
+ 352:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 353:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   blkCnt = blockSize;
+  65              		.loc 1 353 3 view .LVU10
+ 354:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 355:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   pState = &S->pState[0];
+  66              		.loc 1 355 3 view .LVU11
+  67              		.loc 1 355 10 is_stmt 0 view .LVU12
+  68 000e 4268     		ldr	r2, [r0, #4]
+  69              	.LVL3:
+  70              		.loc 1 355 10 view .LVU13
+  71 0010 0392     		str	r2, [sp, #12]
+  72              	.LVL4:
+ 356:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 357:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   /* Sample processing */
+ 358:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   while (blkCnt > 0U)
+  73              		.loc 1 358 3 is_stmt 1 view .LVU14
+ 342:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t acc;                                 /* Accumlator */
+  74              		.loc 1 342 20 is_stmt 0 view .LVU15
+  75 0012 0022     		movs	r2, #0
+  76              	.LVL5:
+ 342:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t acc;                                 /* Accumlator */
+  77              		.loc 1 342 20 view .LVU16
+  78 0014 0292     		str	r2, [sp, #8]	@ float
+  79 0016 0893     		str	r3, [sp, #32]
+  80 0018 8846     		mov	r8, r1
+  81 001a CB46     		mov	fp, r9
+  82 001c CDF82490 		str	r9, [sp, #36]
+  83              		.loc 1 358 9 view .LVU17
+  84 0020 3FE0     		b	.L2
+  85              	.LVL6:
+  86              	.L4:
+ 359:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   {
+ 360:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Read Sample from input buffer */
+ 361:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* fN(n) = x(n) */
+ 362:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     fcurr = *pSrc++;
+ 363:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 364:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Initialize state read pointer */
+ 365:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     px1 = pState;
+ 366:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Initialize state write pointer */
+ 367:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     px2 = pState;
+ 368:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Set accumulator to zero */
+ 369:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     acc = 0.0f;
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cclI0jbr.s 			page 9
+
+
+ 370:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Initialize Ladder coeff pointer */
+ 371:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     pv = &S->pvCoeffs[0];
+ 372:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Initialize Reflection coeff pointer */
+ 373:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     pk = &S->pkCoeffs[0];
+ 374:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 375:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 376:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Process sample for numStages */
+ 377:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     tapCnt = numStages;
+ 378:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 379:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     while (tapCnt > 0U)
+ 380:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     {
+ 381:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       gcurr = *px1++;
+  87              		.loc 1 381 7 is_stmt 1 view .LVU18
+  88              		.loc 1 381 13 is_stmt 0 view .LVU19
+  89 0022 56F8048B 		ldr	r8, [r6], #4	@ float
+  90              	.LVL7:
+ 382:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* Process sample for last taps */
+ 383:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       fnext = fcurr - ((*pk) * gcurr);
+  91              		.loc 1 383 7 is_stmt 1 view .LVU20
+  92              		.loc 1 383 25 is_stmt 0 view .LVU21
+  93 0026 5AF804BB 		ldr	fp, [r10], #4	@ float
+  94              	.LVL8:
+  95              		.loc 1 383 30 view .LVU22
+  96 002a 4146     		mov	r1, r8
+  97 002c 5846     		mov	r0, fp
+  98 002e FFF7FEFF 		bl	__aeabi_fmul
+  99              	.LVL9:
+ 100 0032 0146     		mov	r1, r0
+ 101              		.loc 1 383 13 view .LVU23
+ 102 0034 4846     		mov	r0, r9
+ 103 0036 FFF7FEFF 		bl	__aeabi_fsub
+ 104              	.LVL10:
+ 105 003a 8146     		mov	r9, r0
+ 106              	.LVL11:
+ 384:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       gnext = (fnext * (*pk++)) + gcurr;
+ 107              		.loc 1 384 7 is_stmt 1 view .LVU24
+ 108              		.loc 1 384 22 is_stmt 0 view .LVU25
+ 109 003c 0146     		mov	r1, r0
+ 110 003e 5846     		mov	r0, fp
+ 111              	.LVL12:
+ 112              		.loc 1 384 22 view .LVU26
+ 113 0040 FFF7FEFF 		bl	__aeabi_fmul
+ 114              	.LVL13:
+ 115              		.loc 1 384 13 view .LVU27
+ 116 0044 4146     		mov	r1, r8
+ 117 0046 FFF7FEFF 		bl	__aeabi_fadd
+ 118              	.LVL14:
+ 119 004a 8046     		mov	r8, r0
+ 120              	.LVL15:
+ 385:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 386:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* Output samples for last taps */
+ 387:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       acc += (gnext * (*pv++));
+ 121              		.loc 1 387 7 is_stmt 1 view .LVU28
+ 122              		.loc 1 387 21 is_stmt 0 view .LVU29
+ 123 004c 0146     		mov	r1, r0
+ 124 004e 55F8040B 		ldr	r0, [r5], #4	@ float
+ 125              	.LVL16:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cclI0jbr.s 			page 10
+
+
+ 126              		.loc 1 387 21 view .LVU30
+ 127 0052 FFF7FEFF 		bl	__aeabi_fmul
+ 128              	.LVL17:
+ 129              		.loc 1 387 21 view .LVU31
+ 130 0056 0146     		mov	r1, r0
+ 131              		.loc 1 387 11 view .LVU32
+ 132 0058 2046     		mov	r0, r4
+ 133 005a FFF7FEFF 		bl	__aeabi_fadd
+ 134              	.LVL18:
+ 135 005e 0446     		mov	r4, r0
+ 136              	.LVL19:
+ 388:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       *px2++ = gnext;
+ 137              		.loc 1 388 7 is_stmt 1 view .LVU33
+ 138              		.loc 1 388 11 is_stmt 0 view .LVU34
+ 139 0060 019B     		ldr	r3, [sp, #4]
+ 140              	.LVL20:
+ 141              		.loc 1 388 14 view .LVU35
+ 142 0062 43F8048B 		str	r8, [r3], #4	@ float
+ 143              	.LVL21:
+ 389:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       fcurr = fnext;
+ 144              		.loc 1 389 7 is_stmt 1 view .LVU36
+ 390:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 391:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       /* Decrementing loop counter */
+ 392:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       tapCnt--;
+ 145              		.loc 1 392 7 view .LVU37
+ 146              		.loc 1 392 13 is_stmt 0 view .LVU38
+ 147 0066 013F     		subs	r7, r7, #1
+ 148              	.LVL22:
+ 388:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       fcurr = fnext;
+ 149              		.loc 1 388 11 view .LVU39
+ 150 0068 0193     		str	r3, [sp, #4]
+ 383:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****       gnext = (fnext * (*pk++)) + gcurr;
+ 151              		.loc 1 383 13 view .LVU40
+ 152 006a CDF80890 		str	r9, [sp, #8]	@ float
+ 153              	.LVL23:
+ 154              	.L3:
+ 379:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     {
+ 155              		.loc 1 379 19 is_stmt 1 view .LVU41
+ 156 006e 002F     		cmp	r7, #0
+ 157 0070 D7D1     		bne	.L4
+ 393:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 394:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     }
+ 395:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 396:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* y(n) += g0(n) * v0 */
+ 397:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     acc += (fnext * (*pv));
+ 158              		.loc 1 397 19 is_stmt 0 view .LVU42
+ 159 0072 2746     		mov	r7, r4
+ 160              	.LVL24:
+ 161              		.loc 1 397 19 view .LVU43
+ 162 0074 DDF814B0 		ldr	fp, [sp, #20]
+ 163 0078 019C     		ldr	r4, [sp, #4]
+ 164              	.LVL25:
+ 165              		.loc 1 397 19 view .LVU44
+ 166 007a DDF81880 		ldr	r8, [sp, #24]
+ 167              		.loc 1 397 5 is_stmt 1 view .LVU45
+ 168              		.loc 1 397 19 is_stmt 0 view .LVU46
+ 169 007e 029E     		ldr	r6, [sp, #8]	@ float
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cclI0jbr.s 			page 11
+
+
+ 170              	.LVL26:
+ 171              		.loc 1 397 19 view .LVU47
+ 172 0080 3146     		mov	r1, r6
+ 173 0082 2868     		ldr	r0, [r5]	@ float
+ 174 0084 FFF7FEFF 		bl	__aeabi_fmul
+ 175              	.LVL27:
+ 176              		.loc 1 397 9 view .LVU48
+ 177 0088 3946     		mov	r1, r7
+ 178 008a FFF7FEFF 		bl	__aeabi_fadd
+ 179              	.LVL28:
+ 398:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 399:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     *px2++ = fnext;
+ 180              		.loc 1 399 5 is_stmt 1 view .LVU49
+ 181              		.loc 1 399 12 is_stmt 0 view .LVU50
+ 182 008e 2660     		str	r6, [r4]	@ float
+ 400:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 401:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* write out into pDst */
+ 402:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     *pDst++ = acc;
+ 183              		.loc 1 402 5 is_stmt 1 view .LVU51
+ 184              		.loc 1 402 10 is_stmt 0 view .LVU52
+ 185 0090 049B     		ldr	r3, [sp, #16]
+ 186              	.LVL29:
+ 187              		.loc 1 402 13 view .LVU53
+ 188 0092 43F8040B 		str	r0, [r3], #4	@ float
+ 189              	.LVL30:
+ 403:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 404:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Advance the state pointer by 1 to process the next group of samples */
+ 405:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     pState = pState + 1U;
+ 190              		.loc 1 405 5 is_stmt 1 view .LVU54
+ 191              		.loc 1 405 12 is_stmt 0 view .LVU55
+ 192 0096 039A     		ldr	r2, [sp, #12]
+ 193 0098 0432     		adds	r2, r2, #4
+ 194 009a 0392     		str	r2, [sp, #12]
+ 195              	.LVL31:
+ 406:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     blkCnt--;
+ 196              		.loc 1 406 5 is_stmt 1 view .LVU56
+ 197              		.loc 1 406 11 is_stmt 0 view .LVU57
+ 198 009c 0BF1FF3B 		add	fp, fp, #-1
+ 199              	.LVL32:
+ 402:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 200              		.loc 1 402 10 view .LVU58
+ 201 00a0 0493     		str	r3, [sp, #16]
+ 202              	.LVL33:
+ 203              	.L2:
+ 358:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   {
+ 204              		.loc 1 358 17 is_stmt 1 view .LVU59
+ 205 00a2 BBF1000F 		cmp	fp, #0
+ 206 00a6 0FD0     		beq	.L9
+ 362:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 207              		.loc 1 362 5 view .LVU60
+ 208              	.LVL34:
+ 362:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 209              		.loc 1 362 11 is_stmt 0 view .LVU61
+ 210 00a8 58F8049B 		ldr	r9, [r8], #4	@ float
+ 211              	.LVL35:
+ 365:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Initialize state write pointer */
+ 212              		.loc 1 365 5 is_stmt 1 view .LVU62
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cclI0jbr.s 			page 12
+
+
+ 367:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Set accumulator to zero */
+ 213              		.loc 1 367 5 view .LVU63
+ 369:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Initialize Ladder coeff pointer */
+ 214              		.loc 1 369 5 view .LVU64
+ 371:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Initialize Reflection coeff pointer */
+ 215              		.loc 1 371 5 view .LVU65
+ 371:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Initialize Reflection coeff pointer */
+ 216              		.loc 1 371 8 is_stmt 0 view .LVU66
+ 217 00ac 079B     		ldr	r3, [sp, #28]
+ 218 00ae DD68     		ldr	r5, [r3, #12]
+ 219              	.LVL36:
+ 373:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 220              		.loc 1 373 5 is_stmt 1 view .LVU67
+ 373:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 221              		.loc 1 373 8 is_stmt 0 view .LVU68
+ 222 00b0 D3F808A0 		ldr	r10, [r3, #8]
+ 223              	.LVL37:
+ 377:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 224              		.loc 1 377 5 is_stmt 1 view .LVU69
+ 379:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     {
+ 225              		.loc 1 379 5 view .LVU70
+ 367:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Set accumulator to zero */
+ 226              		.loc 1 367 9 is_stmt 0 view .LVU71
+ 227 00b4 039E     		ldr	r6, [sp, #12]
+ 377:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 228              		.loc 1 377 12 view .LVU72
+ 229 00b6 089F     		ldr	r7, [sp, #32]
+ 369:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Initialize Ladder coeff pointer */
+ 230              		.loc 1 369 9 view .LVU73
+ 231 00b8 0023     		movs	r3, #0
+ 232 00ba CDF814B0 		str	fp, [sp, #20]
+ 233 00be 0196     		str	r6, [sp, #4]
+ 234 00c0 1C46     		mov	r4, r3
+ 235 00c2 CDF81880 		str	r8, [sp, #24]
+ 379:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     {
+ 236              		.loc 1 379 11 view .LVU74
+ 237 00c6 D2E7     		b	.L3
+ 238              	.LVL38:
+ 239              	.L9:
+ 407:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 408:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   }
+ 409:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 410:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   /* Processing is complete. Now copy last S->numStages samples to start of the buffer
+ 411:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****      for the preperation of next frame process */
+ 412:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 413:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   /* Points to the start of the state buffer */
+ 414:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   pStateCurnt = &S->pState[0];
+ 240              		.loc 1 414 15 view .LVU75
+ 241 00c8 089B     		ldr	r3, [sp, #32]
+ 242 00ca DDF82490 		ldr	r9, [sp, #36]
+ 243              		.loc 1 414 3 is_stmt 1 view .LVU76
+ 244              		.loc 1 414 15 is_stmt 0 view .LVU77
+ 245 00ce 079A     		ldr	r2, [sp, #28]
+ 246 00d0 5268     		ldr	r2, [r2, #4]
+ 247              	.LVL39:
+ 415:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   pState = &S->pState[blockSize];
+ 248              		.loc 1 415 3 is_stmt 1 view .LVU78
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cclI0jbr.s 			page 13
+
+
+ 249              		.loc 1 415 10 is_stmt 0 view .LVU79
+ 250 00d2 02EB8909 		add	r9, r2, r9, lsl #2
+ 251              	.LVL40:
+ 416:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 417:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   tapCnt = numStages;
+ 252              		.loc 1 417 3 is_stmt 1 view .LVU80
+ 418:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 419:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   /* Copy the data */
+ 420:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   while (tapCnt > 0U)
+ 253              		.loc 1 420 3 view .LVU81
+ 254              		.loc 1 420 9 is_stmt 0 view .LVU82
+ 255 00d6 04E0     		b	.L6
+ 256              	.L7:
+ 421:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   {
+ 422:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     *pStateCurnt++ = *pState++;
+ 257              		.loc 1 422 5 is_stmt 1 view .LVU83
+ 258              	.LVL41:
+ 259              		.loc 1 422 22 is_stmt 0 view .LVU84
+ 260 00d8 59F8041B 		ldr	r1, [r9], #4	@ float
+ 261              	.LVL42:
+ 262              		.loc 1 422 20 view .LVU85
+ 263 00dc 42F8041B 		str	r1, [r2], #4	@ float
+ 264              	.LVL43:
+ 423:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 424:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Decrement the loop counter */
+ 425:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****     tapCnt--;
+ 265              		.loc 1 425 5 is_stmt 1 view .LVU86
+ 266              		.loc 1 425 11 is_stmt 0 view .LVU87
+ 267 00e0 013B     		subs	r3, r3, #1
+ 268              	.LVL44:
+ 269              	.L6:
+ 420:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   {
+ 270              		.loc 1 420 17 is_stmt 1 view .LVU88
+ 271 00e2 002B     		cmp	r3, #0
+ 272 00e4 F8D1     		bne	.L7
+ 426:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c ****   }
+ 427:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 428:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_iir_lattice_f32.c **** }
+ 273              		.loc 1 428 1 is_stmt 0 view .LVU89
+ 274 00e6 0BB0     		add	sp, sp, #44
+ 275              	.LCFI2:
+ 276              		.cfi_def_cfa_offset 36
+ 277              		@ sp needed
+ 278 00e8 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 279              		.loc 1 428 1 view .LVU90
+ 280              		.cfi_endproc
+ 281              	.LFE100:
+ 283              		.text
+ 284              	.Letext0:
+ 285              		.file 2 "C:/ARM GNU Toolchain/arm-none-eabi/include/machine/_default_types.h"
+ 286              		.file 3 "C:/ARM GNU Toolchain/arm-none-eabi/include/sys/_stdint.h"
+ 287              		.file 4 "Drivers/CMSIS/DSP/Include/arm_math.h"
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cclI0jbr.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 arm_iir_lattice_f32.c
+C:\Users\Lamp\AppData\Local\Temp\cclI0jbr.s:22     .text.arm_iir_lattice_f32:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\cclI0jbr.s:28     .text.arm_iir_lattice_f32:00000000 arm_iir_lattice_f32
+
+UNDEFINED SYMBOLS
+__aeabi_fmul
+__aeabi_fsub
+__aeabi_fadd

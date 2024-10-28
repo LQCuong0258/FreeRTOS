@@ -1,0 +1,1053 @@
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_biquad_cascade_df1_fast_q31.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c"
+  18              		.section	.text.arm_biquad_cascade_df1_fast_q31,"ax",%progbits
+  19              		.align	1
+  20              		.global	arm_biquad_cascade_df1_fast_q31
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	arm_biquad_cascade_df1_fast_q31:
+  26              	.LVL0:
+  27              	.LFB100:
+   1:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** /* ----------------------------------------------------------------------
+   2:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * Project:      CMSIS DSP Library
+   3:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * Title:        arm_biquad_cascade_df1_fast_q31.c
+   4:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * Description:  Processing function for the Q31 Fast Biquad cascade DirectFormI(DF1) filter
+   5:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  *
+   6:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * $Date:        27. January 2017
+   7:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * $Revision:    V.1.5.1
+   8:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  *
+   9:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * Target Processor: Cortex-M cores
+  10:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * -------------------------------------------------------------------- */
+  11:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** /*
+  12:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * Copyright (C) 2010-2017 ARM Limited or its affiliates. All rights reserved.
+  13:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  *
+  14:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * SPDX-License-Identifier: Apache-2.0
+  15:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  *
+  16:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  17:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * not use this file except in compliance with the License.
+  18:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * You may obtain a copy of the License at
+  19:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  *
+  20:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * www.apache.org/licenses/LICENSE-2.0
+  21:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  *
+  22:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * Unless required by applicable law or agreed to in writing, software
+  23:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  24:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  25:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * See the License for the specific language governing permissions and
+  26:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * limitations under the License.
+  27:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  */
+  28:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+  29:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** #include "arm_math.h"
+  30:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+  31:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** /**
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 2
+
+
+  32:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * @ingroup groupFilters
+  33:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  */
+  34:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+  35:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** /**
+  36:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * @addtogroup BiquadCascadeDF1
+  37:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * @{
+  38:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  */
+  39:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+  40:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** /**
+  41:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * @details
+  42:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  *
+  43:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * @param[in]  *S        points to an instance of the Q31 Biquad cascade structure.
+  44:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * @param[in]  *pSrc     points to the block of input data.
+  45:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * @param[out] *pDst     points to the block of output data.
+  46:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * @param[in]  blockSize number of samples to process per call.
+  47:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * @return     none.
+  48:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  *
+  49:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * <b>Scaling and Overflow Behavior:</b>
+  50:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * \par
+  51:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * This function is optimized for speed at the expense of fixed-point precision and overflow protec
+  52:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * The result of each 1.31 x 1.31 multiplication is truncated to 2.30 format.
+  53:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * These intermediate results are added to a 2.30 accumulator.
+  54:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * Finally, the accumulator is saturated and converted to a 1.31 result.
+  55:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * The fast version has the same overflow behavior as the standard version and provides less precis
+  56:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * In order to avoid overflows completely the input signal must be scaled down by two bits and lie 
+  57:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * arm_biquad_cascade_df1_init_q31() to initialize filter structure.
+  58:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  *
+  59:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * \par
+  60:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * Refer to the function <code>arm_biquad_cascade_df1_q31()</code> for a slower implementation of t
+  61:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  * Use the function <code>arm_biquad_cascade_df1_init_q31()</code> to initialize the filter structu
+  62:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****  */
+  63:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+  64:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** void arm_biquad_cascade_df1_fast_q31(
+  65:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   const arm_biquad_casd_df1_inst_q31 * S,
+  66:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   q31_t * pSrc,
+  67:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   q31_t * pDst,
+  68:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   uint32_t blockSize)
+  69:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** {
+  28              		.loc 1 69 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 80
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		.loc 1 69 1 is_stmt 0 view .LVU1
+  33 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 36
+  36              		.cfi_offset 4, -36
+  37              		.cfi_offset 5, -32
+  38              		.cfi_offset 6, -28
+  39              		.cfi_offset 7, -24
+  40              		.cfi_offset 8, -20
+  41              		.cfi_offset 9, -16
+  42              		.cfi_offset 10, -12
+  43              		.cfi_offset 11, -8
+  44              		.cfi_offset 14, -4
+  45 0004 95B0     		sub	sp, sp, #84
+  46              	.LCFI1:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 3
+
+
+  47              		.cfi_def_cfa_offset 120
+  48 0006 0591     		str	r1, [sp, #20]
+  49 0008 1392     		str	r2, [sp, #76]
+  50 000a 9946     		mov	r9, r3
+  70:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   q31_t acc = 0;                                 /*  accumulator                   */
+  51              		.loc 1 70 3 is_stmt 1 view .LVU2
+  52              	.LVL1:
+  71:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   q31_t Xn1, Xn2, Yn1, Yn2;                      /*  Filter state variables        */
+  53              		.loc 1 71 3 view .LVU3
+  72:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   q31_t b0, b1, b2, a1, a2;                      /*  Filter coefficients           */
+  54              		.loc 1 72 3 view .LVU4
+  73:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   q31_t *pIn = pSrc;                             /*  input pointer initialization  */
+  55              		.loc 1 73 3 view .LVU5
+  74:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   q31_t *pOut = pDst;                            /*  output pointer initialization */
+  56              		.loc 1 74 3 view .LVU6
+  75:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   q31_t *pState = S->pState;                     /*  pState pointer initialization */
+  57              		.loc 1 75 3 view .LVU7
+  58              		.loc 1 75 10 is_stmt 0 view .LVU8
+  59 000c 4368     		ldr	r3, [r0, #4]
+  60              	.LVL2:
+  76:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   q31_t *pCoeffs = S->pCoeffs;                   /*  coeff pointer initialization  */
+  61              		.loc 1 76 3 is_stmt 1 view .LVU9
+  62              		.loc 1 76 10 is_stmt 0 view .LVU10
+  63 000e D0F808B0 		ldr	fp, [r0, #8]
+  64              	.LVL3:
+  77:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   q31_t Xn;                                      /*  temporary input               */
+  65              		.loc 1 77 3 is_stmt 1 view .LVU11
+  78:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   int32_t shift = (int32_t) S->postShift + 1;    /*  Shift to be applied to the output */
+  66              		.loc 1 78 3 view .LVU12
+  67              		.loc 1 78 30 is_stmt 0 view .LVU13
+  68 0012 027B     		ldrb	r2, [r0, #12]	@ zero_extendqisi2
+  69              	.LVL4:
+  70              		.loc 1 78 11 view .LVU14
+  71 0014 0132     		adds	r2, r2, #1
+  72 0016 0692     		str	r2, [sp, #24]
+  73              	.LVL5:
+  79:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   uint32_t sample, stage = S->numStages;         /*  loop counters                     */
+  74              		.loc 1 79 3 is_stmt 1 view .LVU15
+  75              		.loc 1 79 20 is_stmt 0 view .LVU16
+  76 0018 D0F80080 		ldr	r8, [r0]
+  77              	.LVL6:
+  78              		.loc 1 79 20 view .LVU17
+  79 001c 5A46     		mov	r2, fp
+  80              	.LVL7:
+  81              		.loc 1 79 20 view .LVU18
+  82 001e CDF83C80 		str	r8, [sp, #60]
+  83 0022 CDF84090 		str	r9, [sp, #64]
+  84 0026 E8E1     		b	.L6
+  85              	.LVL8:
+  86              	.L3:
+  80:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+  81:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+  82:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   do
+  83:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   {
+  84:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     /* Reading the coefficients */
+  85:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     b0 = *pCoeffs++;
+  86:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     b1 = *pCoeffs++;
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 4
+
+
+  87:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     b2 = *pCoeffs++;
+  88:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     a1 = *pCoeffs++;
+  89:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     a2 = *pCoeffs++;
+  90:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+  91:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     /* Reading the state values */
+  92:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     Xn1 = pState[0];
+  93:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     Xn2 = pState[1];
+  94:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     Yn1 = pState[2];
+  95:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     Yn2 = pState[3];
+  96:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+  97:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     /* Apply loop unrolling and compute 4 output values simultaneously. */
+  98:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     /*      The variables acc ... acc3 hold output values that are being computed:
+  99:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****      *
+ 100:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****      *    acc =  b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] + a1 * y[n-1] + a2 * y[n-2]
+ 101:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****      */
+ 102:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 103:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     sample = blockSize >> 2U;
+ 104:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 105:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     /* First part of the processing with loop unrolling.  Compute 4 outputs at a time.
+ 106:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****      ** a second loop below computes the remaining 1 to 3 samples. */
+ 107:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     while (sample > 0U)
+ 108:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     {
+ 109:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Read the input */
+ 110:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Xn = *pIn;
+  87              		.loc 1 110 7 is_stmt 1 view .LVU19
+  88              		.loc 1 110 10 is_stmt 0 view .LVU20
+  89 0028 DDF81490 		ldr	r9, [sp, #20]
+  90 002c D9F80020 		ldr	r2, [r9]
+  91              	.LVL9:
+ 111:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 112:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc =  b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] + a1 * y[n-1] + a2 * y[n-2] */
+ 113:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc =  b0 * x[n] */
+ 114:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) (((q63_t) b1 * Xn1) >> 32);*/
+ 115:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       mult_32x32_keep32_R(acc, b1, Xn1);
+  92              		.loc 1 115 7 is_stmt 1 view .LVU21
+  93 0030 4FEAEC73 		asr	r3, ip, #31
+  94              	.LVL10:
+  95              		.loc 1 115 7 is_stmt 0 view .LVU22
+  96 0034 4FEAE87B 		asr	fp, r8, #31
+  97 0038 0CFB0BF7 		mul	r7, ip, fp
+  98 003c 0793     		str	r3, [sp, #28]
+  99 003e 08FB0377 		mla	r7, r8, r3, r7
+ 100 0042 ACFB0834 		umull	r3, r4, ip, r8
+ 101 0046 13F10043 		adds	r3, r3, #-2147483648
+ 102 004a 47EB0407 		adc	r7, r7, r4
+ 103              	.LVL11:
+ 116:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  b1 * x[n-1] */
+ 117:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) b0 * (Xn))) >> 32);*/
+ 118:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, b0, Xn);
+ 104              		.loc 1 118 7 is_stmt 1 view .LVU23
+ 105 004e 0023     		movs	r3, #0
+ 106 0050 4FEAEE74 		asr	r4, lr, #31
+ 107 0054 D517     		asrs	r5, r2, #31
+ 108 0056 0D95     		str	r5, [sp, #52]
+ 109 0058 0EFB05F9 		mul	r9, lr, r5
+ 110 005c 0894     		str	r4, [sp, #32]
+ 111 005e 02FB0499 		mla	r9, r2, r4, r9
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 5
+
+
+ 112 0062 AEFB0245 		umull	r4, r5, lr, r2
+ 113 0066 4D44     		add	r5, r5, r9
+ 114 0068 1C19     		adds	r4, r3, r4
+ 115 006a 14F10044 		adds	r4, r4, #-2147483648
+ 116 006e 45EB0705 		adc	r5, r5, r7
+ 119:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  b[2] * x[n-2] */
+ 120:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) b2 * (Xn2))) >> 32);*/
+ 121:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, b2, Xn2);
+ 117              		.loc 1 121 7 view .LVU24
+ 118 0072 019C     		ldr	r4, [sp, #4]
+ 119 0074 E417     		asrs	r4, r4, #31
+ 120 0076 C717     		asrs	r7, r0, #31
+ 121 0078 0994     		str	r4, [sp, #36]
+ 122 007a 00FB04F4 		mul	r4, r0, r4
+ 123 007e DDF804A0 		ldr	r10, [sp, #4]
+ 124 0082 0AFB0744 		mla	r4, r10, r7, r4
+ 125 0086 A0FB0A07 		umull	r0, r7, r0, r10
+ 126              	.LVL12:
+ 127              		.loc 1 121 7 is_stmt 0 view .LVU25
+ 128 008a 2744     		add	r7, r7, r4
+ 129 008c 1818     		adds	r0, r3, r0
+ 130 008e 10F10040 		adds	r0, r0, #-2147483648
+ 131 0092 47EB0505 		adc	r5, r7, r5
+ 122:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  a1 * y[n-1] */
+ 123:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) a1 * (Yn1))) >> 32);*/
+ 124:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, a1, Yn1);
+ 132              		.loc 1 124 7 is_stmt 1 view .LVU26
+ 133 0096 029C     		ldr	r4, [sp, #8]
+ 134 0098 E017     		asrs	r0, r4, #31
+ 135 009a F717     		asrs	r7, r6, #31
+ 136 009c 04FB07F9 		mul	r9, r4, r7
+ 137 00a0 0A90     		str	r0, [sp, #40]
+ 138 00a2 06FB0099 		mla	r9, r6, r0, r9
+ 139 00a6 A4FB0604 		umull	r0, r4, r4, r6
+ 140 00aa 4C44     		add	r4, r4, r9
+ 141 00ac 1818     		adds	r0, r3, r0
+ 142 00ae 10F10040 		adds	r0, r0, #-2147483648
+ 143 00b2 44EB0504 		adc	r4, r4, r5
+ 125:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  a2 * y[n-2] */
+ 126:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) a2 * (Yn2))) >> 32);*/
+ 127:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, a2, Yn2);
+ 144              		.loc 1 127 7 view .LVU27
+ 145 00b6 0498     		ldr	r0, [sp, #16]
+ 146 00b8 C017     		asrs	r0, r0, #31
+ 147 00ba CD17     		asrs	r5, r1, #31
+ 148 00bc 0B90     		str	r0, [sp, #44]
+ 149 00be 01FB00F0 		mul	r0, r1, r0
+ 150 00c2 DDF81090 		ldr	r9, [sp, #16]
+ 151 00c6 09FB0500 		mla	r0, r9, r5, r0
+ 152 00ca A1FB0915 		umull	r1, r5, r1, r9
+ 153              	.LVL13:
+ 154              		.loc 1 127 7 is_stmt 0 view .LVU28
+ 155 00ce 0544     		add	r5, r5, r0
+ 156 00d0 5918     		adds	r1, r3, r1
+ 157 00d2 11F10041 		adds	r1, r1, #-2147483648
+ 158 00d6 45EB0405 		adc	r5, r5, r4
+ 159              	.LVL14:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 6
+
+
+ 128:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 129:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* The result is converted to 1.31 , Yn2 variable is reused */
+ 130:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Yn2 = acc << shift;
+ 160              		.loc 1 130 7 is_stmt 1 view .LVU29
+ 161              		.loc 1 130 11 is_stmt 0 view .LVU30
+ 162 00da 0699     		ldr	r1, [sp, #24]
+ 163 00dc 05FA01F1 		lsl	r1, r5, r1
+ 164              	.LVL15:
+ 131:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 132:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Read the second input */
+ 133:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Xn2 = *(pIn + 1U);
+ 165              		.loc 1 133 7 is_stmt 1 view .LVU31
+ 166              		.loc 1 133 11 is_stmt 0 view .LVU32
+ 167 00e0 0598     		ldr	r0, [sp, #20]
+ 168 00e2 4468     		ldr	r4, [r0, #4]
+ 169              	.LVL16:
+ 134:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 135:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Store the output in the destination buffer. */
+ 136:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       *pOut = Yn2;
+ 170              		.loc 1 136 7 is_stmt 1 view .LVU33
+ 171              		.loc 1 136 13 is_stmt 0 view .LVU34
+ 172 00e4 0398     		ldr	r0, [sp, #12]
+ 173 00e6 0160     		str	r1, [r0]
+ 137:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 138:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc =  b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] + a1 * y[n-1] + a2 * y[n-2] */
+ 139:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc =  b0 * x[n] */
+ 140:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) (((q63_t) b0 * (Xn2)) >> 32);*/
+ 141:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       mult_32x32_keep32_R(acc, b0, Xn2);
+ 174              		.loc 1 141 7 is_stmt 1 view .LVU35
+ 175 00e8 E017     		asrs	r0, r4, #31
+ 176 00ea 0E90     		str	r0, [sp, #56]
+ 177 00ec 0EFB00F9 		mul	r9, lr, r0
+ 178 00f0 089D     		ldr	r5, [sp, #32]
+ 179              	.LVL17:
+ 180              		.loc 1 141 7 is_stmt 0 view .LVU36
+ 181 00f2 04FB0599 		mla	r9, r4, r5, r9
+ 182 00f6 AEFB0405 		umull	r0, r5, lr, r4
+ 183 00fa 10F10040 		adds	r0, r0, #-2147483648
+ 184              		.loc 1 141 7 view .LVU37
+ 185 00fe 49EB0509 		adc	r9, r9, r5
+ 142:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  b1 * x[n-1] */
+ 143:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) b1 * (Xn))) >> 32);*/
+ 144:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, b1, Xn);
+ 186              		.loc 1 144 7 is_stmt 1 view .LVU38
+ 187 0102 0D9D     		ldr	r5, [sp, #52]
+ 188 0104 0CFB05FA 		mul	r10, ip, r5
+ 189 0108 079D     		ldr	r5, [sp, #28]
+ 190 010a 02FB05AA 		mla	r10, r2, r5, r10
+ 191 010e ACFB0205 		umull	r0, r5, ip, r2
+ 192 0112 5544     		add	r5, r5, r10
+ 193 0114 1818     		adds	r0, r3, r0
+ 194 0116 10F10040 		adds	r0, r0, #-2147483648
+ 195 011a 45EB0905 		adc	r5, r5, r9
+ 145:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  b[2] * x[n-2] */
+ 146:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) b2 * (Xn1))) >> 32);*/
+ 147:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, b2, Xn1);
+ 196              		.loc 1 147 7 view .LVU39
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 7
+
+
+ 197 011e DDF824A0 		ldr	r10, [sp, #36]
+ 198 0122 08FB0AF0 		mul	r0, r8, r10
+ 199 0126 DDF804A0 		ldr	r10, [sp, #4]
+ 200 012a 0AFB0B00 		mla	r0, r10, fp, r0
+ 201 012e A8FB0A89 		umull	r8, r9, r8, r10
+ 202              	.LVL18:
+ 203              		.loc 1 147 7 is_stmt 0 view .LVU40
+ 204 0132 8144     		add	r9, r9, r0
+ 205 0134 13EB0808 		adds	r8, r3, r8
+ 206 0138 18F10048 		adds	r8, r8, #-2147483648
+ 207 013c 49EB0509 		adc	r9, r9, r5
+ 148:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  a1 * y[n-1] */
+ 149:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) a1 * (Yn2))) >> 32);*/
+ 150:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, a1, Yn2);
+ 208              		.loc 1 150 7 is_stmt 1 view .LVU41
+ 209 0140 4FEAE178 		asr	r8, r1, #31
+ 210 0144 DDF808B0 		ldr	fp, [sp, #8]
+ 211 0148 0BFB08FA 		mul	r10, fp, r8
+ 212 014c 0A9D     		ldr	r5, [sp, #40]
+ 213 014e 01FB05AA 		mla	r10, r1, r5, r10
+ 214 0152 ABFB0105 		umull	r0, r5, fp, r1
+ 215 0156 5544     		add	r5, r5, r10
+ 216 0158 1818     		adds	r0, r3, r0
+ 217 015a 10F10040 		adds	r0, r0, #-2147483648
+ 218 015e 45EB0905 		adc	r5, r5, r9
+ 151:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  a2 * y[n-2] */
+ 152:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) a2 * (Yn1))) >> 32);*/
+ 153:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, a2, Yn1);
+ 219              		.loc 1 153 7 view .LVU42
+ 220 0162 DDF82CB0 		ldr	fp, [sp, #44]
+ 221 0166 06FB0BF0 		mul	r0, r6, fp
+ 222 016a DDF81090 		ldr	r9, [sp, #16]
+ 223 016e 09FB0700 		mla	r0, r9, r7, r0
+ 224 0172 A6FB0967 		umull	r6, r7, r6, r9
+ 225              	.LVL19:
+ 226              		.loc 1 153 7 is_stmt 0 view .LVU43
+ 227 0176 0744     		add	r7, r7, r0
+ 228 0178 9E19     		adds	r6, r3, r6
+ 229 017a 16F10046 		adds	r6, r6, #-2147483648
+ 230 017e 47EB0507 		adc	r7, r7, r5
+ 231              	.LVL20:
+ 154:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 155:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* The result is converted to 1.31, Yn1 variable is reused  */
+ 156:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Yn1 = acc << shift;
+ 232              		.loc 1 156 7 is_stmt 1 view .LVU44
+ 233              		.loc 1 156 11 is_stmt 0 view .LVU45
+ 234 0182 069E     		ldr	r6, [sp, #24]
+ 235 0184 07FA06F5 		lsl	r5, r7, r6
+ 236              	.LVL21:
+ 157:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 158:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Read the third input  */
+ 159:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Xn1 = *(pIn + 2U);
+ 237              		.loc 1 159 7 is_stmt 1 view .LVU46
+ 238              		.loc 1 159 11 is_stmt 0 view .LVU47
+ 239 0188 059F     		ldr	r7, [sp, #20]
+ 240              	.LVL22:
+ 241              		.loc 1 159 11 view .LVU48
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 8
+
+
+ 242 018a B868     		ldr	r0, [r7, #8]
+ 243              	.LVL23:
+ 160:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 161:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Store the output in the destination buffer. */
+ 162:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       *(pOut + 1U) = Yn1;
+ 244              		.loc 1 162 7 is_stmt 1 view .LVU49
+ 245              		.loc 1 162 20 is_stmt 0 view .LVU50
+ 246 018c 039E     		ldr	r6, [sp, #12]
+ 247 018e 7560     		str	r5, [r6, #4]
+ 163:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 164:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc =  b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] + a1 * y[n-1] + a2 * y[n-2] */
+ 165:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc =  b0 * x[n] */
+ 166:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) (((q63_t) b0 * (Xn1)) >> 32);*/
+ 167:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       mult_32x32_keep32_R(acc, b0, Xn1);
+ 248              		.loc 1 167 7 is_stmt 1 view .LVU51
+ 249 0190 C717     		asrs	r7, r0, #31
+ 250 0192 0EFB07FA 		mul	r10, lr, r7
+ 251 0196 089E     		ldr	r6, [sp, #32]
+ 252 0198 00FB06AA 		mla	r10, r0, r6, r10
+ 253 019c AEFB0069 		umull	r6, r9, lr, r0
+ 254 01a0 16F10046 		adds	r6, r6, #-2147483648
+ 255              		.loc 1 167 7 is_stmt 0 view .LVU52
+ 256 01a4 4AEB090A 		adc	r10, r10, r9
+ 168:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  b1 * x[n-1] */
+ 169:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) b1 * (Xn2))) >> 32);*/
+ 170:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, b1, Xn2);
+ 257              		.loc 1 170 7 is_stmt 1 view .LVU53
+ 258 01a8 DDF83890 		ldr	r9, [sp, #56]
+ 259 01ac 0CFB09FB 		mul	fp, ip, r9
+ 260 01b0 079E     		ldr	r6, [sp, #28]
+ 261 01b2 04FB06BB 		mla	fp, r4, r6, fp
+ 262 01b6 ACFB0469 		umull	r6, r9, ip, r4
+ 263 01ba D944     		add	r9, r9, fp
+ 264 01bc 9E19     		adds	r6, r3, r6
+ 265 01be 16F10046 		adds	r6, r6, #-2147483648
+ 266 01c2 49EB0A09 		adc	r9, r9, r10
+ 171:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  b[2] * x[n-2] */
+ 172:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) b2 * (Xn))) >> 32);*/
+ 173:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, b2, Xn);
+ 267              		.loc 1 173 7 view .LVU54
+ 268 01c6 DDF824B0 		ldr	fp, [sp, #36]
+ 269 01ca 02FB0BF6 		mul	r6, r2, fp
+ 270 01ce DDF834B0 		ldr	fp, [sp, #52]
+ 271 01d2 DDF804A0 		ldr	r10, [sp, #4]
+ 272 01d6 0AFB0B66 		mla	r6, r10, fp, r6
+ 273 01da A2FB0A2A 		umull	r2, r10, r2, r10
+ 274              	.LVL24:
+ 275              		.loc 1 173 7 is_stmt 0 view .LVU55
+ 276 01de B244     		add	r10, r10, r6
+ 277 01e0 9A18     		adds	r2, r3, r2
+ 278 01e2 12F10042 		adds	r2, r2, #-2147483648
+ 279 01e6 4AEB090A 		adc	r10, r10, r9
+ 174:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  a1 * y[n-1] */
+ 175:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) a1 * (Yn1))) >> 32);*/
+ 176:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, a1, Yn1);
+ 280              		.loc 1 176 7 is_stmt 1 view .LVU56
+ 281 01ea EA17     		asrs	r2, r5, #31
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 9
+
+
+ 282 01ec 029E     		ldr	r6, [sp, #8]
+ 283 01ee 06FB02FB 		mul	fp, r6, r2
+ 284 01f2 DDF82890 		ldr	r9, [sp, #40]
+ 285 01f6 05FB09BB 		mla	fp, r5, r9, fp
+ 286 01fa A6FB0569 		umull	r6, r9, r6, r5
+ 287 01fe D944     		add	r9, r9, fp
+ 288 0200 9E19     		adds	r6, r3, r6
+ 289 0202 16F10046 		adds	r6, r6, #-2147483648
+ 290 0206 49EB0A09 		adc	r9, r9, r10
+ 177:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  a2 * y[n-2] */
+ 178:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) a2 * (Yn2))) >> 32);*/
+ 179:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, a2, Yn2);
+ 291              		.loc 1 179 7 view .LVU57
+ 292 020a DDF810B0 		ldr	fp, [sp, #16]
+ 293 020e 0BFB08F8 		mul	r8, fp, r8
+ 294 0212 DDF82CA0 		ldr	r10, [sp, #44]
+ 295 0216 01FB0A88 		mla	r8, r1, r10, r8
+ 296 021a ABFB0116 		umull	r1, r6, fp, r1
+ 297              	.LVL25:
+ 298              		.loc 1 179 7 is_stmt 0 view .LVU58
+ 299 021e 4644     		add	r6, r6, r8
+ 300 0220 5918     		adds	r1, r3, r1
+ 301 0222 11F10041 		adds	r1, r1, #-2147483648
+ 302 0226 46EB0906 		adc	r6, r6, r9
+ 303              	.LVL26:
+ 180:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 181:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* The result is converted to 1.31, Yn2 variable is reused  */
+ 182:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Yn2 = acc << shift;
+ 304              		.loc 1 182 7 is_stmt 1 view .LVU59
+ 305              		.loc 1 182 11 is_stmt 0 view .LVU60
+ 306 022a 0699     		ldr	r1, [sp, #24]
+ 307 022c 06FA01F1 		lsl	r1, r6, r1
+ 308              	.LVL27:
+ 183:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 184:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Read the forth input */
+ 185:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Xn = *(pIn + 3U);
+ 309              		.loc 1 185 7 is_stmt 1 view .LVU61
+ 310              		.loc 1 185 10 is_stmt 0 view .LVU62
+ 311 0230 DDF81490 		ldr	r9, [sp, #20]
+ 312 0234 D9F80C80 		ldr	r8, [r9, #12]
+ 313              	.LVL28:
+ 186:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 187:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Store the output in the destination buffer. */
+ 188:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       *(pOut + 2U) = Yn2;
+ 314              		.loc 1 188 7 is_stmt 1 view .LVU63
+ 315              		.loc 1 188 20 is_stmt 0 view .LVU64
+ 316 0238 039E     		ldr	r6, [sp, #12]
+ 317              	.LVL29:
+ 318              		.loc 1 188 20 view .LVU65
+ 319 023a B160     		str	r1, [r6, #8]
+ 189:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       pIn += 4U;
+ 320              		.loc 1 189 7 is_stmt 1 view .LVU66
+ 321              		.loc 1 189 11 is_stmt 0 view .LVU67
+ 322 023c 09F1100A 		add	r10, r9, #16
+ 323              		.loc 1 189 11 view .LVU68
+ 324 0240 CDF814A0 		str	r10, [sp, #20]
+ 325              	.LVL30:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 10
+
+
+ 190:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 191:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc =  b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] + a1 * y[n-1] + a2 * y[n-2] */
+ 192:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc =  b0 * x[n] */
+ 193:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) (((q63_t) b0 * (Xn)) >> 32);*/
+ 194:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       mult_32x32_keep32_R(acc, b0, Xn);
+ 326              		.loc 1 194 7 is_stmt 1 view .LVU69
+ 327 0244 4FEAE879 		asr	r9, r8, #31
+ 328 0248 DDF820A0 		ldr	r10, [sp, #32]
+ 329              	.LVL31:
+ 330              		.loc 1 194 7 is_stmt 0 view .LVU70
+ 331 024c 08FB0AF6 		mul	r6, r8, r10
+ 332 0250 0EFB0966 		mla	r6, lr, r9, r6
+ 333 0254 A8FB0E9A 		umull	r9, r10, r8, lr
+ 334 0258 19F10049 		adds	r9, r9, #-2147483648
+ 335              		.loc 1 194 7 view .LVU71
+ 336 025c 46EB0A06 		adc	r6, r6, r10
+ 195:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  b1 * x[n-1] */
+ 196:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) b1 * (Xn1))) >> 32);*/
+ 197:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, b1, Xn1);
+ 337              		.loc 1 197 7 is_stmt 1 view .LVU72
+ 338 0260 0CFB07F7 		mul	r7, ip, r7
+ 339 0264 DDF81C90 		ldr	r9, [sp, #28]
+ 340 0268 00FB0977 		mla	r7, r0, r9, r7
+ 341 026c ACFB009A 		umull	r9, r10, ip, r0
+ 342 0270 BA44     		add	r10, r10, r7
+ 343 0272 13EB0909 		adds	r9, r3, r9
+ 344 0276 19F10049 		adds	r9, r9, #-2147483648
+ 345 027a 4AEB060A 		adc	r10, r10, r6
+ 198:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  b[2] * x[n-2] */
+ 199:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) b2 * (Xn2))) >> 32);*/
+ 200:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, b2, Xn2);
+ 346              		.loc 1 200 7 view .LVU73
+ 347 027e DDF83890 		ldr	r9, [sp, #56]
+ 348 0282 019F     		ldr	r7, [sp, #4]
+ 349 0284 07FB09F6 		mul	r6, r7, r9
+ 350 0288 DDF82490 		ldr	r9, [sp, #36]
+ 351 028c 04FB0966 		mla	r6, r4, r9, r6
+ 352 0290 A7FB0447 		umull	r4, r7, r7, r4
+ 353              	.LVL32:
+ 354              		.loc 1 200 7 is_stmt 0 view .LVU74
+ 355 0294 3744     		add	r7, r7, r6
+ 356 0296 1C19     		adds	r4, r3, r4
+ 357 0298 14F10044 		adds	r4, r4, #-2147483648
+ 358 029c 47EB0A0A 		adc	r10, r7, r10
+ 201:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  a1 * y[n-1] */
+ 202:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) a1 * (Yn2))) >> 32);*/
+ 203:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, a1, Yn2);
+ 359              		.loc 1 203 7 is_stmt 1 view .LVU75
+ 360 02a0 CE17     		asrs	r6, r1, #31
+ 361 02a2 DDF82890 		ldr	r9, [sp, #40]
+ 362 02a6 01FB09F4 		mul	r4, r1, r9
+ 363 02aa 029F     		ldr	r7, [sp, #8]
+ 364 02ac 07FB0644 		mla	r4, r7, r6, r4
+ 365 02b0 A1FB0767 		umull	r6, r7, r1, r7
+ 366 02b4 2744     		add	r7, r7, r4
+ 367 02b6 9E19     		adds	r6, r3, r6
+ 368 02b8 16F10046 		adds	r6, r6, #-2147483648
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 11
+
+
+ 369 02bc 47EB0A07 		adc	r7, r7, r10
+ 204:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  a2 * y[n-2] */
+ 205:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) a2 * (Yn1))) >> 32);*/
+ 206:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, a2, Yn1);
+ 370              		.loc 1 206 7 view .LVU76
+ 371 02c0 5C46     		mov	r4, fp
+ 372 02c2 04FB02F2 		mul	r2, r4, r2
+ 373 02c6 DDF82CA0 		ldr	r10, [sp, #44]
+ 374 02ca 05FB0A22 		mla	r2, r5, r10, r2
+ 375 02ce ABFB0556 		umull	r5, r6, fp, r5
+ 376              	.LVL33:
+ 377              		.loc 1 206 7 is_stmt 0 view .LVU77
+ 378 02d2 3244     		add	r2, r2, r6
+ 379 02d4 5B19     		adds	r3, r3, r5
+ 380 02d6 13F10043 		adds	r3, r3, #-2147483648
+ 381 02da 42EB0702 		adc	r2, r2, r7
+ 382              	.LVL34:
+ 207:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 208:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Every time after the output is computed state should be updated. */
+ 209:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* The states should be updated as:  */
+ 210:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Xn2 = Xn1    */
+ 211:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Xn2 = Xn1;
+ 383              		.loc 1 211 7 is_stmt 1 view .LVU78
+ 212:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 213:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* The result is converted to 1.31, Yn1 variable is reused  */
+ 214:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Yn1 = acc << shift;
+ 384              		.loc 1 214 7 view .LVU79
+ 385              		.loc 1 214 11 is_stmt 0 view .LVU80
+ 386 02de 069C     		ldr	r4, [sp, #24]
+ 387 02e0 02FA04F6 		lsl	r6, r2, r4
+ 388              	.LVL35:
+ 215:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 216:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Xn1 = Xn     */
+ 217:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Xn1 = Xn;
+ 389              		.loc 1 217 7 is_stmt 1 view .LVU81
+ 218:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 219:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Store the output in the destination buffer. */
+ 220:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       *(pOut + 3U) = Yn1;
+ 390              		.loc 1 220 7 view .LVU82
+ 391              		.loc 1 220 20 is_stmt 0 view .LVU83
+ 392 02e4 039B     		ldr	r3, [sp, #12]
+ 393 02e6 DE60     		str	r6, [r3, #12]
+ 221:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       pOut += 4U;
+ 394              		.loc 1 221 7 is_stmt 1 view .LVU84
+ 395              		.loc 1 221 12 is_stmt 0 view .LVU85
+ 396 02e8 1033     		adds	r3, r3, #16
+ 397 02ea 0393     		str	r3, [sp, #12]
+ 398              	.LVL36:
+ 222:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 223:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* decrement the loop counter */
+ 224:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       sample--;
+ 399              		.loc 1 224 7 is_stmt 1 view .LVU86
+ 400              		.loc 1 224 13 is_stmt 0 view .LVU87
+ 401 02ec 0C9B     		ldr	r3, [sp, #48]
+ 402              	.LVL37:
+ 403              		.loc 1 224 13 view .LVU88
+ 404 02ee 013B     		subs	r3, r3, #1
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 12
+
+
+ 405 02f0 0C93     		str	r3, [sp, #48]
+ 406              	.LVL38:
+ 407              	.L2:
+ 107:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     {
+ 408              		.loc 1 107 19 is_stmt 1 view .LVU89
+ 409 02f2 0C9B     		ldr	r3, [sp, #48]
+ 410 02f4 002B     		cmp	r3, #0
+ 411 02f6 7FF497AE 		bne	.L3
+ 225:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     }
+ 226:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 227:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     /* If the blockSize is not a multiple of 4, compute any remaining output samples here.
+ 228:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****      ** No loop unrolling is used. */
+ 229:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     sample = (blockSize & 0x3U);
+ 412              		.loc 1 229 12 is_stmt 0 view .LVU90
+ 413 02fa 8B46     		mov	fp, r1
+ 414 02fc 119B     		ldr	r3, [sp, #68]
+ 415 02fe 129A     		ldr	r2, [sp, #72]
+ 416              		.loc 1 229 5 is_stmt 1 view .LVU91
+ 417              		.loc 1 229 12 is_stmt 0 view .LVU92
+ 418 0300 1099     		ldr	r1, [sp, #64]
+ 419              	.LVL39:
+ 420              		.loc 1 229 12 view .LVU93
+ 421 0302 01F00307 		and	r7, r1, #3
+ 422              	.LVL40:
+ 230:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 231:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****    while (sample > 0U)
+ 423              		.loc 1 231 4 is_stmt 1 view .LVU94
+ 424 0306 B146     		mov	r9, r6
+ 425 0308 0793     		str	r3, [sp, #28]
+ 426 030a 0892     		str	r2, [sp, #32]
+ 427 030c 0246     		mov	r2, r0
+ 428 030e DDF810A0 		ldr	r10, [sp, #16]
+ 429 0312 059B     		ldr	r3, [sp, #20]
+ 430              		.loc 1 231 10 is_stmt 0 view .LVU95
+ 431 0314 5CE0     		b	.L4
+ 432              	.LVL41:
+ 433              	.L5:
+ 232:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****    {
+ 233:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Read the input */
+ 234:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Xn = *pIn++;
+ 434              		.loc 1 234 7 is_stmt 1 view .LVU96
+ 435              		.loc 1 234 10 is_stmt 0 view .LVU97
+ 436 0316 53F8045B 		ldr	r5, [r3], #4
+ 437              	.LVL42:
+ 438              		.loc 1 234 10 view .LVU98
+ 439 031a 0493     		str	r3, [sp, #16]
+ 440              	.LVL43:
+ 235:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 236:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc =  b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] + a1 * y[n-1] + a2 * y[n-2] */
+ 237:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc =  b0 * x[n] */
+ 238:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) (((q63_t) b0 * (Xn)) >> 32);*/
+ 239:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       mult_32x32_keep32_R(acc, b0, Xn);
+ 441              		.loc 1 239 7 is_stmt 1 view .LVU99
+ 442 031c 4FEAEE71 		asr	r1, lr, #31
+ 443 0320 EB17     		asrs	r3, r5, #31
+ 444              	.LVL44:
+ 445              		.loc 1 239 7 is_stmt 0 view .LVU100
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 13
+
+
+ 446 0322 05FB01F1 		mul	r1, r5, r1
+ 447 0326 0EFB0311 		mla	r1, lr, r3, r1
+ 448 032a A5FB0E30 		umull	r3, r0, r5, lr
+ 449 032e 13F10043 		adds	r3, r3, #-2147483648
+ 450 0332 41EB0001 		adc	r1, r1, r0
+ 451              	.LVL45:
+ 240:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  b1 * x[n-1] */
+ 241:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) b1 * (Xn1))) >> 32);*/
+ 242:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, b1, Xn1);
+ 452              		.loc 1 242 7 is_stmt 1 view .LVU101
+ 453 0336 0023     		movs	r3, #0
+ 454 0338 4FEAEC74 		asr	r4, ip, #31
+ 455 033c 4FEAE870 		asr	r0, r8, #31
+ 456 0340 08FB04F4 		mul	r4, r8, r4
+ 457 0344 0CFB0044 		mla	r4, ip, r0, r4
+ 458 0348 A8FB0C06 		umull	r0, r6, r8, ip
+ 459 034c 2644     		add	r6, r6, r4
+ 460 034e 1818     		adds	r0, r3, r0
+ 461 0350 10F10040 		adds	r0, r0, #-2147483648
+ 462 0354 46EB0106 		adc	r6, r6, r1
+ 243:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  b[2] * x[n-2] */
+ 244:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) b2 * (Xn2))) >> 32);*/
+ 245:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, b2, Xn2);
+ 463              		.loc 1 245 7 view .LVU102
+ 464 0358 019C     		ldr	r4, [sp, #4]
+ 465 035a E117     		asrs	r1, r4, #31
+ 466 035c D017     		asrs	r0, r2, #31
+ 467 035e 02FB01F1 		mul	r1, r2, r1
+ 468 0362 04FB0011 		mla	r1, r4, r0, r1
+ 469 0366 A2FB0420 		umull	r2, r0, r2, r4
+ 470              	.LVL46:
+ 471              		.loc 1 245 7 is_stmt 0 view .LVU103
+ 472 036a 0844     		add	r0, r0, r1
+ 473 036c 9A18     		adds	r2, r3, r2
+ 474 036e 12F10042 		adds	r2, r2, #-2147483648
+ 475 0372 40EB0606 		adc	r6, r0, r6
+ 246:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  a1 * y[n-1] */
+ 247:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) a1 * (Yn1))) >> 32);*/
+ 248:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, a1, Yn1);
+ 476              		.loc 1 248 7 is_stmt 1 view .LVU104
+ 477 0376 0298     		ldr	r0, [sp, #8]
+ 478 0378 C117     		asrs	r1, r0, #31
+ 479 037a 4FEAE972 		asr	r2, r9, #31
+ 480 037e 09FB01F1 		mul	r1, r9, r1
+ 481 0382 00FB0211 		mla	r1, r0, r2, r1
+ 482 0386 A9FB0020 		umull	r2, r0, r9, r0
+ 483 038a 0844     		add	r0, r0, r1
+ 484 038c 9A18     		adds	r2, r3, r2
+ 485 038e 12F10042 		adds	r2, r2, #-2147483648
+ 486 0392 40EB0600 		adc	r0, r0, r6
+ 249:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* acc +=  a2 * y[n-2] */
+ 250:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /*acc = (q31_t) ((((q63_t) acc << 32) + ((q63_t) a2 * (Yn2))) >> 32);*/
+ 251:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       multAcc_32x32_keep32_R(acc, a2, Yn2);
+ 487              		.loc 1 251 7 view .LVU105
+ 488 0396 4FEAEA72 		asr	r2, r10, #31
+ 489 039a 4FEAEB71 		asr	r1, fp, #31
+ 490 039e 0BFB02F2 		mul	r2, fp, r2
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 14
+
+
+ 491 03a2 0AFB0122 		mla	r2, r10, r1, r2
+ 492 03a6 ABFB0AB1 		umull	fp, r1, fp, r10
+ 493              	.LVL47:
+ 494              		.loc 1 251 7 is_stmt 0 view .LVU106
+ 495 03aa 0A44     		add	r2, r2, r1
+ 496 03ac 13EB0B03 		adds	r3, r3, fp
+ 497 03b0 13F10043 		adds	r3, r3, #-2147483648
+ 498 03b4 42EB0002 		adc	r2, r2, r0
+ 499              	.LVL48:
+ 252:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 253:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* The result is converted to 1.31  */
+ 254:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       acc = acc << shift;
+ 500              		.loc 1 254 7 is_stmt 1 view .LVU107
+ 501              		.loc 1 254 11 is_stmt 0 view .LVU108
+ 502 03b8 0699     		ldr	r1, [sp, #24]
+ 503 03ba 8A40     		lsls	r2, r2, r1
+ 504              	.LVL49:
+ 255:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 256:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Every time after the output is computed state should be updated. */
+ 257:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* The states should be updated as:  */
+ 258:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Xn2 = Xn1    */
+ 259:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Xn1 = Xn     */
+ 260:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Yn2 = Yn1    */
+ 261:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Yn1 = acc    */
+ 262:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Xn2 = Xn1;
+ 505              		.loc 1 262 7 is_stmt 1 view .LVU109
+ 263:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Xn1 = Xn;
+ 506              		.loc 1 263 7 view .LVU110
+ 264:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Yn2 = Yn1;
+ 507              		.loc 1 264 7 view .LVU111
+ 265:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Yn1 = acc;
+ 508              		.loc 1 265 7 view .LVU112
+ 266:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 267:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* Store the output in the destination buffer. */
+ 268:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       *pOut++ = acc;
+ 509              		.loc 1 268 7 view .LVU113
+ 510              		.loc 1 268 12 is_stmt 0 view .LVU114
+ 511 03bc 039B     		ldr	r3, [sp, #12]
+ 512              	.LVL50:
+ 513              		.loc 1 268 15 view .LVU115
+ 514 03be 43F8042B 		str	r2, [r3], #4
+ 515              	.LVL51:
+ 269:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 270:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       /* decrement the loop counter */
+ 271:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       sample--;
+ 516              		.loc 1 271 7 is_stmt 1 view .LVU116
+ 517              		.loc 1 271 13 is_stmt 0 view .LVU117
+ 518 03c2 013F     		subs	r7, r7, #1
+ 519              	.LVL52:
+ 268:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 520              		.loc 1 268 12 view .LVU118
+ 521 03c4 0393     		str	r3, [sp, #12]
+ 234:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 522              		.loc 1 234 16 view .LVU119
+ 523 03c6 049B     		ldr	r3, [sp, #16]
+ 524              	.LVL53:
+ 264:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Yn1 = acc;
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 15
+
+
+ 525              		.loc 1 264 11 view .LVU120
+ 526 03c8 CB46     		mov	fp, r9
+ 265:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 527              		.loc 1 265 11 view .LVU121
+ 528 03ca 9146     		mov	r9, r2
+ 529              	.LVL54:
+ 262:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Xn1 = Xn;
+ 530              		.loc 1 262 11 view .LVU122
+ 531 03cc 4246     		mov	r2, r8
+ 532              	.LVL55:
+ 263:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****       Yn2 = Yn1;
+ 533              		.loc 1 263 11 view .LVU123
+ 534 03ce A846     		mov	r8, r5
+ 535              	.LVL56:
+ 536              	.L4:
+ 231:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****    {
+ 537              		.loc 1 231 18 is_stmt 1 view .LVU124
+ 538 03d0 002F     		cmp	r7, #0
+ 539 03d2 A0D1     		bne	.L5
+ 272:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****    }
+ 273:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 274:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     /*  The first stage goes from the input buffer to the output buffer. */
+ 275:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     /*  Subsequent stages occur in-place in the output buffer */
+ 276:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     pIn = pDst;
+ 277:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 278:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     /* Reset to destination pointer */
+ 279:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     pOut = pDst;
+ 280:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 281:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     /*  Store the updated state variables back into the pState array */
+ 282:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     *pState++ = Xn1;
+ 540              		.loc 1 282 15 is_stmt 0 view .LVU125
+ 541 03d4 1146     		mov	r1, r2
+ 542 03d6 079B     		ldr	r3, [sp, #28]
+ 543              	.LVL57:
+ 544              		.loc 1 282 15 view .LVU126
+ 545 03d8 089A     		ldr	r2, [sp, #32]
+ 546              	.LVL58:
+ 276:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 547              		.loc 1 276 5 is_stmt 1 view .LVU127
+ 279:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 548              		.loc 1 279 5 view .LVU128
+ 549              		.loc 1 282 5 view .LVU129
+ 550              		.loc 1 282 15 is_stmt 0 view .LVU130
+ 551 03da C3F80080 		str	r8, [r3]
+ 283:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     *pState++ = Xn2;
+ 552              		.loc 1 283 5 is_stmt 1 view .LVU131
+ 553              	.LVL59:
+ 554              		.loc 1 283 15 is_stmt 0 view .LVU132
+ 555 03de 5960     		str	r1, [r3, #4]
+ 284:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     *pState++ = Yn1;
+ 556              		.loc 1 284 5 is_stmt 1 view .LVU133
+ 557              	.LVL60:
+ 558              		.loc 1 284 15 is_stmt 0 view .LVU134
+ 559 03e0 C3F80890 		str	r9, [r3, #8]
+ 285:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     *pState++ = Yn2;
+ 560              		.loc 1 285 5 is_stmt 1 view .LVU135
+ 561              		.loc 1 285 12 is_stmt 0 view .LVU136
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 16
+
+
+ 562 03e4 03F11000 		add	r0, r3, #16
+ 563              	.LVL61:
+ 564              		.loc 1 285 15 view .LVU137
+ 565 03e8 C3F80CB0 		str	fp, [r3, #12]
+ 286:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 287:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   } while (--stage);
+ 566              		.loc 1 287 12 is_stmt 1 view .LVU138
+ 567              	.LVL62:
+ 568              		.loc 1 287 12 is_stmt 0 view .LVU139
+ 569 03ec 0F9B     		ldr	r3, [sp, #60]
+ 570 03ee 013B     		subs	r3, r3, #1
+ 571              	.LVL63:
+ 572              		.loc 1 287 12 view .LVU140
+ 573 03f0 0F93     		str	r3, [sp, #60]
+ 574 03f2 1CD0     		beq	.L9
+ 285:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     *pState++ = Yn2;
+ 575              		.loc 1 285 12 view .LVU141
+ 576 03f4 0346     		mov	r3, r0
+ 577              	.LVL64:
+ 276:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 578              		.loc 1 276 9 view .LVU142
+ 579 03f6 1399     		ldr	r1, [sp, #76]
+ 580              	.LVL65:
+ 276:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 581              		.loc 1 276 9 view .LVU143
+ 582 03f8 0591     		str	r1, [sp, #20]
+ 583              	.LVL66:
+ 584              	.L6:
+  82:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****   {
+ 585              		.loc 1 82 3 is_stmt 1 view .LVU144
+  85:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     b1 = *pCoeffs++;
+ 586              		.loc 1 85 5 view .LVU145
+  85:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     b1 = *pCoeffs++;
+ 587              		.loc 1 85 8 is_stmt 0 view .LVU146
+ 588 03fa D2F800E0 		ldr	lr, [r2]
+ 589              	.LVL67:
+  86:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     b2 = *pCoeffs++;
+ 590              		.loc 1 86 5 is_stmt 1 view .LVU147
+  86:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     b2 = *pCoeffs++;
+ 591              		.loc 1 86 8 is_stmt 0 view .LVU148
+ 592 03fe D2F804C0 		ldr	ip, [r2, #4]
+ 593              	.LVL68:
+  87:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     a1 = *pCoeffs++;
+ 594              		.loc 1 87 5 is_stmt 1 view .LVU149
+  87:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     a1 = *pCoeffs++;
+ 595              		.loc 1 87 8 is_stmt 0 view .LVU150
+ 596 0402 9168     		ldr	r1, [r2, #8]
+ 597 0404 0191     		str	r1, [sp, #4]
+ 598              	.LVL69:
+  88:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     a2 = *pCoeffs++;
+ 599              		.loc 1 88 5 is_stmt 1 view .LVU151
+  88:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     a2 = *pCoeffs++;
+ 600              		.loc 1 88 8 is_stmt 0 view .LVU152
+ 601 0406 D168     		ldr	r1, [r2, #12]
+ 602              	.LVL70:
+  88:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     a2 = *pCoeffs++;
+ 603              		.loc 1 88 8 view .LVU153
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 17
+
+
+ 604 0408 0291     		str	r1, [sp, #8]
+ 605              	.LVL71:
+  89:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 606              		.loc 1 89 5 is_stmt 1 view .LVU154
+  89:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 607              		.loc 1 89 8 is_stmt 0 view .LVU155
+ 608 040a 1169     		ldr	r1, [r2, #16]
+ 609              	.LVL72:
+  89:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 610              		.loc 1 89 8 view .LVU156
+ 611 040c 0491     		str	r1, [sp, #16]
+ 612 040e 1432     		adds	r2, r2, #20
+ 613              	.LVL73:
+  92:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     Xn2 = pState[1];
+ 614              		.loc 1 92 5 is_stmt 1 view .LVU157
+  92:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     Xn2 = pState[1];
+ 615              		.loc 1 92 9 is_stmt 0 view .LVU158
+ 616 0410 D3F80080 		ldr	r8, [r3]
+ 617              	.LVL74:
+  93:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     Yn1 = pState[2];
+ 618              		.loc 1 93 5 is_stmt 1 view .LVU159
+  93:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     Yn1 = pState[2];
+ 619              		.loc 1 93 9 is_stmt 0 view .LVU160
+ 620 0414 5868     		ldr	r0, [r3, #4]
+ 621              	.LVL75:
+  94:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     Yn2 = pState[3];
+ 622              		.loc 1 94 5 is_stmt 1 view .LVU161
+  94:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     Yn2 = pState[3];
+ 623              		.loc 1 94 9 is_stmt 0 view .LVU162
+ 624 0416 9E68     		ldr	r6, [r3, #8]
+ 625              	.LVL76:
+  95:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 626              		.loc 1 95 5 is_stmt 1 view .LVU163
+  95:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 627              		.loc 1 95 9 is_stmt 0 view .LVU164
+ 628 0418 D3F80CB0 		ldr	fp, [r3, #12]
+ 629              	.LVL77:
+ 103:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 630              		.loc 1 103 5 is_stmt 1 view .LVU165
+ 103:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 631              		.loc 1 103 12 is_stmt 0 view .LVU166
+ 632 041c 1099     		ldr	r1, [sp, #64]
+ 633              	.LVL78:
+ 103:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** 
+ 634              		.loc 1 103 12 view .LVU167
+ 635 041e 8908     		lsrs	r1, r1, #2
+ 636 0420 0C91     		str	r1, [sp, #48]
+ 637              	.LVL79:
+ 107:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     {
+ 638              		.loc 1 107 5 is_stmt 1 view .LVU168
+ 107:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     {
+ 639              		.loc 1 107 11 is_stmt 0 view .LVU169
+ 640 0422 1399     		ldr	r1, [sp, #76]
+ 641              	.LVL80:
+ 107:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c ****     {
+ 642              		.loc 1 107 11 view .LVU170
+ 643 0424 0391     		str	r1, [sp, #12]
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 18
+
+
+ 644 0426 5946     		mov	r1, fp
+ 645 0428 1193     		str	r3, [sp, #68]
+ 646 042a 1292     		str	r2, [sp, #72]
+ 647 042c 61E7     		b	.L2
+ 648              	.LVL81:
+ 649              	.L9:
+ 288:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q31.c **** }
+ 650              		.loc 1 288 1 view .LVU171
+ 651 042e 15B0     		add	sp, sp, #84
+ 652              	.LCFI2:
+ 653              		.cfi_def_cfa_offset 36
+ 654              		@ sp needed
+ 655 0430 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 656              		.loc 1 288 1 view .LVU172
+ 657              		.cfi_endproc
+ 658              	.LFE100:
+ 660              		.text
+ 661              	.Letext0:
+ 662              		.file 2 "C:/ARM GNU Toolchain/arm-none-eabi/include/machine/_default_types.h"
+ 663              		.file 3 "C:/ARM GNU Toolchain/arm-none-eabi/include/sys/_stdint.h"
+ 664              		.file 4 "Drivers/CMSIS/DSP/Include/arm_math.h"
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s 			page 19
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 arm_biquad_cascade_df1_fast_q31.c
+C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s:19     .text.arm_biquad_cascade_df1_fast_q31:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\cc5HRYaf.s:25     .text.arm_biquad_cascade_df1_fast_q31:00000000 arm_biquad_cascade_df1_fast_q31
+
+NO UNDEFINED SYMBOLS

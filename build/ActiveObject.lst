@@ -1,0 +1,337 @@
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"ActiveObject.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Core/Src/Middleware/ActiveObject.c"
+  18              		.section	.text.LoopEvent,"ax",%progbits
+  19              		.align	1
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	LoopEvent:
+  25              	.LFB70:
+   1:Core/Src/Middleware/ActiveObject.c **** #include "ActiveObject.h"
+   2:Core/Src/Middleware/ActiveObject.c **** 
+   3:Core/Src/Middleware/ActiveObject.c **** static void LoopEvent (void *pvParameters) {
+  26              		.loc 1 3 44 view -0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              		@ link register save eliminated.
+  31              	.LVL0:
+  32              	.L2:
+   4:Core/Src/Middleware/ActiveObject.c ****     ActiveObject * AO_Instance = (ActiveObject *) pvParameters;
+   5:Core/Src/Middleware/ActiveObject.c ****     while (1) {
+  33              		.loc 1 5 5 view .LVU1
+   6:Core/Src/Middleware/ActiveObject.c **** 
+   7:Core/Src/Middleware/ActiveObject.c ****     }
+  34              		.loc 1 7 5 view .LVU2
+   5:Core/Src/Middleware/ActiveObject.c **** 
+  35              		.loc 1 5 11 view .LVU3
+  36 0000 FEE7     		b	.L2
+  37              		.cfi_endproc
+  38              	.LFE70:
+  40              		.section	.text.PostFromISR,"ax",%progbits
+  41              		.align	1
+  42              		.syntax unified
+  43              		.thumb
+  44              		.thumb_func
+  46              	PostFromISR:
+  47              	.LVL1:
+  48              	.LFB73:
+   8:Core/Src/Middleware/ActiveObject.c **** }
+   9:Core/Src/Middleware/ActiveObject.c **** 
+  10:Core/Src/Middleware/ActiveObject.c **** static void Create (ActiveObject * const self, uint16_t StackSize, uint8_t Priority, UBaseType_t Qu
+  11:Core/Src/Middleware/ActiveObject.c ****     uint16_t StackDepth = StackSize / sizeof(StackType_t);
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s 			page 2
+
+
+  12:Core/Src/Middleware/ActiveObject.c **** 
+  13:Core/Src/Middleware/ActiveObject.c ****     self->Queue = xQueueCreate(QueueLength, sizeof(Event *));
+  14:Core/Src/Middleware/ActiveObject.c ****     xTaskCreate(self->vptr->loopEvent, "ActiveObject", StackDepth, self, Priority + tskIDLE_PRIORIT
+  15:Core/Src/Middleware/ActiveObject.c **** }
+  16:Core/Src/Middleware/ActiveObject.c **** 
+  17:Core/Src/Middleware/ActiveObject.c **** static void Post (ActiveObject const * const self, Event const * const event) {
+  18:Core/Src/Middleware/ActiveObject.c ****     xQueueSendToBack(self->Queue, (void *) &event, (TickType_t) 0);
+  19:Core/Src/Middleware/ActiveObject.c **** }
+  20:Core/Src/Middleware/ActiveObject.c **** static void PostFromISR (ActiveObject const * const self, Event const * const event, BaseType_t * p
+  49              		.loc 1 20 126 view -0
+  50              		.cfi_startproc
+  51              		@ args = 0, pretend = 0, frame = 8
+  52              		@ frame_needed = 0, uses_anonymous_args = 0
+  53              		.loc 1 20 126 is_stmt 0 view .LVU5
+  54 0000 00B5     		push	{lr}
+  55              	.LCFI0:
+  56              		.cfi_def_cfa_offset 4
+  57              		.cfi_offset 14, -4
+  58 0002 83B0     		sub	sp, sp, #12
+  59              	.LCFI1:
+  60              		.cfi_def_cfa_offset 16
+  61 0004 0191     		str	r1, [sp, #4]
+  21:Core/Src/Middleware/ActiveObject.c ****     xQueueSendToBackFromISR(self->Queue, (void *) &event, pxHigherPriorityTaskWoken);
+  62              		.loc 1 21 5 is_stmt 1 view .LVU6
+  63 0006 0023     		movs	r3, #0
+  64 0008 01A9     		add	r1, sp, #4
+  65              	.LVL2:
+  66              		.loc 1 21 5 is_stmt 0 view .LVU7
+  67 000a 8068     		ldr	r0, [r0, #8]
+  68              	.LVL3:
+  69              		.loc 1 21 5 view .LVU8
+  70 000c FFF7FEFF 		bl	xQueueGenericSendFromISR
+  71              	.LVL4:
+  22:Core/Src/Middleware/ActiveObject.c **** }
+  72              		.loc 1 22 1 view .LVU9
+  73 0010 03B0     		add	sp, sp, #12
+  74              	.LCFI2:
+  75              		.cfi_def_cfa_offset 4
+  76              		@ sp needed
+  77 0012 5DF804FB 		ldr	pc, [sp], #4
+  78              		.cfi_endproc
+  79              	.LFE73:
+  81              		.section	.text.Post,"ax",%progbits
+  82              		.align	1
+  83              		.syntax unified
+  84              		.thumb
+  85              		.thumb_func
+  87              	Post:
+  88              	.LVL5:
+  89              	.LFB72:
+  17:Core/Src/Middleware/ActiveObject.c ****     xQueueSendToBack(self->Queue, (void *) &event, (TickType_t) 0);
+  90              		.loc 1 17 79 is_stmt 1 view -0
+  91              		.cfi_startproc
+  92              		@ args = 0, pretend = 0, frame = 8
+  93              		@ frame_needed = 0, uses_anonymous_args = 0
+  17:Core/Src/Middleware/ActiveObject.c ****     xQueueSendToBack(self->Queue, (void *) &event, (TickType_t) 0);
+  94              		.loc 1 17 79 is_stmt 0 view .LVU11
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s 			page 3
+
+
+  95 0000 00B5     		push	{lr}
+  96              	.LCFI3:
+  97              		.cfi_def_cfa_offset 4
+  98              		.cfi_offset 14, -4
+  99 0002 83B0     		sub	sp, sp, #12
+ 100              	.LCFI4:
+ 101              		.cfi_def_cfa_offset 16
+ 102 0004 0191     		str	r1, [sp, #4]
+  18:Core/Src/Middleware/ActiveObject.c **** }
+ 103              		.loc 1 18 5 is_stmt 1 view .LVU12
+ 104 0006 0023     		movs	r3, #0
+ 105 0008 1A46     		mov	r2, r3
+ 106 000a 01A9     		add	r1, sp, #4
+ 107              	.LVL6:
+  18:Core/Src/Middleware/ActiveObject.c **** }
+ 108              		.loc 1 18 5 is_stmt 0 view .LVU13
+ 109 000c 8068     		ldr	r0, [r0, #8]
+ 110              	.LVL7:
+  18:Core/Src/Middleware/ActiveObject.c **** }
+ 111              		.loc 1 18 5 view .LVU14
+ 112 000e FFF7FEFF 		bl	xQueueGenericSend
+ 113              	.LVL8:
+  19:Core/Src/Middleware/ActiveObject.c **** static void PostFromISR (ActiveObject const * const self, Event const * const event, BaseType_t * p
+ 114              		.loc 1 19 1 view .LVU15
+ 115 0012 03B0     		add	sp, sp, #12
+ 116              	.LCFI5:
+ 117              		.cfi_def_cfa_offset 4
+ 118              		@ sp needed
+ 119 0014 5DF804FB 		ldr	pc, [sp], #4
+ 120              		.cfi_endproc
+ 121              	.LFE72:
+ 123              		.section	.rodata.Create.str1.4,"aMS",%progbits,1
+ 124              		.align	2
+ 125              	.LC0:
+ 126 0000 41637469 		.ascii	"ActiveObject\000"
+ 126      76654F62 
+ 126      6A656374 
+ 126      00
+ 127              		.section	.text.Create,"ax",%progbits
+ 128              		.align	1
+ 129              		.syntax unified
+ 130              		.thumb
+ 131              		.thumb_func
+ 133              	Create:
+ 134              	.LVL9:
+ 135              	.LFB71:
+  10:Core/Src/Middleware/ActiveObject.c ****     uint16_t StackDepth = StackSize / sizeof(StackType_t);
+ 136              		.loc 1 10 111 is_stmt 1 view -0
+ 137              		.cfi_startproc
+ 138              		@ args = 0, pretend = 0, frame = 0
+ 139              		@ frame_needed = 0, uses_anonymous_args = 0
+  10:Core/Src/Middleware/ActiveObject.c ****     uint16_t StackDepth = StackSize / sizeof(StackType_t);
+ 140              		.loc 1 10 111 is_stmt 0 view .LVU17
+ 141 0000 70B5     		push	{r4, r5, r6, lr}
+ 142              	.LCFI6:
+ 143              		.cfi_def_cfa_offset 16
+ 144              		.cfi_offset 4, -16
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s 			page 4
+
+
+ 145              		.cfi_offset 5, -12
+ 146              		.cfi_offset 6, -8
+ 147              		.cfi_offset 14, -4
+ 148 0002 82B0     		sub	sp, sp, #8
+ 149              	.LCFI7:
+ 150              		.cfi_def_cfa_offset 24
+ 151 0004 0446     		mov	r4, r0
+ 152 0006 1646     		mov	r6, r2
+  11:Core/Src/Middleware/ActiveObject.c **** 
+ 153              		.loc 1 11 5 is_stmt 1 view .LVU18
+  11:Core/Src/Middleware/ActiveObject.c **** 
+ 154              		.loc 1 11 14 is_stmt 0 view .LVU19
+ 155 0008 8D08     		lsrs	r5, r1, #2
+ 156              	.LVL10:
+  13:Core/Src/Middleware/ActiveObject.c ****     xTaskCreate(self->vptr->loopEvent, "ActiveObject", StackDepth, self, Priority + tskIDLE_PRIORIT
+ 157              		.loc 1 13 5 is_stmt 1 view .LVU20
+  13:Core/Src/Middleware/ActiveObject.c ****     xTaskCreate(self->vptr->loopEvent, "ActiveObject", StackDepth, self, Priority + tskIDLE_PRIORIT
+ 158              		.loc 1 13 19 is_stmt 0 view .LVU21
+ 159 000a 0022     		movs	r2, #0
+ 160              	.LVL11:
+  13:Core/Src/Middleware/ActiveObject.c ****     xTaskCreate(self->vptr->loopEvent, "ActiveObject", StackDepth, self, Priority + tskIDLE_PRIORIT
+ 161              		.loc 1 13 19 view .LVU22
+ 162 000c 0421     		movs	r1, #4
+ 163              	.LVL12:
+  13:Core/Src/Middleware/ActiveObject.c ****     xTaskCreate(self->vptr->loopEvent, "ActiveObject", StackDepth, self, Priority + tskIDLE_PRIORIT
+ 164              		.loc 1 13 19 view .LVU23
+ 165 000e 1846     		mov	r0, r3
+ 166              	.LVL13:
+  13:Core/Src/Middleware/ActiveObject.c ****     xTaskCreate(self->vptr->loopEvent, "ActiveObject", StackDepth, self, Priority + tskIDLE_PRIORIT
+ 167              		.loc 1 13 19 view .LVU24
+ 168 0010 FFF7FEFF 		bl	xQueueGenericCreate
+ 169              	.LVL14:
+  13:Core/Src/Middleware/ActiveObject.c ****     xTaskCreate(self->vptr->loopEvent, "ActiveObject", StackDepth, self, Priority + tskIDLE_PRIORIT
+ 170              		.loc 1 13 17 discriminator 1 view .LVU25
+ 171 0014 A060     		str	r0, [r4, #8]
+  14:Core/Src/Middleware/ActiveObject.c **** }
+ 172              		.loc 1 14 5 is_stmt 1 view .LVU26
+  14:Core/Src/Middleware/ActiveObject.c **** }
+ 173              		.loc 1 14 21 is_stmt 0 view .LVU27
+ 174 0016 2346     		mov	r3, r4
+ 175 0018 53F8042B 		ldr	r2, [r3], #4
+  14:Core/Src/Middleware/ActiveObject.c **** }
+ 176              		.loc 1 14 27 view .LVU28
+ 177 001c 5068     		ldr	r0, [r2, #4]
+  14:Core/Src/Middleware/ActiveObject.c **** }
+ 178              		.loc 1 14 5 view .LVU29
+ 179 001e 0193     		str	r3, [sp, #4]
+ 180 0020 0096     		str	r6, [sp]
+ 181 0022 2346     		mov	r3, r4
+ 182 0024 2A46     		mov	r2, r5
+ 183 0026 0249     		ldr	r1, .L9
+ 184 0028 FFF7FEFF 		bl	xTaskCreate
+ 185              	.LVL15:
+  15:Core/Src/Middleware/ActiveObject.c **** 
+ 186              		.loc 1 15 1 view .LVU30
+ 187 002c 02B0     		add	sp, sp, #8
+ 188              	.LCFI8:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s 			page 5
+
+
+ 189              		.cfi_def_cfa_offset 16
+ 190              		@ sp needed
+ 191 002e 70BD     		pop	{r4, r5, r6, pc}
+ 192              	.LVL16:
+ 193              	.L10:
+  15:Core/Src/Middleware/ActiveObject.c **** 
+ 194              		.loc 1 15 1 view .LVU31
+ 195              		.align	2
+ 196              	.L9:
+ 197 0030 00000000 		.word	.LC0
+ 198              		.cfi_endproc
+ 199              	.LFE71:
+ 201              		.section	.text.AO_Init,"ax",%progbits
+ 202              		.align	1
+ 203              		.global	AO_Init
+ 204              		.syntax unified
+ 205              		.thumb
+ 206              		.thumb_func
+ 208              	AO_Init:
+ 209              	.LVL17:
+ 210              	.LFB74:
+  23:Core/Src/Middleware/ActiveObject.c **** 
+  24:Core/Src/Middleware/ActiveObject.c **** void AO_Init (ActiveObject * const self) {
+ 211              		.loc 1 24 42 is_stmt 1 view -0
+ 212              		.cfi_startproc
+ 213              		@ args = 0, pretend = 0, frame = 0
+ 214              		@ frame_needed = 0, uses_anonymous_args = 0
+ 215              		@ link register save eliminated.
+  25:Core/Src/Middleware/ActiveObject.c ****     static const struct AOvtable vtable = {
+ 216              		.loc 1 25 5 view .LVU33
+  26:Core/Src/Middleware/ActiveObject.c ****         &Create,
+  27:Core/Src/Middleware/ActiveObject.c ****         &LoopEvent,
+  28:Core/Src/Middleware/ActiveObject.c ****         &Post,
+  29:Core/Src/Middleware/ActiveObject.c ****         &PostFromISR
+  30:Core/Src/Middleware/ActiveObject.c ****     };
+  31:Core/Src/Middleware/ActiveObject.c ****     self->vptr = &vtable;
+ 217              		.loc 1 31 5 view .LVU34
+ 218              		.loc 1 31 16 is_stmt 0 view .LVU35
+ 219 0000 014B     		ldr	r3, .L12
+ 220 0002 0360     		str	r3, [r0]
+  32:Core/Src/Middleware/ActiveObject.c **** }...
+ 221              		.loc 1 32 1 view .LVU36
+ 222 0004 7047     		bx	lr
+ 223              	.L13:
+ 224 0006 00BF     		.align	2
+ 225              	.L12:
+ 226 0008 00000000 		.word	vtable.0
+ 227              		.cfi_endproc
+ 228              	.LFE74:
+ 230              		.section	.rodata.vtable.0,"a"
+ 231              		.align	2
+ 234              	vtable.0:
+ 235 0000 00000000 		.word	Create
+ 236 0004 00000000 		.word	LoopEvent
+ 237 0008 00000000 		.word	Post
+ 238 000c 00000000 		.word	PostFromISR
+ 239              		.text
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s 			page 6
+
+
+ 240              	.Letext0:
+ 241              		.file 2 "C:/ARM GNU Toolchain/arm-none-eabi/include/machine/_default_types.h"
+ 242              		.file 3 "C:/ARM GNU Toolchain/arm-none-eabi/include/sys/_stdint.h"
+ 243              		.file 4 "ThirdParty/FreeRTOS/include/projdefs.h"
+ 244              		.file 5 "ThirdParty/FreeRTOS/portable/GCC/ARM_CM3/portmacro.h"
+ 245              		.file 6 "ThirdParty/FreeRTOS/include/task.h"
+ 246              		.file 7 "ThirdParty/FreeRTOS/include/queue.h"
+ 247              		.file 8 "Core/Src/Middleware/ActiveObject.h"
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 ActiveObject.c
+C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s:19     .text.LoopEvent:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s:24     .text.LoopEvent:00000000 LoopEvent
+C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s:41     .text.PostFromISR:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s:46     .text.PostFromISR:00000000 PostFromISR
+C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s:82     .text.Post:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s:87     .text.Post:00000000 Post
+C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s:124    .rodata.Create.str1.4:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s:128    .text.Create:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s:133    .text.Create:00000000 Create
+C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s:197    .text.Create:00000030 $d
+C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s:202    .text.AO_Init:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s:208    .text.AO_Init:00000000 AO_Init
+C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s:226    .text.AO_Init:00000008 $d
+C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s:234    .rodata.vtable.0:00000000 vtable.0
+C:\Users\Lamp\AppData\Local\Temp\ccZXtt1W.s:231    .rodata.vtable.0:00000000 $d
+
+UNDEFINED SYMBOLS
+xQueueGenericSendFromISR
+xQueueGenericSend
+xQueueGenericCreate
+xTaskCreate

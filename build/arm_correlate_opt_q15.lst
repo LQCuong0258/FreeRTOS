@@ -1,0 +1,2584 @@
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_correlate_opt_q15.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c"
+  18              		.section	.text.arm_correlate_opt_q15,"ax",%progbits
+  19              		.align	1
+  20              		.global	arm_correlate_opt_q15
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	arm_correlate_opt_q15:
+  26              	.LVL0:
+  27              	.LFB100:
+   1:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** /* ----------------------------------------------------------------------
+   2:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * Project:      CMSIS DSP Library
+   3:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * Title:        arm_correlate_opt_q15.c
+   4:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * Description:  Correlation of Q15 sequences
+   5:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  *
+   6:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * $Date:        27. January 2017
+   7:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * $Revision:    V.1.5.1
+   8:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  *
+   9:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * Target Processor: Cortex-M cores
+  10:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * -------------------------------------------------------------------- */
+  11:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** /*
+  12:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * Copyright (C) 2010-2017 ARM Limited or its affiliates. All rights reserved.
+  13:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  *
+  14:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * SPDX-License-Identifier: Apache-2.0
+  15:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  *
+  16:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  17:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * not use this file except in compliance with the License.
+  18:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * You may obtain a copy of the License at
+  19:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  *
+  20:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * www.apache.org/licenses/LICENSE-2.0
+  21:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  *
+  22:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * Unless required by applicable law or agreed to in writing, software
+  23:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  24:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  25:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * See the License for the specific language governing permissions and
+  26:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * limitations under the License.
+  27:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  */
+  28:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+  29:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #include "arm_math.h"
+  30:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+  31:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** /**
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 2
+
+
+  32:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * @ingroup groupFilters
+  33:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  */
+  34:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+  35:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** /**
+  36:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * @addtogroup Corr
+  37:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * @{
+  38:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  */
+  39:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+  40:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** /**
+  41:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * @brief Correlation of Q15 sequences.
+  42:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * @param[in] *pSrcA points to the first input sequence.
+  43:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * @param[in] srcALen length of the first input sequence.
+  44:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * @param[in] *pSrcB points to the second input sequence.
+  45:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * @param[in] srcBLen length of the second input sequence.
+  46:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * @param[out] *pDst points to the location where the output result is written.  Length 2 * max(src
+  47:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * @param[in]  *pScratch points to scratch buffer of size max(srcALen, srcBLen) + 2*min(srcALen, sr
+  48:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * @return none.
+  49:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  *
+  50:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * \par Restrictions
+  51:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  *  If the silicon does not support unaligned memory access enable the macro UNALIGNED_SUPPORT_DISA
+  52:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  *	In this case input, output, scratch buffers should be aligned by 32-bit
+  53:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  *
+  54:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * @details
+  55:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * <b>Scaling and Overflow Behavior:</b>
+  56:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  *
+  57:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * \par
+  58:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * The function is implemented using a 64-bit internal accumulator.
+  59:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * Both inputs are in 1.15 format and multiplications yield a 2.30 result.
+  60:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * The 2.30 intermediate results are accumulated in a 64-bit accumulator in 34.30 format.
+  61:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * This approach provides 33 guard bits and there is no risk of overflow.
+  62:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * The 34.30 result is then truncated to 34.15 format by discarding the low 15 bits and then satura
+  63:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  *
+  64:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * \par
+  65:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  * Refer to <code>arm_correlate_fast_q15()</code> for a faster but less precise version of this fun
+  66:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  *
+  67:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  *
+  68:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****  */
+  69:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+  70:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+  71:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** void arm_correlate_opt_q15(
+  72:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   q15_t * pSrcA,
+  73:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   uint32_t srcALen,
+  74:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   q15_t * pSrcB,
+  75:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   uint32_t srcBLen,
+  76:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   q15_t * pDst,
+  77:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   q15_t * pScratch)
+  78:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** {
+  28              		.loc 1 78 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 8, pretend = 0, frame = 64
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		.loc 1 78 1 is_stmt 0 view .LVU1
+  33 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 36
+  36              		.cfi_offset 4, -36
+  37              		.cfi_offset 5, -32
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 3
+
+
+  38              		.cfi_offset 6, -28
+  39              		.cfi_offset 7, -24
+  40              		.cfi_offset 8, -20
+  41              		.cfi_offset 9, -16
+  42              		.cfi_offset 10, -12
+  43              		.cfi_offset 11, -8
+  44              		.cfi_offset 14, -4
+  45 0004 91B0     		sub	sp, sp, #68
+  46              	.LCFI1:
+  47              		.cfi_def_cfa_offset 104
+  48 0006 8246     		mov	r10, r0
+  49 0008 0E46     		mov	r6, r1
+  50 000a 0992     		str	r2, [sp, #36]
+  51 000c 0E93     		str	r3, [sp, #56]
+  52 000e 1B9F     		ldr	r7, [sp, #108]
+  79:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   q15_t *pIn1;                                   /* inputA pointer               */
+  53              		.loc 1 79 3 is_stmt 1 view .LVU2
+  80:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   q15_t *pIn2;                                   /* inputB pointer               */
+  54              		.loc 1 80 3 view .LVU3
+  81:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   q63_t acc0, acc1, acc2, acc3;                  /* Accumulators                  */
+  55              		.loc 1 81 3 view .LVU4
+  82:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   q15_t *py;                                     /* Intermediate inputB pointer  */
+  56              		.loc 1 82 3 view .LVU5
+  83:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   q31_t x1, x2, x3;                              /* temporary variables for holding input1 and inpu
+  57              		.loc 1 83 3 view .LVU6
+  84:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   uint32_t j, blkCnt, outBlockSize;              /* loop counter                 */
+  58              		.loc 1 84 3 view .LVU7
+  85:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   int32_t inc = 1;                               /* output pointer increment     */
+  59              		.loc 1 85 3 view .LVU8
+  60              	.LVL1:
+  86:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   uint32_t tapCnt;
+  61              		.loc 1 86 3 view .LVU9
+  87:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   q31_t y1, y2;
+  62              		.loc 1 87 3 view .LVU10
+  88:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   q15_t *pScr;                                   /* Intermediate pointers        */
+  63              		.loc 1 88 3 view .LVU11
+  89:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   q15_t *pOut = pDst;                            /* output pointer               */
+  64              		.loc 1 89 3 view .LVU12
+  90:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #ifdef UNALIGNED_SUPPORT_DISABLE
+  91:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+  92:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   q15_t a, b;
+  93:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+  94:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #endif	/*	#ifndef UNALIGNED_SUPPORT_DISABLE	*/
+  95:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+  96:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* The algorithm implementation is based on the lengths of the inputs. */
+  97:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* srcB is always made to slide across srcA. */
+  98:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* So srcBLen is always considered as shorter or equal to srcALen */
+  99:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* But CORR(x, y) is reverse of CORR(y, x) */
+ 100:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* So, when srcBLen > srcALen, output pointer is made to point to the end of the output buffer */
+ 101:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* and the destination pointer modifier, inc is set to -1 */
+ 102:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* If srcALen > srcBLen, zero pad has to be done to srcB to make the two inputs of same length */
+ 103:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* But to improve the performance,
+ 104:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****    * we include zeroes in the output instead of zero padding either of the the inputs*/
+ 105:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* If srcALen > srcBLen,
+ 106:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****    * (srcALen - srcBLen) zeroes has to included in the starting of the output buffer */
+ 107:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* If srcALen < srcBLen,
+ 108:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****    * (srcALen - srcBLen) zeroes has to included in the ending of the output buffer */
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 4
+
+
+ 109:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   if (srcALen >= srcBLen)
+  65              		.loc 1 109 3 view .LVU13
+  66              		.loc 1 109 6 is_stmt 0 view .LVU14
+  67 0010 9942     		cmp	r1, r3
+  68 0012 2CD3     		bcc	.L2
+  69 0014 1A46     		mov	r2, r3
+  70              	.LVL2:
+ 110:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   {
+ 111:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Initialization of inputA pointer */
+ 112:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pIn1 = (pSrcA);
+  71              		.loc 1 112 5 is_stmt 1 view .LVU15
+ 113:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 114:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Initialization of inputB pointer */
+ 115:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pIn2 = (pSrcB);
+  72              		.loc 1 115 5 view .LVU16
+ 116:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 117:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Number of output samples is calculated */
+ 118:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     outBlockSize = (2U * srcALen) - 1U;
+  73              		.loc 1 118 5 view .LVU17
+  74              		.loc 1 118 24 is_stmt 0 view .LVU18
+  75 0016 4B00     		lsls	r3, r1, #1
+  76              	.LVL3:
+  77              		.loc 1 118 18 view .LVU19
+  78 0018 013B     		subs	r3, r3, #1
+  79              	.LVL4:
+ 119:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 120:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* When srcALen > srcBLen, zero padding is done to srcB
+ 121:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****      * to make their lengths equal.
+ 122:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****      * Instead, (outBlockSize - (srcALen + srcBLen - 1))
+ 123:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****      * number of output samples are made zero */
+ 124:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     j = outBlockSize - (srcALen + (srcBLen - 1U));
+  80              		.loc 1 124 5 is_stmt 1 view .LVU20
+  81              		.loc 1 124 33 is_stmt 0 view .LVU21
+  82 001a 8A18     		adds	r2, r1, r2
+  83              	.LVL5:
+  84              		.loc 1 124 22 view .LVU22
+  85 001c 9B1A     		subs	r3, r3, r2
+  86              	.LVL6:
+  87              		.loc 1 124 7 view .LVU23
+  88 001e 0133     		adds	r3, r3, #1
+  89              	.LVL7:
+ 125:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 126:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Updating the pointer position to non zero value */
+ 127:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pOut += j;
+  90              		.loc 1 127 5 is_stmt 1 view .LVU24
+  91              		.loc 1 127 10 is_stmt 0 view .LVU25
+  92 0020 1A9A     		ldr	r2, [sp, #104]
+  93 0022 02EB4305 		add	r5, r2, r3, lsl #1
+  94              	.LVL8:
+  85:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   uint32_t tapCnt;
+  95              		.loc 1 85 11 view .LVU26
+  96 0026 4FF00109 		mov	r9, #1
+  97              	.LVL9:
+  98              	.L3:
+ 128:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 129:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   }
+ 130:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   else
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 5
+
+
+ 131:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   {
+ 132:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Initialization of inputA pointer */
+ 133:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pIn1 = (pSrcB);
+ 134:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 135:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Initialization of inputB pointer */
+ 136:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pIn2 = (pSrcA);
+ 137:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 138:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* srcBLen is always considered as shorter or equal to srcALen */
+ 139:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     j = srcBLen;
+ 140:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     srcBLen = srcALen;
+ 141:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     srcALen = j;
+ 142:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 143:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* CORR(x, y) = Reverse order(CORR(y, x)) */
+ 144:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Hence set the destination pointer to point to the last output sample */
+ 145:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pOut = pDst + ((srcALen + srcBLen) - 2U);
+ 146:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 147:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Destination address modifier is set to -1 */
+ 148:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     inc = -1;
+ 149:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 150:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   }
+ 151:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 152:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   pScr = pScratch;
+  99              		.loc 1 152 3 is_stmt 1 view .LVU27
+ 153:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 154:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* Fill (srcBLen - 1U) zeros in scratch buffer */
+ 155:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   arm_fill_q15(0, pScr, (srcBLen - 1U));
+ 100              		.loc 1 155 3 view .LVU28
+ 101 002a 0E9C     		ldr	r4, [sp, #56]
+ 102 002c 04F1FF3B 		add	fp, r4, #-1
+ 103 0030 5A46     		mov	r2, fp
+ 104 0032 3946     		mov	r1, r7
+ 105 0034 0020     		movs	r0, #0
+ 106              	.LVL10:
+ 107              		.loc 1 155 3 is_stmt 0 view .LVU29
+ 108 0036 FFF7FEFF 		bl	arm_fill_q15
+ 109              	.LVL11:
+ 156:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 157:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* Update temporary scratch pointer */
+ 158:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   pScr += (srcBLen - 1U);
+ 110              		.loc 1 158 3 is_stmt 1 view .LVU30
+ 111              		.loc 1 158 8 is_stmt 0 view .LVU31
+ 112 003a 04F10048 		add	r8, r4, #-2147483648
+ 113 003e 08F1FF38 		add	r8, r8, #-1
+ 114 0042 07EB4808 		add	r8, r7, r8, lsl #1
+ 115              	.LVL12:
+ 159:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 160:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #ifndef UNALIGNED_SUPPORT_DISABLE
+ 161:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 162:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* Copy (srcALen) samples in scratch buffer */
+ 163:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   arm_copy_q15(pIn1, pScr, srcALen);
+ 116              		.loc 1 163 3 is_stmt 1 view .LVU32
+ 117 0046 3246     		mov	r2, r6
+ 118 0048 4146     		mov	r1, r8
+ 119 004a 5046     		mov	r0, r10
+ 120 004c FFF7FEFF 		bl	arm_copy_q15
+ 121              	.LVL13:
+ 164:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 6
+
+
+ 165:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* Update pointers */
+ 166:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   //pIn1 += srcALen;
+ 167:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   pScr += srcALen;
+ 122              		.loc 1 167 3 view .LVU33
+ 168:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 169:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #else
+ 170:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 171:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* Apply loop unrolling and do 4 Copies simultaneously. */
+ 172:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   j = srcALen >> 2U;
+ 173:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 174:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* First part of the processing with loop unrolling copies 4 data points at a time.
+ 175:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****    ** a second loop below copies for the remaining 1 to 3 samples. */
+ 176:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   while (j > 0U)
+ 177:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   {
+ 178:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* copy second buffer in reversal manner */
+ 179:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     *pScr++ = *pIn1++;
+ 180:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     *pScr++ = *pIn1++;
+ 181:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     *pScr++ = *pIn1++;
+ 182:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     *pScr++ = *pIn1++;
+ 183:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 184:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Decrement the loop counter */
+ 185:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     j--;
+ 186:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   }
+ 187:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 188:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* If the count is not a multiple of 4, copy remaining samples here.
+ 189:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****    ** No loop unrolling is used. */
+ 190:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   j = srcALen % 0x4U;
+ 191:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 192:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   while (j > 0U)
+ 193:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   {
+ 194:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* copy second buffer in reversal manner for remaining samples */
+ 195:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     *pScr++ = *pIn1++;
+ 196:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 197:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Decrement the loop counter */
+ 198:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     j--;
+ 199:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   }
+ 200:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 201:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #endif	/*	#ifndef UNALIGNED_SUPPORT_DISABLE	*/
+ 202:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 203:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #ifndef UNALIGNED_SUPPORT_DISABLE
+ 204:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 205:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* Fill (srcBLen - 1U) zeros at end of scratch buffer */
+ 206:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   arm_fill_q15(0, pScr, (srcBLen - 1U));
+ 123              		.loc 1 206 3 view .LVU34
+ 124 0050 5A46     		mov	r2, fp
+ 125 0052 08EB4601 		add	r1, r8, r6, lsl #1
+ 126              	.LVL14:
+ 127              		.loc 1 206 3 is_stmt 0 view .LVU35
+ 128 0056 0020     		movs	r0, #0
+ 129 0058 FFF7FEFF 		bl	arm_fill_q15
+ 130              	.LVL15:
+ 207:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 208:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* Update pointer */
+ 209:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   pScr += (srcBLen - 1U);
+ 131              		.loc 1 209 3 is_stmt 1 view .LVU36
+ 210:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 211:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #else
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 7
+
+
+ 212:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 213:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** /* Apply loop unrolling and do 4 Copies simultaneously. */
+ 214:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   j = (srcBLen - 1U) >> 2U;
+ 215:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 216:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* First part of the processing with loop unrolling copies 4 data points at a time.
+ 217:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****    ** a second loop below copies for the remaining 1 to 3 samples. */
+ 218:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   while (j > 0U)
+ 219:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   {
+ 220:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* copy second buffer in reversal manner */
+ 221:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     *pScr++ = 0;
+ 222:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     *pScr++ = 0;
+ 223:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     *pScr++ = 0;
+ 224:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     *pScr++ = 0;
+ 225:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 226:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Decrement the loop counter */
+ 227:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     j--;
+ 228:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   }
+ 229:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 230:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* If the count is not a multiple of 4, copy remaining samples here.
+ 231:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****    ** No loop unrolling is used. */
+ 232:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   j = (srcBLen - 1U) % 0x4U;
+ 233:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 234:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   while (j > 0U)
+ 235:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   {
+ 236:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* copy second buffer in reversal manner for remaining samples */
+ 237:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     *pScr++ = 0;
+ 238:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 239:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Decrement the loop counter */
+ 240:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     j--;
+ 241:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   }
+ 242:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 243:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #endif	/*	#ifndef UNALIGNED_SUPPORT_DISABLE	*/
+ 244:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 245:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* Temporary pointer for scratch2 */
+ 246:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   py = pIn2;
+ 132              		.loc 1 246 3 view .LVU37
+ 247:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 248:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 249:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* Actual correlation process starts here */
+ 250:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   blkCnt = (srcALen + srcBLen - 1U) >> 2;
+ 133              		.loc 1 250 3 view .LVU38
+ 134              		.loc 1 250 21 is_stmt 0 view .LVU39
+ 135 005c A646     		mov	lr, r4
+ 136 005e 2644     		add	r6, r6, r4
+ 137              	.LVL16:
+ 138              		.loc 1 250 31 view .LVU40
+ 139 0060 731E     		subs	r3, r6, #1
+ 140              		.loc 1 250 10 view .LVU41
+ 141 0062 9C08     		lsrs	r4, r3, #2
+ 142              	.LVL17:
+ 251:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 252:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   while (blkCnt > 0)
+ 143              		.loc 1 252 3 is_stmt 1 view .LVU42
+ 144 0064 0F93     		str	r3, [sp, #60]
+ 145 0066 0894     		str	r4, [sp, #32]
+ 146 0068 4946     		mov	r1, r9
+ 147 006a 3A46     		mov	r2, r7
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 8
+
+
+ 148              		.loc 1 252 9 is_stmt 0 view .LVU43
+ 149 006c F7E0     		b	.L4
+ 150              	.LVL18:
+ 151              	.L2:
+ 133:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 152              		.loc 1 133 5 is_stmt 1 view .LVU44
+ 136:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 153              		.loc 1 136 5 view .LVU45
+ 139:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     srcBLen = srcALen;
+ 154              		.loc 1 139 5 view .LVU46
+ 140:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     srcALen = j;
+ 155              		.loc 1 140 5 view .LVU47
+ 141:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 156              		.loc 1 141 5 view .LVU48
+ 145:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 157              		.loc 1 145 5 view .LVU49
+ 145:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 158              		.loc 1 145 29 is_stmt 0 view .LVU50
+ 159 006e 0E9A     		ldr	r2, [sp, #56]
+ 160              	.LVL19:
+ 145:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 161              		.loc 1 145 29 view .LVU51
+ 162 0070 8B18     		adds	r3, r1, r2
+ 145:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 163              		.loc 1 145 17 view .LVU52
+ 164 0072 03F10043 		add	r3, r3, #-2147483648
+ 165 0076 023B     		subs	r3, r3, #2
+ 145:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 166              		.loc 1 145 10 view .LVU53
+ 167 0078 1A99     		ldr	r1, [sp, #104]
+ 168              	.LVL20:
+ 145:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 169              		.loc 1 145 10 view .LVU54
+ 170 007a 01EB4305 		add	r5, r1, r3, lsl #1
+ 171              	.LVL21:
+ 148:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 172              		.loc 1 148 5 is_stmt 1 view .LVU55
+ 133:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 173              		.loc 1 133 10 is_stmt 0 view .LVU56
+ 174 007e DDF824A0 		ldr	r10, [sp, #36]
+ 136:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 175              		.loc 1 136 10 view .LVU57
+ 176 0082 0990     		str	r0, [sp, #36]
+ 177              	.LVL22:
+ 145:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 178              		.loc 1 145 10 view .LVU58
+ 179 0084 3346     		mov	r3, r6
+ 141:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 180              		.loc 1 141 13 view .LVU59
+ 181 0086 1646     		mov	r6, r2
+ 182              	.LVL23:
+ 140:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     srcALen = j;
+ 183              		.loc 1 140 13 view .LVU60
+ 184 0088 0E93     		str	r3, [sp, #56]
+ 185              	.LVL24:
+ 148:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 186              		.loc 1 148 9 view .LVU61
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 9
+
+
+ 187 008a 4FF0FF39 		mov	r9, #-1
+ 188 008e CCE7     		b	.L3
+ 189              	.LVL25:
+ 190              	.L6:
+ 253:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   {
+ 254:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Initialze temporary scratch pointer as scratch1 */
+ 255:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pScr = pScratch;
+ 256:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 257:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Clear Accumlators */
+ 258:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     acc0 = 0;
+ 259:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     acc1 = 0;
+ 260:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     acc2 = 0;
+ 261:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     acc3 = 0;
+ 262:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 263:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Read four samples from scratch1 buffer */
+ 264:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     x1 = *__SIMD32(pScr)++;
+ 265:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 266:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Read next four samples from scratch1 buffer */
+ 267:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     x2 = *__SIMD32(pScr)++;
+ 268:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 269:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     tapCnt = (srcBLen) >> 2U;
+ 270:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 271:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     while (tapCnt > 0U)
+ 272:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     {
+ 273:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 274:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #ifndef UNALIGNED_SUPPORT_DISABLE
+ 275:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 276:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       /* Read four samples from smaller buffer */
+ 277:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       y1 = _SIMD32_OFFSET(pIn2);
+ 191              		.loc 1 277 7 is_stmt 1 view .LVU62
+ 192              		.loc 1 277 10 is_stmt 0 view .LVU63
+ 193 0090 019A     		ldr	r2, [sp, #4]
+ 194              	.LVL26:
+ 195              		.loc 1 277 10 view .LVU64
+ 196 0092 1568     		ldr	r5, [r2]
+ 197              	.LVL27:
+ 278:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       y2 = _SIMD32_OFFSET(pIn2 + 2U);
+ 198              		.loc 1 278 7 is_stmt 1 view .LVU65
+ 199              		.loc 1 278 10 is_stmt 0 view .LVU66
+ 200 0094 5468     		ldr	r4, [r2, #4]
+ 201              	.LVL28:
+ 279:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 280:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc0 = __SMLALD(x1, y1, acc0);
+ 202              		.loc 1 280 7 is_stmt 1 view .LVU67
+ 203              	.LBB23:
+ 204              	.LBI23:
+ 205              		.file 2 "Drivers/CMSIS/DSP/Include/arm_math.h"
+   1:Drivers/CMSIS/DSP/Include/arm_math.h **** /******************************************************************************
+   2:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @file     arm_math.h
+   3:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @brief    Public header file for CMSIS DSP LibraryU
+   4:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @version  V1.5.3
+   5:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @date     10. January 2018
+   6:Drivers/CMSIS/DSP/Include/arm_math.h ****  ******************************************************************************/
+   7:Drivers/CMSIS/DSP/Include/arm_math.h **** /*
+   8:Drivers/CMSIS/DSP/Include/arm_math.h ****  * Copyright (c) 2010-2018 Arm Limited or its affiliates. All rights reserved.
+   9:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+  10:Drivers/CMSIS/DSP/Include/arm_math.h ****  * SPDX-License-Identifier: Apache-2.0
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 10
+
+
+  11:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+  12:Drivers/CMSIS/DSP/Include/arm_math.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:Drivers/CMSIS/DSP/Include/arm_math.h ****  * not use this file except in compliance with the License.
+  14:Drivers/CMSIS/DSP/Include/arm_math.h ****  * You may obtain a copy of the License at
+  15:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+  16:Drivers/CMSIS/DSP/Include/arm_math.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+  18:Drivers/CMSIS/DSP/Include/arm_math.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:Drivers/CMSIS/DSP/Include/arm_math.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:Drivers/CMSIS/DSP/Include/arm_math.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:Drivers/CMSIS/DSP/Include/arm_math.h ****  * See the License for the specific language governing permissions and
+  22:Drivers/CMSIS/DSP/Include/arm_math.h ****  * limitations under the License.
+  23:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+  24:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+  25:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+  26:Drivers/CMSIS/DSP/Include/arm_math.h ****    \mainpage CMSIS DSP Software Library
+  27:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  28:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Introduction
+  29:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ------------
+  30:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  31:Drivers/CMSIS/DSP/Include/arm_math.h ****    * This user manual describes the CMSIS DSP software library,
+  32:Drivers/CMSIS/DSP/Include/arm_math.h ****    * a suite of common signal processing functions for use on Cortex-M processor based devices.
+  33:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  34:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The library is divided into a number of functions each covering a specific category:
+  35:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Basic math functions
+  36:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Fast math functions
+  37:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Complex math functions
+  38:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Filters
+  39:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Matrix functions
+  40:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Transforms
+  41:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Motor control functions
+  42:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Statistical functions
+  43:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Support functions
+  44:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Interpolation functions
+  45:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  46:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The library has separate functions for operating on 8-bit integers, 16-bit integers,
+  47:Drivers/CMSIS/DSP/Include/arm_math.h ****    * 32-bit integer and 32-bit floating-point values.
+  48:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  49:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Using the Library
+  50:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ------------
+  51:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  52:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The library installer contains prebuilt versions of the libraries in the <code>Lib</code> fold
+  53:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM7lfdp_math.lib (Cortex-M7, Little endian, Double Precision Floating Point Unit)
+  54:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM7bfdp_math.lib (Cortex-M7, Big endian, Double Precision Floating Point Unit)
+  55:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM7lfsp_math.lib (Cortex-M7, Little endian, Single Precision Floating Point Unit)
+  56:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM7bfsp_math.lib (Cortex-M7, Big endian and Single Precision Floating Point Unit on
+  57:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM7l_math.lib (Cortex-M7, Little endian)
+  58:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM7b_math.lib (Cortex-M7, Big endian)
+  59:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM4lf_math.lib (Cortex-M4, Little endian, Floating Point Unit)
+  60:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM4bf_math.lib (Cortex-M4, Big endian, Floating Point Unit)
+  61:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM4l_math.lib (Cortex-M4, Little endian)
+  62:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM4b_math.lib (Cortex-M4, Big endian)
+  63:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM3l_math.lib (Cortex-M3, Little endian)
+  64:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM3b_math.lib (Cortex-M3, Big endian)
+  65:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM0l_math.lib (Cortex-M0 / Cortex-M0+, Little endian)
+  66:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM0b_math.lib (Cortex-M0 / Cortex-M0+, Big endian)
+  67:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_ARMv8MBLl_math.lib (Armv8-M Baseline, Little endian)
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 11
+
+
+  68:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_ARMv8MMLl_math.lib (Armv8-M Mainline, Little endian)
+  69:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_ARMv8MMLlfsp_math.lib (Armv8-M Mainline, Little endian, Single Precision Floating Point 
+  70:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_ARMv8MMLld_math.lib (Armv8-M Mainline, Little endian, DSP instructions)
+  71:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_ARMv8MMLldfsp_math.lib (Armv8-M Mainline, Little endian, DSP instructions, Single Precis
+  72:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  73:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The library functions are declared in the public file <code>arm_math.h</code> which is placed 
+  74:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Simply include this file and link the appropriate library in the application and begin calling
+  75:Drivers/CMSIS/DSP/Include/arm_math.h ****    * public header file <code> arm_math.h</code> for Cortex-M cores with little endian and big endi
+  76:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Define the appropriate preprocessor macro ARM_MATH_CM7 or ARM_MATH_CM4 or ARM_MATH_CM3 or
+  77:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ARM_MATH_CM0 or ARM_MATH_CM0PLUS depending on the target processor in the application.
+  78:Drivers/CMSIS/DSP/Include/arm_math.h ****    * For Armv8-M cores define preprocessor macro ARM_MATH_ARMV8MBL or ARM_MATH_ARMV8MML.
+  79:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Set preprocessor macro __DSP_PRESENT if Armv8-M Mainline core supports DSP instructions.
+  80:Drivers/CMSIS/DSP/Include/arm_math.h ****    * 
+  81:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  82:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Examples
+  83:Drivers/CMSIS/DSP/Include/arm_math.h ****    * --------
+  84:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  85:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The library ships with a number of examples which demonstrate how to use the library functions
+  86:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  87:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Toolchain Support
+  88:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ------------
+  89:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  90:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The library has been developed and tested with MDK version 5.14.0.0
+  91:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The library is being tested in GCC and IAR toolchains and updates on this activity will be mad
+  92:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  93:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Building the Library
+  94:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ------------
+  95:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  96:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The library installer contains a project file to rebuild libraries on MDK toolchain in the <co
+  97:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM_math.uvprojx
+  98:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  99:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 100:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The libraries can be built by opening the arm_cortexM_math.uvprojx project in MDK-ARM, selecti
+ 101:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 102:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Preprocessor Macros
+ 103:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ------------
+ 104:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 105:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Each library project have different preprocessor macros.
+ 106:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 107:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - UNALIGNED_SUPPORT_DISABLE:
+ 108:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 109:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Define macro UNALIGNED_SUPPORT_DISABLE, If the silicon does not support unaligned memory acces
+ 110:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 111:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - ARM_MATH_BIG_ENDIAN:
+ 112:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 113:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Define macro ARM_MATH_BIG_ENDIAN to build the library for big endian targets. By default libra
+ 114:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 115:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - ARM_MATH_MATRIX_CHECK:
+ 116:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 117:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Define macro ARM_MATH_MATRIX_CHECK for checking on the input and output sizes of matrices
+ 118:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 119:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - ARM_MATH_ROUNDING:
+ 120:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 121:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Define macro ARM_MATH_ROUNDING for rounding on support functions
+ 122:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 123:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - ARM_MATH_CMx:
+ 124:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 12
+
+
+ 125:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Define macro ARM_MATH_CM4 for building the library on Cortex-M4 target, ARM_MATH_CM3 for build
+ 126:Drivers/CMSIS/DSP/Include/arm_math.h ****    * and ARM_MATH_CM0 for building library on Cortex-M0 target, ARM_MATH_CM0PLUS for building libra
+ 127:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ARM_MATH_CM7 for building the library on cortex-M7.
+ 128:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 129:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - ARM_MATH_ARMV8MxL:
+ 130:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 131:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Define macro ARM_MATH_ARMV8MBL for building the library on Armv8-M Baseline target, ARM_MATH_A
+ 132:Drivers/CMSIS/DSP/Include/arm_math.h ****    * on Armv8-M Mainline target.
+ 133:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 134:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - __FPU_PRESENT:
+ 135:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 136:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Initialize macro __FPU_PRESENT = 1 when building on FPU supported Targets. Enable this macro f
+ 137:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 138:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - __DSP_PRESENT:
+ 139:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 140:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Initialize macro __DSP_PRESENT = 1 when Armv8-M Mainline core supports DSP instructions.
+ 141:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 142:Drivers/CMSIS/DSP/Include/arm_math.h ****    * <hr>
+ 143:Drivers/CMSIS/DSP/Include/arm_math.h ****    * CMSIS-DSP in ARM::CMSIS Pack
+ 144:Drivers/CMSIS/DSP/Include/arm_math.h ****    * -----------------------------
+ 145:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 146:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The following files relevant to CMSIS-DSP are present in the <b>ARM::CMSIS</b> Pack directorie
+ 147:Drivers/CMSIS/DSP/Include/arm_math.h ****    * |File/Folder                   |Content                                                       
+ 148:Drivers/CMSIS/DSP/Include/arm_math.h ****    * |------------------------------|--------------------------------------------------------------
+ 149:Drivers/CMSIS/DSP/Include/arm_math.h ****    * |\b CMSIS\\Documentation\\DSP  | This documentation                                           
+ 150:Drivers/CMSIS/DSP/Include/arm_math.h ****    * |\b CMSIS\\DSP_Lib             | Software license agreement (license.txt)                     
+ 151:Drivers/CMSIS/DSP/Include/arm_math.h ****    * |\b CMSIS\\DSP_Lib\\Examples   | Example projects demonstrating the usage of the library funct
+ 152:Drivers/CMSIS/DSP/Include/arm_math.h ****    * |\b CMSIS\\DSP_Lib\\Source     | Source files for rebuilding the library                      
+ 153:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 154:Drivers/CMSIS/DSP/Include/arm_math.h ****    * <hr>
+ 155:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Revision History of CMSIS-DSP
+ 156:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ------------
+ 157:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Please refer to \ref ChangeLog_pg.
+ 158:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 159:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Copyright Notice
+ 160:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ------------
+ 161:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 162:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Copyright (C) 2010-2015 Arm Limited. All rights reserved.
+ 163:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 164:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 165:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 166:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 167:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupMath Basic Math Functions
+ 168:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 169:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 170:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 171:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupFastMath Fast Math Functions
+ 172:Drivers/CMSIS/DSP/Include/arm_math.h ****  * This set of functions provides a fast approximation to sine, cosine, and square root.
+ 173:Drivers/CMSIS/DSP/Include/arm_math.h ****  * As compared to most of the other functions in the CMSIS math library, the fast math functions
+ 174:Drivers/CMSIS/DSP/Include/arm_math.h ****  * operate on individual values and not arrays.
+ 175:Drivers/CMSIS/DSP/Include/arm_math.h ****  * There are separate functions for Q15, Q31, and floating-point data.
+ 176:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+ 177:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 178:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 179:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 180:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupCmplxMath Complex Math Functions
+ 181:Drivers/CMSIS/DSP/Include/arm_math.h ****  * This set of functions operates on complex data vectors.
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 13
+
+
+ 182:Drivers/CMSIS/DSP/Include/arm_math.h ****  * The data in the complex arrays is stored in an interleaved fashion
+ 183:Drivers/CMSIS/DSP/Include/arm_math.h ****  * (real, imag, real, imag, ...).
+ 184:Drivers/CMSIS/DSP/Include/arm_math.h ****  * In the API functions, the number of samples in a complex array refers
+ 185:Drivers/CMSIS/DSP/Include/arm_math.h ****  * to the number of complex values; the array contains twice this number of
+ 186:Drivers/CMSIS/DSP/Include/arm_math.h ****  * real values.
+ 187:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 188:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 189:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 190:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupFilters Filtering Functions
+ 191:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 192:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 193:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 194:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupMatrix Matrix Functions
+ 195:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+ 196:Drivers/CMSIS/DSP/Include/arm_math.h ****  * This set of functions provides basic matrix math operations.
+ 197:Drivers/CMSIS/DSP/Include/arm_math.h ****  * The functions operate on matrix data structures.  For example,
+ 198:Drivers/CMSIS/DSP/Include/arm_math.h ****  * the type
+ 199:Drivers/CMSIS/DSP/Include/arm_math.h ****  * definition for the floating-point matrix structure is shown
+ 200:Drivers/CMSIS/DSP/Include/arm_math.h ****  * below:
+ 201:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <pre>
+ 202:Drivers/CMSIS/DSP/Include/arm_math.h ****  *     typedef struct
+ 203:Drivers/CMSIS/DSP/Include/arm_math.h ****  *     {
+ 204:Drivers/CMSIS/DSP/Include/arm_math.h ****  *       uint16_t numRows;     // number of rows of the matrix.
+ 205:Drivers/CMSIS/DSP/Include/arm_math.h ****  *       uint16_t numCols;     // number of columns of the matrix.
+ 206:Drivers/CMSIS/DSP/Include/arm_math.h ****  *       float32_t *pData;     // points to the data of the matrix.
+ 207:Drivers/CMSIS/DSP/Include/arm_math.h ****  *     } arm_matrix_instance_f32;
+ 208:Drivers/CMSIS/DSP/Include/arm_math.h ****  * </pre>
+ 209:Drivers/CMSIS/DSP/Include/arm_math.h ****  * There are similar definitions for Q15 and Q31 data types.
+ 210:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+ 211:Drivers/CMSIS/DSP/Include/arm_math.h ****  * The structure specifies the size of the matrix and then points to
+ 212:Drivers/CMSIS/DSP/Include/arm_math.h ****  * an array of data.  The array is of size <code>numRows X numCols</code>
+ 213:Drivers/CMSIS/DSP/Include/arm_math.h ****  * and the values are arranged in row order.  That is, the
+ 214:Drivers/CMSIS/DSP/Include/arm_math.h ****  * matrix element (i, j) is stored at:
+ 215:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <pre>
+ 216:Drivers/CMSIS/DSP/Include/arm_math.h ****  *     pData[i*numCols + j]
+ 217:Drivers/CMSIS/DSP/Include/arm_math.h ****  * </pre>
+ 218:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+ 219:Drivers/CMSIS/DSP/Include/arm_math.h ****  * \par Init Functions
+ 220:Drivers/CMSIS/DSP/Include/arm_math.h ****  * There is an associated initialization function for each type of matrix
+ 221:Drivers/CMSIS/DSP/Include/arm_math.h ****  * data structure.
+ 222:Drivers/CMSIS/DSP/Include/arm_math.h ****  * The initialization function sets the values of the internal structure fields.
+ 223:Drivers/CMSIS/DSP/Include/arm_math.h ****  * Refer to the function <code>arm_mat_init_f32()</code>, <code>arm_mat_init_q31()</code>
+ 224:Drivers/CMSIS/DSP/Include/arm_math.h ****  * and <code>arm_mat_init_q15()</code> for floating-point, Q31 and Q15 types,  respectively.
+ 225:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+ 226:Drivers/CMSIS/DSP/Include/arm_math.h ****  * \par
+ 227:Drivers/CMSIS/DSP/Include/arm_math.h ****  * Use of the initialization function is optional. However, if initialization function is used
+ 228:Drivers/CMSIS/DSP/Include/arm_math.h ****  * then the instance structure cannot be placed into a const data section.
+ 229:Drivers/CMSIS/DSP/Include/arm_math.h ****  * To place the instance structure in a const data
+ 230:Drivers/CMSIS/DSP/Include/arm_math.h ****  * section, manually initialize the data structure.  For example:
+ 231:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <pre>
+ 232:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <code>arm_matrix_instance_f32 S = {nRows, nColumns, pData};</code>
+ 233:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <code>arm_matrix_instance_q31 S = {nRows, nColumns, pData};</code>
+ 234:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <code>arm_matrix_instance_q15 S = {nRows, nColumns, pData};</code>
+ 235:Drivers/CMSIS/DSP/Include/arm_math.h ****  * </pre>
+ 236:Drivers/CMSIS/DSP/Include/arm_math.h ****  * where <code>nRows</code> specifies the number of rows, <code>nColumns</code>
+ 237:Drivers/CMSIS/DSP/Include/arm_math.h ****  * specifies the number of columns, and <code>pData</code> points to the
+ 238:Drivers/CMSIS/DSP/Include/arm_math.h ****  * data array.
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 14
+
+
+ 239:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+ 240:Drivers/CMSIS/DSP/Include/arm_math.h ****  * \par Size Checking
+ 241:Drivers/CMSIS/DSP/Include/arm_math.h ****  * By default all of the matrix functions perform size checking on the input and
+ 242:Drivers/CMSIS/DSP/Include/arm_math.h ****  * output matrices. For example, the matrix addition function verifies that the
+ 243:Drivers/CMSIS/DSP/Include/arm_math.h ****  * two input matrices and the output matrix all have the same number of rows and
+ 244:Drivers/CMSIS/DSP/Include/arm_math.h ****  * columns. If the size check fails the functions return:
+ 245:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <pre>
+ 246:Drivers/CMSIS/DSP/Include/arm_math.h ****  *     ARM_MATH_SIZE_MISMATCH
+ 247:Drivers/CMSIS/DSP/Include/arm_math.h ****  * </pre>
+ 248:Drivers/CMSIS/DSP/Include/arm_math.h ****  * Otherwise the functions return
+ 249:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <pre>
+ 250:Drivers/CMSIS/DSP/Include/arm_math.h ****  *     ARM_MATH_SUCCESS
+ 251:Drivers/CMSIS/DSP/Include/arm_math.h ****  * </pre>
+ 252:Drivers/CMSIS/DSP/Include/arm_math.h ****  * There is some overhead associated with this matrix size checking.
+ 253:Drivers/CMSIS/DSP/Include/arm_math.h ****  * The matrix size checking is enabled via the \#define
+ 254:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <pre>
+ 255:Drivers/CMSIS/DSP/Include/arm_math.h ****  *     ARM_MATH_MATRIX_CHECK
+ 256:Drivers/CMSIS/DSP/Include/arm_math.h ****  * </pre>
+ 257:Drivers/CMSIS/DSP/Include/arm_math.h ****  * within the library project settings.  By default this macro is defined
+ 258:Drivers/CMSIS/DSP/Include/arm_math.h ****  * and size checking is enabled. By changing the project settings and
+ 259:Drivers/CMSIS/DSP/Include/arm_math.h ****  * undefining this macro size checking is eliminated and the functions
+ 260:Drivers/CMSIS/DSP/Include/arm_math.h ****  * run a bit faster. With size checking disabled the functions always
+ 261:Drivers/CMSIS/DSP/Include/arm_math.h ****  * return <code>ARM_MATH_SUCCESS</code>.
+ 262:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 263:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 264:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 265:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupTransforms Transform Functions
+ 266:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 267:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 268:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 269:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupController Controller Functions
+ 270:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 271:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 272:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 273:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupStats Statistics Functions
+ 274:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 275:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 276:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupSupport Support Functions
+ 277:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 278:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 279:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 280:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupInterpolation Interpolation Functions
+ 281:Drivers/CMSIS/DSP/Include/arm_math.h ****  * These functions perform 1- and 2-dimensional interpolation of data.
+ 282:Drivers/CMSIS/DSP/Include/arm_math.h ****  * Linear interpolation is used for 1-dimensional data and
+ 283:Drivers/CMSIS/DSP/Include/arm_math.h ****  * bilinear interpolation is used for 2-dimensional data.
+ 284:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 285:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 286:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 287:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupExamples Examples
+ 288:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 289:Drivers/CMSIS/DSP/Include/arm_math.h **** #ifndef _ARM_MATH_H
+ 290:Drivers/CMSIS/DSP/Include/arm_math.h **** #define _ARM_MATH_H
+ 291:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 292:Drivers/CMSIS/DSP/Include/arm_math.h **** /* Compiler specific diagnostic adjustment */
+ 293:Drivers/CMSIS/DSP/Include/arm_math.h **** #if   defined ( __CC_ARM )
+ 294:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 295:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __ARMCC_VERSION ) && ( __ARMCC_VERSION >= 6010050 )
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 15
+
+
+ 296:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 297:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __GNUC__ )
+ 298:Drivers/CMSIS/DSP/Include/arm_math.h **** #pragma GCC diagnostic push
+ 299:Drivers/CMSIS/DSP/Include/arm_math.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+ 300:Drivers/CMSIS/DSP/Include/arm_math.h **** #pragma GCC diagnostic ignored "-Wconversion"
+ 301:Drivers/CMSIS/DSP/Include/arm_math.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+ 302:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 303:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __ICCARM__ )
+ 304:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 305:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __TI_ARM__ )
+ 306:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 307:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __CSMC__ )
+ 308:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 309:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __TASKING__ )
+ 310:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 311:Drivers/CMSIS/DSP/Include/arm_math.h **** #else
+ 312:Drivers/CMSIS/DSP/Include/arm_math.h ****   #error Unknown compiler
+ 313:Drivers/CMSIS/DSP/Include/arm_math.h **** #endif
+ 314:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 315:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 316:Drivers/CMSIS/DSP/Include/arm_math.h **** #define __CMSIS_GENERIC         /* disable NVIC and Systick functions */
+ 317:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 318:Drivers/CMSIS/DSP/Include/arm_math.h **** #if defined(ARM_MATH_CM7)
+ 319:Drivers/CMSIS/DSP/Include/arm_math.h ****   #include "core_cm7.h"
+ 320:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define ARM_MATH_DSP
+ 321:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined (ARM_MATH_CM4)
+ 322:Drivers/CMSIS/DSP/Include/arm_math.h ****   #include "core_cm4.h"
+ 323:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define ARM_MATH_DSP
+ 324:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined (ARM_MATH_CM3)
+ 325:Drivers/CMSIS/DSP/Include/arm_math.h ****   #include "core_cm3.h"
+ 326:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined (ARM_MATH_CM0)
+ 327:Drivers/CMSIS/DSP/Include/arm_math.h ****   #include "core_cm0.h"
+ 328:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define ARM_MATH_CM0_FAMILY
+ 329:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined (ARM_MATH_CM0PLUS)
+ 330:Drivers/CMSIS/DSP/Include/arm_math.h ****   #include "core_cm0plus.h"
+ 331:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define ARM_MATH_CM0_FAMILY
+ 332:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined (ARM_MATH_ARMV8MBL)
+ 333:Drivers/CMSIS/DSP/Include/arm_math.h ****   #include "core_armv8mbl.h"
+ 334:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define ARM_MATH_CM0_FAMILY
+ 335:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined (ARM_MATH_ARMV8MML)
+ 336:Drivers/CMSIS/DSP/Include/arm_math.h ****   #include "core_armv8mml.h"
+ 337:Drivers/CMSIS/DSP/Include/arm_math.h ****   #if (defined (__DSP_PRESENT) && (__DSP_PRESENT == 1))
+ 338:Drivers/CMSIS/DSP/Include/arm_math.h ****     #define ARM_MATH_DSP
+ 339:Drivers/CMSIS/DSP/Include/arm_math.h ****   #endif
+ 340:Drivers/CMSIS/DSP/Include/arm_math.h **** #else
+ 341:Drivers/CMSIS/DSP/Include/arm_math.h ****   #error "Define according the used Cortex core ARM_MATH_CM7, ARM_MATH_CM4, ARM_MATH_CM3, ARM_MATH_
+ 342:Drivers/CMSIS/DSP/Include/arm_math.h **** #endif
+ 343:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 344:Drivers/CMSIS/DSP/Include/arm_math.h **** #undef  __CMSIS_GENERIC         /* enable NVIC and Systick functions */
+ 345:Drivers/CMSIS/DSP/Include/arm_math.h **** #include "string.h"
+ 346:Drivers/CMSIS/DSP/Include/arm_math.h **** #include "math.h"
+ 347:Drivers/CMSIS/DSP/Include/arm_math.h **** #ifdef   __cplusplus
+ 348:Drivers/CMSIS/DSP/Include/arm_math.h **** extern "C"
+ 349:Drivers/CMSIS/DSP/Include/arm_math.h **** {
+ 350:Drivers/CMSIS/DSP/Include/arm_math.h **** #endif
+ 351:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 352:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 16
+
+
+ 353:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 354:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Macros required for reciprocal calculation in Normalized LMS
+ 355:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 356:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 357:Drivers/CMSIS/DSP/Include/arm_math.h **** #define DELTA_Q31          (0x100)
+ 358:Drivers/CMSIS/DSP/Include/arm_math.h **** #define DELTA_Q15          0x5
+ 359:Drivers/CMSIS/DSP/Include/arm_math.h **** #define INDEX_MASK         0x0000003F
+ 360:Drivers/CMSIS/DSP/Include/arm_math.h **** #ifndef PI
+ 361:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define PI               3.14159265358979f
+ 362:Drivers/CMSIS/DSP/Include/arm_math.h **** #endif
+ 363:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 364:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 365:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Macros required for SINE and COSINE Fast math approximations
+ 366:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 367:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 368:Drivers/CMSIS/DSP/Include/arm_math.h **** #define FAST_MATH_TABLE_SIZE  512
+ 369:Drivers/CMSIS/DSP/Include/arm_math.h **** #define FAST_MATH_Q31_SHIFT   (32 - 10)
+ 370:Drivers/CMSIS/DSP/Include/arm_math.h **** #define FAST_MATH_Q15_SHIFT   (16 - 10)
+ 371:Drivers/CMSIS/DSP/Include/arm_math.h **** #define CONTROLLER_Q31_SHIFT  (32 - 9)
+ 372:Drivers/CMSIS/DSP/Include/arm_math.h **** #define TABLE_SPACING_Q31     0x400000
+ 373:Drivers/CMSIS/DSP/Include/arm_math.h **** #define TABLE_SPACING_Q15     0x80
+ 374:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 375:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 376:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Macros required for SINE and COSINE Controller functions
+ 377:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 378:Drivers/CMSIS/DSP/Include/arm_math.h ****   /* 1.31(q31) Fixed value of 2/360 */
+ 379:Drivers/CMSIS/DSP/Include/arm_math.h ****   /* -1 to +1 is divided into 360 values so total spacing is (2/360) */
+ 380:Drivers/CMSIS/DSP/Include/arm_math.h **** #define INPUT_SPACING         0xB60B61
+ 381:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 382:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 383:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Macro for Unaligned Support
+ 384:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 385:Drivers/CMSIS/DSP/Include/arm_math.h **** #ifndef UNALIGNED_SUPPORT_DISABLE
+ 386:Drivers/CMSIS/DSP/Include/arm_math.h ****     #define ALIGN4
+ 387:Drivers/CMSIS/DSP/Include/arm_math.h **** #else
+ 388:Drivers/CMSIS/DSP/Include/arm_math.h ****   #if defined  (__GNUC__)
+ 389:Drivers/CMSIS/DSP/Include/arm_math.h ****     #define ALIGN4 __attribute__((aligned(4)))
+ 390:Drivers/CMSIS/DSP/Include/arm_math.h ****   #else
+ 391:Drivers/CMSIS/DSP/Include/arm_math.h ****     #define ALIGN4 __align(4)
+ 392:Drivers/CMSIS/DSP/Include/arm_math.h ****   #endif
+ 393:Drivers/CMSIS/DSP/Include/arm_math.h **** #endif   /* #ifndef UNALIGNED_SUPPORT_DISABLE */
+ 394:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 395:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 396:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Error status returned by some functions in the library.
+ 397:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 398:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 399:Drivers/CMSIS/DSP/Include/arm_math.h ****   typedef enum
+ 400:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 401:Drivers/CMSIS/DSP/Include/arm_math.h ****     ARM_MATH_SUCCESS = 0,                /**< No error */
+ 402:Drivers/CMSIS/DSP/Include/arm_math.h ****     ARM_MATH_ARGUMENT_ERROR = -1,        /**< One or more arguments are incorrect */
+ 403:Drivers/CMSIS/DSP/Include/arm_math.h ****     ARM_MATH_LENGTH_ERROR = -2,          /**< Length of data buffer is incorrect */
+ 404:Drivers/CMSIS/DSP/Include/arm_math.h ****     ARM_MATH_SIZE_MISMATCH = -3,         /**< Size of matrices is not compatible with the operation
+ 405:Drivers/CMSIS/DSP/Include/arm_math.h ****     ARM_MATH_NANINF = -4,                /**< Not-a-number (NaN) or infinity is generated */
+ 406:Drivers/CMSIS/DSP/Include/arm_math.h ****     ARM_MATH_SINGULAR = -5,              /**< Generated by matrix inversion if the input matrix is 
+ 407:Drivers/CMSIS/DSP/Include/arm_math.h ****     ARM_MATH_TEST_FAILURE = -6           /**< Test Failed  */
+ 408:Drivers/CMSIS/DSP/Include/arm_math.h ****   } arm_status;
+ 409:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 17
+
+
+ 410:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 411:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief 8-bit fractional data type in 1.7 format.
+ 412:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 413:Drivers/CMSIS/DSP/Include/arm_math.h ****   typedef int8_t q7_t;
+ 414:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 415:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 416:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief 16-bit fractional data type in 1.15 format.
+ 417:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 418:Drivers/CMSIS/DSP/Include/arm_math.h ****   typedef int16_t q15_t;
+ 419:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 420:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 421:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief 32-bit fractional data type in 1.31 format.
+ 422:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 423:Drivers/CMSIS/DSP/Include/arm_math.h ****   typedef int32_t q31_t;
+ 424:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 425:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 426:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief 64-bit fractional data type in 1.63 format.
+ 427:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 428:Drivers/CMSIS/DSP/Include/arm_math.h ****   typedef int64_t q63_t;
+ 429:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 430:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 431:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief 32-bit floating-point type definition.
+ 432:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 433:Drivers/CMSIS/DSP/Include/arm_math.h ****   typedef float float32_t;
+ 434:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 435:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 436:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief 64-bit floating-point type definition.
+ 437:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 438:Drivers/CMSIS/DSP/Include/arm_math.h ****   typedef double float64_t;
+ 439:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 440:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 441:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief definition to read/write two 16 bit values.
+ 442:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 443:Drivers/CMSIS/DSP/Include/arm_math.h **** #if   defined ( __CC_ARM )
+ 444:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define __SIMD32_TYPE int32_t __packed
+ 445:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_UNUSED __attribute__((unused))
+ 446:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_INLINE __attribute__((always_inline))
+ 447:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 448:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __ARMCC_VERSION ) && ( __ARMCC_VERSION >= 6010050 )
+ 449:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define __SIMD32_TYPE int32_t
+ 450:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_UNUSED __attribute__((unused))
+ 451:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_INLINE __attribute__((always_inline))
+ 452:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 453:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __GNUC__ )
+ 454:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define __SIMD32_TYPE int32_t
+ 455:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_UNUSED __attribute__((unused))
+ 456:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_INLINE __attribute__((always_inline))
+ 457:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 458:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __ICCARM__ )
+ 459:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define __SIMD32_TYPE int32_t __packed
+ 460:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_UNUSED
+ 461:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_INLINE
+ 462:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 463:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __TI_ARM__ )
+ 464:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define __SIMD32_TYPE int32_t
+ 465:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_UNUSED __attribute__((unused))
+ 466:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_INLINE
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 18
+
+
+ 467:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 468:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __CSMC__ )
+ 469:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define __SIMD32_TYPE int32_t
+ 470:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_UNUSED
+ 471:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_INLINE
+ 472:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 473:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __TASKING__ )
+ 474:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define __SIMD32_TYPE __unaligned int32_t
+ 475:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_UNUSED
+ 476:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_INLINE
+ 477:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 478:Drivers/CMSIS/DSP/Include/arm_math.h **** #else
+ 479:Drivers/CMSIS/DSP/Include/arm_math.h ****   #error Unknown compiler
+ 480:Drivers/CMSIS/DSP/Include/arm_math.h **** #endif
+ 481:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 482:Drivers/CMSIS/DSP/Include/arm_math.h **** #define __SIMD32(addr)        (*(__SIMD32_TYPE **) & (addr))
+ 483:Drivers/CMSIS/DSP/Include/arm_math.h **** #define __SIMD32_CONST(addr)  ((__SIMD32_TYPE *)(addr))
+ 484:Drivers/CMSIS/DSP/Include/arm_math.h **** #define _SIMD32_OFFSET(addr)  (*(__SIMD32_TYPE *)  (addr))
+ 485:Drivers/CMSIS/DSP/Include/arm_math.h **** #define __SIMD64(addr)        (*(int64_t **) & (addr))
+ 486:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 487:Drivers/CMSIS/DSP/Include/arm_math.h **** #if !defined (ARM_MATH_DSP)
+ 488:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 489:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief definition to pack two 16 bit values.
+ 490:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 491:Drivers/CMSIS/DSP/Include/arm_math.h **** #define __PKHBT(ARG1, ARG2, ARG3) ( (((int32_t)(ARG1) <<    0) & (int32_t)0x0000FFFF) | \
+ 492:Drivers/CMSIS/DSP/Include/arm_math.h ****                                     (((int32_t)(ARG2) << ARG3) & (int32_t)0xFFFF0000)  )
+ 493:Drivers/CMSIS/DSP/Include/arm_math.h **** #define __PKHTB(ARG1, ARG2, ARG3) ( (((int32_t)(ARG1) <<    0) & (int32_t)0xFFFF0000) | \
+ 494:Drivers/CMSIS/DSP/Include/arm_math.h ****                                     (((int32_t)(ARG2) >> ARG3) & (int32_t)0x0000FFFF)  )
+ 495:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 496:Drivers/CMSIS/DSP/Include/arm_math.h **** #endif /* !defined (ARM_MATH_DSP) */
+ 497:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 498:Drivers/CMSIS/DSP/Include/arm_math.h ****    /**
+ 499:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief definition to pack four 8 bit values.
+ 500:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 501:Drivers/CMSIS/DSP/Include/arm_math.h **** #ifndef ARM_MATH_BIG_ENDIAN
+ 502:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 503:Drivers/CMSIS/DSP/Include/arm_math.h **** #define __PACKq7(v0,v1,v2,v3) ( (((int32_t)(v0) <<  0) & (int32_t)0x000000FF) | \
+ 504:Drivers/CMSIS/DSP/Include/arm_math.h ****                                 (((int32_t)(v1) <<  8) & (int32_t)0x0000FF00) | \
+ 505:Drivers/CMSIS/DSP/Include/arm_math.h ****                                 (((int32_t)(v2) << 16) & (int32_t)0x00FF0000) | \
+ 506:Drivers/CMSIS/DSP/Include/arm_math.h ****                                 (((int32_t)(v3) << 24) & (int32_t)0xFF000000)  )
+ 507:Drivers/CMSIS/DSP/Include/arm_math.h **** #else
+ 508:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 509:Drivers/CMSIS/DSP/Include/arm_math.h **** #define __PACKq7(v0,v1,v2,v3) ( (((int32_t)(v3) <<  0) & (int32_t)0x000000FF) | \
+ 510:Drivers/CMSIS/DSP/Include/arm_math.h ****                                 (((int32_t)(v2) <<  8) & (int32_t)0x0000FF00) | \
+ 511:Drivers/CMSIS/DSP/Include/arm_math.h ****                                 (((int32_t)(v1) << 16) & (int32_t)0x00FF0000) | \
+ 512:Drivers/CMSIS/DSP/Include/arm_math.h ****                                 (((int32_t)(v0) << 24) & (int32_t)0xFF000000)  )
+ 513:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 514:Drivers/CMSIS/DSP/Include/arm_math.h **** #endif
+ 515:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 516:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 517:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 518:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Clips Q63 to Q31 values.
+ 519:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 520:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE q31_t clip_q63_to_q31(
+ 521:Drivers/CMSIS/DSP/Include/arm_math.h ****   q63_t x)
+ 522:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 523:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((q31_t) (x >> 32) != ((q31_t) x >> 31)) ?
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 19
+
+
+ 524:Drivers/CMSIS/DSP/Include/arm_math.h ****       ((0x7FFFFFFF ^ ((q31_t) (x >> 63)))) : (q31_t) x;
+ 525:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 526:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 527:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 528:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Clips Q63 to Q15 values.
+ 529:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 530:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE q15_t clip_q63_to_q15(
+ 531:Drivers/CMSIS/DSP/Include/arm_math.h ****   q63_t x)
+ 532:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 533:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((q31_t) (x >> 32) != ((q31_t) x >> 31)) ?
+ 534:Drivers/CMSIS/DSP/Include/arm_math.h ****       ((0x7FFF ^ ((q15_t) (x >> 63)))) : (q15_t) (x >> 15);
+ 535:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 536:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 537:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 538:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Clips Q31 to Q7 values.
+ 539:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 540:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE q7_t clip_q31_to_q7(
+ 541:Drivers/CMSIS/DSP/Include/arm_math.h ****   q31_t x)
+ 542:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 543:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((q31_t) (x >> 24) != ((q31_t) x >> 23)) ?
+ 544:Drivers/CMSIS/DSP/Include/arm_math.h ****       ((0x7F ^ ((q7_t) (x >> 31)))) : (q7_t) x;
+ 545:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 546:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 547:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 548:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Clips Q31 to Q15 values.
+ 549:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 550:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE q15_t clip_q31_to_q15(
+ 551:Drivers/CMSIS/DSP/Include/arm_math.h ****   q31_t x)
+ 552:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 553:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((q31_t) (x >> 16) != ((q31_t) x >> 15)) ?
+ 554:Drivers/CMSIS/DSP/Include/arm_math.h ****       ((0x7FFF ^ ((q15_t) (x >> 31)))) : (q15_t) x;
+ 555:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 556:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 557:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 558:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Multiplies 32 X 64 and returns 32 bit result in 2.30 format.
+ 559:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 560:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 561:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE q63_t mult32x64(
+ 562:Drivers/CMSIS/DSP/Include/arm_math.h ****   q63_t x,
+ 563:Drivers/CMSIS/DSP/Include/arm_math.h ****   q31_t y)
+ 564:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 565:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((((q63_t) (x & 0x00000000FFFFFFFF) * y) >> 32) +
+ 566:Drivers/CMSIS/DSP/Include/arm_math.h ****             (((q63_t) (x >> 32) * y)));
+ 567:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 568:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 569:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 570:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Function to Calculates 1/in (reciprocal) value of Q31 Data type.
+ 571:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 572:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 573:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint32_t arm_recip_q31(
+ 574:Drivers/CMSIS/DSP/Include/arm_math.h ****   q31_t in,
+ 575:Drivers/CMSIS/DSP/Include/arm_math.h ****   q31_t * dst,
+ 576:Drivers/CMSIS/DSP/Include/arm_math.h ****   q31_t * pRecipTable)
+ 577:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 578:Drivers/CMSIS/DSP/Include/arm_math.h ****     q31_t out;
+ 579:Drivers/CMSIS/DSP/Include/arm_math.h ****     uint32_t tempVal;
+ 580:Drivers/CMSIS/DSP/Include/arm_math.h ****     uint32_t index, i;
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 20
+
+
+ 581:Drivers/CMSIS/DSP/Include/arm_math.h ****     uint32_t signBits;
+ 582:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 583:Drivers/CMSIS/DSP/Include/arm_math.h ****     if (in > 0)
+ 584:Drivers/CMSIS/DSP/Include/arm_math.h ****     {
+ 585:Drivers/CMSIS/DSP/Include/arm_math.h ****       signBits = ((uint32_t) (__CLZ( in) - 1));
+ 586:Drivers/CMSIS/DSP/Include/arm_math.h ****     }
+ 587:Drivers/CMSIS/DSP/Include/arm_math.h ****     else
+ 588:Drivers/CMSIS/DSP/Include/arm_math.h ****     {
+ 589:Drivers/CMSIS/DSP/Include/arm_math.h ****       signBits = ((uint32_t) (__CLZ(-in) - 1));
+ 590:Drivers/CMSIS/DSP/Include/arm_math.h ****     }
+ 591:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 592:Drivers/CMSIS/DSP/Include/arm_math.h ****     /* Convert input sample to 1.31 format */
+ 593:Drivers/CMSIS/DSP/Include/arm_math.h ****     in = (in << signBits);
+ 594:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 595:Drivers/CMSIS/DSP/Include/arm_math.h ****     /* calculation of index for initial approximated Val */
+ 596:Drivers/CMSIS/DSP/Include/arm_math.h ****     index = (uint32_t)(in >> 24);
+ 597:Drivers/CMSIS/DSP/Include/arm_math.h ****     index = (index & INDEX_MASK);
+ 598:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 599:Drivers/CMSIS/DSP/Include/arm_math.h ****     /* 1.31 with exp 1 */
+ 600:Drivers/CMSIS/DSP/Include/arm_math.h ****     out = pRecipTable[index];
+ 601:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 602:Drivers/CMSIS/DSP/Include/arm_math.h ****     /* calculation of reciprocal value */
+ 603:Drivers/CMSIS/DSP/Include/arm_math.h ****     /* running approximation for two iterations */
+ 604:Drivers/CMSIS/DSP/Include/arm_math.h ****     for (i = 0U; i < 2U; i++)
+ 605:Drivers/CMSIS/DSP/Include/arm_math.h ****     {
+ 606:Drivers/CMSIS/DSP/Include/arm_math.h ****       tempVal = (uint32_t) (((q63_t) in * out) >> 31);
+ 607:Drivers/CMSIS/DSP/Include/arm_math.h ****       tempVal = 0x7FFFFFFFu - tempVal;
+ 608:Drivers/CMSIS/DSP/Include/arm_math.h ****       /*      1.31 with exp 1 */
+ 609:Drivers/CMSIS/DSP/Include/arm_math.h ****       /* out = (q31_t) (((q63_t) out * tempVal) >> 30); */
+ 610:Drivers/CMSIS/DSP/Include/arm_math.h ****       out = clip_q63_to_q31(((q63_t) out * tempVal) >> 30);
+ 611:Drivers/CMSIS/DSP/Include/arm_math.h ****     }
+ 612:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 613:Drivers/CMSIS/DSP/Include/arm_math.h ****     /* write output */
+ 614:Drivers/CMSIS/DSP/Include/arm_math.h ****     *dst = out;
+ 615:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 616:Drivers/CMSIS/DSP/Include/arm_math.h ****     /* return num of signbits of out = 1/in value */
+ 617:Drivers/CMSIS/DSP/Include/arm_math.h ****     return (signBits + 1U);
+ 618:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 619:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 620:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 621:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 622:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Function to Calculates 1/in (reciprocal) value of Q15 Data type.
+ 623:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 624:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint32_t arm_recip_q15(
+ 625:Drivers/CMSIS/DSP/Include/arm_math.h ****   q15_t in,
+ 626:Drivers/CMSIS/DSP/Include/arm_math.h ****   q15_t * dst,
+ 627:Drivers/CMSIS/DSP/Include/arm_math.h ****   q15_t * pRecipTable)
+ 628:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 629:Drivers/CMSIS/DSP/Include/arm_math.h ****     q15_t out = 0;
+ 630:Drivers/CMSIS/DSP/Include/arm_math.h ****     uint32_t tempVal = 0;
+ 631:Drivers/CMSIS/DSP/Include/arm_math.h ****     uint32_t index = 0, i = 0;
+ 632:Drivers/CMSIS/DSP/Include/arm_math.h ****     uint32_t signBits = 0;
+ 633:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 634:Drivers/CMSIS/DSP/Include/arm_math.h ****     if (in > 0)
+ 635:Drivers/CMSIS/DSP/Include/arm_math.h ****     {
+ 636:Drivers/CMSIS/DSP/Include/arm_math.h ****       signBits = ((uint32_t)(__CLZ( in) - 17));
+ 637:Drivers/CMSIS/DSP/Include/arm_math.h ****     }
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 21
+
+
+ 638:Drivers/CMSIS/DSP/Include/arm_math.h ****     else
+ 639:Drivers/CMSIS/DSP/Include/arm_math.h ****     {
+ 640:Drivers/CMSIS/DSP/Include/arm_math.h ****       signBits = ((uint32_t)(__CLZ(-in) - 17));
+ 641:Drivers/CMSIS/DSP/Include/arm_math.h ****     }
+ 642:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 643:Drivers/CMSIS/DSP/Include/arm_math.h ****     /* Convert input sample to 1.15 format */
+ 644:Drivers/CMSIS/DSP/Include/arm_math.h ****     in = (in << signBits);
+ 645:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 646:Drivers/CMSIS/DSP/Include/arm_math.h ****     /* calculation of index for initial approximated Val */
+ 647:Drivers/CMSIS/DSP/Include/arm_math.h ****     index = (uint32_t)(in >>  8);
+ 648:Drivers/CMSIS/DSP/Include/arm_math.h ****     index = (index & INDEX_MASK);
+ 649:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 650:Drivers/CMSIS/DSP/Include/arm_math.h ****     /*      1.15 with exp 1  */
+ 651:Drivers/CMSIS/DSP/Include/arm_math.h ****     out = pRecipTable[index];
+ 652:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 653:Drivers/CMSIS/DSP/Include/arm_math.h ****     /* calculation of reciprocal value */
+ 654:Drivers/CMSIS/DSP/Include/arm_math.h ****     /* running approximation for two iterations */
+ 655:Drivers/CMSIS/DSP/Include/arm_math.h ****     for (i = 0U; i < 2U; i++)
+ 656:Drivers/CMSIS/DSP/Include/arm_math.h ****     {
+ 657:Drivers/CMSIS/DSP/Include/arm_math.h ****       tempVal = (uint32_t) (((q31_t) in * out) >> 15);
+ 658:Drivers/CMSIS/DSP/Include/arm_math.h ****       tempVal = 0x7FFFu - tempVal;
+ 659:Drivers/CMSIS/DSP/Include/arm_math.h ****       /*      1.15 with exp 1 */
+ 660:Drivers/CMSIS/DSP/Include/arm_math.h ****       out = (q15_t) (((q31_t) out * tempVal) >> 14);
+ 661:Drivers/CMSIS/DSP/Include/arm_math.h ****       /* out = clip_q31_to_q15(((q31_t) out * tempVal) >> 14); */
+ 662:Drivers/CMSIS/DSP/Include/arm_math.h ****     }
+ 663:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 664:Drivers/CMSIS/DSP/Include/arm_math.h ****     /* write output */
+ 665:Drivers/CMSIS/DSP/Include/arm_math.h ****     *dst = out;
+ 666:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 667:Drivers/CMSIS/DSP/Include/arm_math.h ****     /* return num of signbits of out = 1/in value */
+ 668:Drivers/CMSIS/DSP/Include/arm_math.h ****     return (signBits + 1);
+ 669:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 670:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 671:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 672:Drivers/CMSIS/DSP/Include/arm_math.h **** /*
+ 673:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @brief C custom defined intrinsic function for M3 and M0 processors
+ 674:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 675:Drivers/CMSIS/DSP/Include/arm_math.h **** #if !defined (ARM_MATH_DSP)
+ 676:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 677:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 678:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined QADD8 for M3 and M0 processors
+ 679:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 680:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint32_t __QADD8(
+ 681:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 682:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t y)
+ 683:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 684:Drivers/CMSIS/DSP/Include/arm_math.h ****     q31_t r, s, t, u;
+ 685:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 686:Drivers/CMSIS/DSP/Include/arm_math.h ****     r = __SSAT(((((q31_t)x << 24) >> 24) + (((q31_t)y << 24) >> 24)), 8) & (int32_t)0x000000FF;
+ 687:Drivers/CMSIS/DSP/Include/arm_math.h ****     s = __SSAT(((((q31_t)x << 16) >> 24) + (((q31_t)y << 16) >> 24)), 8) & (int32_t)0x000000FF;
+ 688:Drivers/CMSIS/DSP/Include/arm_math.h ****     t = __SSAT(((((q31_t)x <<  8) >> 24) + (((q31_t)y <<  8) >> 24)), 8) & (int32_t)0x000000FF;
+ 689:Drivers/CMSIS/DSP/Include/arm_math.h ****     u = __SSAT(((((q31_t)x      ) >> 24) + (((q31_t)y      ) >> 24)), 8) & (int32_t)0x000000FF;
+ 690:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 691:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((uint32_t)((u << 24) | (t << 16) | (s <<  8) | (r      )));
+ 692:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 693:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 694:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 22
+
+
+ 695:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 696:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined QSUB8 for M3 and M0 processors
+ 697:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 698:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint32_t __QSUB8(
+ 699:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 700:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t y)
+ 701:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 702:Drivers/CMSIS/DSP/Include/arm_math.h ****     q31_t r, s, t, u;
+ 703:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 704:Drivers/CMSIS/DSP/Include/arm_math.h ****     r = __SSAT(((((q31_t)x << 24) >> 24) - (((q31_t)y << 24) >> 24)), 8) & (int32_t)0x000000FF;
+ 705:Drivers/CMSIS/DSP/Include/arm_math.h ****     s = __SSAT(((((q31_t)x << 16) >> 24) - (((q31_t)y << 16) >> 24)), 8) & (int32_t)0x000000FF;
+ 706:Drivers/CMSIS/DSP/Include/arm_math.h ****     t = __SSAT(((((q31_t)x <<  8) >> 24) - (((q31_t)y <<  8) >> 24)), 8) & (int32_t)0x000000FF;
+ 707:Drivers/CMSIS/DSP/Include/arm_math.h ****     u = __SSAT(((((q31_t)x      ) >> 24) - (((q31_t)y      ) >> 24)), 8) & (int32_t)0x000000FF;
+ 708:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 709:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((uint32_t)((u << 24) | (t << 16) | (s <<  8) | (r      )));
+ 710:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 711:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 712:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 713:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 714:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined QADD16 for M3 and M0 processors
+ 715:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 716:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint32_t __QADD16(
+ 717:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 718:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t y)
+ 719:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 720:Drivers/CMSIS/DSP/Include/arm_math.h **** /*  q31_t r,     s;  without initialisation 'arm_offset_q15 test' fails  but 'intrinsic' tests pass
+ 721:Drivers/CMSIS/DSP/Include/arm_math.h ****     q31_t r = 0, s = 0;
+ 722:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 723:Drivers/CMSIS/DSP/Include/arm_math.h ****     r = __SSAT(((((q31_t)x << 16) >> 16) + (((q31_t)y << 16) >> 16)), 16) & (int32_t)0x0000FFFF;
+ 724:Drivers/CMSIS/DSP/Include/arm_math.h ****     s = __SSAT(((((q31_t)x      ) >> 16) + (((q31_t)y      ) >> 16)), 16) & (int32_t)0x0000FFFF;
+ 725:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 726:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((uint32_t)((s << 16) | (r      )));
+ 727:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 728:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 729:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 730:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 731:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined SHADD16 for M3 and M0 processors
+ 732:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 733:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint32_t __SHADD16(
+ 734:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 735:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t y)
+ 736:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 737:Drivers/CMSIS/DSP/Include/arm_math.h ****     q31_t r, s;
+ 738:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 739:Drivers/CMSIS/DSP/Include/arm_math.h ****     r = (((((q31_t)x << 16) >> 16) + (((q31_t)y << 16) >> 16)) >> 1) & (int32_t)0x0000FFFF;
+ 740:Drivers/CMSIS/DSP/Include/arm_math.h ****     s = (((((q31_t)x      ) >> 16) + (((q31_t)y      ) >> 16)) >> 1) & (int32_t)0x0000FFFF;
+ 741:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 742:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((uint32_t)((s << 16) | (r      )));
+ 743:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 744:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 745:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 746:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 747:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined QSUB16 for M3 and M0 processors
+ 748:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 749:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint32_t __QSUB16(
+ 750:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 751:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t y)
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 23
+
+
+ 752:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 753:Drivers/CMSIS/DSP/Include/arm_math.h ****     q31_t r, s;
+ 754:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 755:Drivers/CMSIS/DSP/Include/arm_math.h ****     r = __SSAT(((((q31_t)x << 16) >> 16) - (((q31_t)y << 16) >> 16)), 16) & (int32_t)0x0000FFFF;
+ 756:Drivers/CMSIS/DSP/Include/arm_math.h ****     s = __SSAT(((((q31_t)x      ) >> 16) - (((q31_t)y      ) >> 16)), 16) & (int32_t)0x0000FFFF;
+ 757:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 758:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((uint32_t)((s << 16) | (r      )));
+ 759:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 760:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 761:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 762:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 763:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined SHSUB16 for M3 and M0 processors
+ 764:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 765:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint32_t __SHSUB16(
+ 766:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 767:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t y)
+ 768:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 769:Drivers/CMSIS/DSP/Include/arm_math.h ****     q31_t r, s;
+ 770:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 771:Drivers/CMSIS/DSP/Include/arm_math.h ****     r = (((((q31_t)x << 16) >> 16) - (((q31_t)y << 16) >> 16)) >> 1) & (int32_t)0x0000FFFF;
+ 772:Drivers/CMSIS/DSP/Include/arm_math.h ****     s = (((((q31_t)x      ) >> 16) - (((q31_t)y      ) >> 16)) >> 1) & (int32_t)0x0000FFFF;
+ 773:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 774:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((uint32_t)((s << 16) | (r      )));
+ 775:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 776:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 777:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 778:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 779:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined QASX for M3 and M0 processors
+ 780:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 781:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint32_t __QASX(
+ 782:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 783:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t y)
+ 784:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 785:Drivers/CMSIS/DSP/Include/arm_math.h ****     q31_t r, s;
+ 786:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 787:Drivers/CMSIS/DSP/Include/arm_math.h ****     r = __SSAT(((((q31_t)x << 16) >> 16) - (((q31_t)y      ) >> 16)), 16) & (int32_t)0x0000FFFF;
+ 788:Drivers/CMSIS/DSP/Include/arm_math.h ****     s = __SSAT(((((q31_t)x      ) >> 16) + (((q31_t)y << 16) >> 16)), 16) & (int32_t)0x0000FFFF;
+ 789:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 790:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((uint32_t)((s << 16) | (r      )));
+ 791:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 792:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 793:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 794:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 795:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined SHASX for M3 and M0 processors
+ 796:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 797:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint32_t __SHASX(
+ 798:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 799:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t y)
+ 800:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 801:Drivers/CMSIS/DSP/Include/arm_math.h ****     q31_t r, s;
+ 802:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 803:Drivers/CMSIS/DSP/Include/arm_math.h ****     r = (((((q31_t)x << 16) >> 16) - (((q31_t)y      ) >> 16)) >> 1) & (int32_t)0x0000FFFF;
+ 804:Drivers/CMSIS/DSP/Include/arm_math.h ****     s = (((((q31_t)x      ) >> 16) + (((q31_t)y << 16) >> 16)) >> 1) & (int32_t)0x0000FFFF;
+ 805:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 806:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((uint32_t)((s << 16) | (r      )));
+ 807:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 808:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 24
+
+
+ 809:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 810:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 811:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined QSAX for M3 and M0 processors
+ 812:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 813:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint32_t __QSAX(
+ 814:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 815:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t y)
+ 816:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 817:Drivers/CMSIS/DSP/Include/arm_math.h ****     q31_t r, s;
+ 818:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 819:Drivers/CMSIS/DSP/Include/arm_math.h ****     r = __SSAT(((((q31_t)x << 16) >> 16) + (((q31_t)y      ) >> 16)), 16) & (int32_t)0x0000FFFF;
+ 820:Drivers/CMSIS/DSP/Include/arm_math.h ****     s = __SSAT(((((q31_t)x      ) >> 16) - (((q31_t)y << 16) >> 16)), 16) & (int32_t)0x0000FFFF;
+ 821:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 822:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((uint32_t)((s << 16) | (r      )));
+ 823:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 824:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 825:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 826:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 827:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined SHSAX for M3 and M0 processors
+ 828:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 829:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint32_t __SHSAX(
+ 830:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 831:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t y)
+ 832:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 833:Drivers/CMSIS/DSP/Include/arm_math.h ****     q31_t r, s;
+ 834:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 835:Drivers/CMSIS/DSP/Include/arm_math.h ****     r = (((((q31_t)x << 16) >> 16) + (((q31_t)y      ) >> 16)) >> 1) & (int32_t)0x0000FFFF;
+ 836:Drivers/CMSIS/DSP/Include/arm_math.h ****     s = (((((q31_t)x      ) >> 16) - (((q31_t)y << 16) >> 16)) >> 1) & (int32_t)0x0000FFFF;
+ 837:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 838:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((uint32_t)((s << 16) | (r      )));
+ 839:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 840:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 841:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 842:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 843:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined SMUSDX for M3 and M0 processors
+ 844:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 845:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint32_t __SMUSDX(
+ 846:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 847:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t y)
+ 848:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 849:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y      ) >> 16)) -
+ 850:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16))   ));
+ 851:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 852:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 853:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 854:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined SMUADX for M3 and M0 processors
+ 855:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 856:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint32_t __SMUADX(
+ 857:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 858:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t y)
+ 859:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 860:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y      ) >> 16)) +
+ 861:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16))   ));
+ 862:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 863:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 864:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 865:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 25
+
+
+ 866:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined QADD for M3 and M0 processors
+ 867:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 868:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE int32_t __QADD(
+ 869:Drivers/CMSIS/DSP/Include/arm_math.h ****   int32_t x,
+ 870:Drivers/CMSIS/DSP/Include/arm_math.h ****   int32_t y)
+ 871:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 872:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((int32_t)(clip_q63_to_q31((q63_t)x + (q31_t)y)));
+ 873:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 874:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 875:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 876:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 877:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined QSUB for M3 and M0 processors
+ 878:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 879:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE int32_t __QSUB(
+ 880:Drivers/CMSIS/DSP/Include/arm_math.h ****   int32_t x,
+ 881:Drivers/CMSIS/DSP/Include/arm_math.h ****   int32_t y)
+ 882:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 883:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((int32_t)(clip_q63_to_q31((q63_t)x - (q31_t)y)));
+ 884:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 885:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 886:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 887:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 888:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined SMLAD for M3 and M0 processors
+ 889:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 890:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint32_t __SMLAD(
+ 891:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 892:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t y,
+ 893:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t sum)
+ 894:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 895:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y << 16) >> 16)) +
+ 896:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16)) +
+ 897:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ( ((q31_t)sum    )                                  )   ));
+ 898:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 899:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 900:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 901:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 902:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined SMLADX for M3 and M0 processors
+ 903:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 904:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint32_t __SMLADX(
+ 905:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 906:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t y,
+ 907:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t sum)
+ 908:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 909:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y      ) >> 16)) +
+ 910:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
+ 911:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ( ((q31_t)sum    )                                  )   ));
+ 912:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 913:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 914:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 915:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 916:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined SMLSDX for M3 and M0 processors
+ 917:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 918:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint32_t __SMLSDX(
+ 919:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 920:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t y,
+ 921:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t sum)
+ 922:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 26
+
+
+ 923:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((uint32_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y      ) >> 16)) -
+ 924:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
+ 925:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ( ((q31_t)sum    )                                  )   ));
+ 926:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 927:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 928:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 929:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 930:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined SMLALD for M3 and M0 processors
+ 931:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 932:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint64_t __SMLALD(
+ 206              		.loc 2 932 41 view .LVU68
+ 207              	.LBB24:
+ 933:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 934:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t y,
+ 935:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint64_t sum)
+ 936:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 937:Drivers/CMSIS/DSP/Include/arm_math.h **** /*  return (sum + ((q15_t) (x >> 16) * (q15_t) (y >> 16)) + ((q15_t) x * (q15_t) y)); */
+ 938:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((uint64_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y << 16) >> 16)) +
+ 208              		.loc 2 938 5 view .LVU69
+ 209              		.loc 2 938 43 is_stmt 0 view .LVU70
+ 210 0096 1EB2     		sxth	r6, r3
+ 211              		.loc 2 938 70 view .LVU71
+ 212 0098 2AB2     		sxth	r2, r5
+ 939:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16)) +
+ 213              		.loc 2 939 43 view .LVU72
+ 214 009a 1914     		asrs	r1, r3, #16
+ 215              		.loc 2 939 70 view .LVU73
+ 216 009c 2D14     		asrs	r5, r5, #16
+ 217              	.LVL29:
+ 218              		.loc 2 939 50 view .LVU74
+ 219 009e 05FB01F1 		mul	r1, r5, r1
+ 938:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16)) +
+ 220              		.loc 2 938 78 view .LVU75
+ 221 00a2 02FB0611 		mla	r1, r2, r6, r1
+ 222              		.loc 2 939 78 view .LVU76
+ 223 00a6 1AEB0109 		adds	r9, r10, r1
+ 224 00aa 40EBE171 		adc	r1, r0, r1, asr #31
+ 225              	.LVL30:
+ 226              		.loc 2 939 78 view .LVU77
+ 227              	.LBE24:
+ 228              	.LBE23:
+ 281:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 282:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc2 = __SMLALD(x2, y1, acc2);
+ 229              		.loc 1 282 7 is_stmt 1 view .LVU78
+ 230              	.LBB25:
+ 231              	.LBI25:
+ 932:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 232              		.loc 2 932 41 view .LVU79
+ 233              	.LBB26:
+ 938:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16)) +
+ 234              		.loc 2 938 5 view .LVU80
+ 938:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16)) +
+ 235              		.loc 2 938 43 is_stmt 0 view .LVU81
+ 236 00ae 079F     		ldr	r7, [sp, #28]
+ 237 00b0 0FFA87FA 		sxth	r10, r7
+ 238              		.loc 2 939 43 view .LVU82
+ 239 00b4 3814     		asrs	r0, r7, #16
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 27
+
+
+ 240              		.loc 2 939 50 view .LVU83
+ 241 00b6 05FB00F6 		mul	r6, r5, r0
+ 938:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16)) +
+ 242              		.loc 2 938 78 view .LVU84
+ 243 00ba 02FB0A66 		mla	r6, r2, r10, r6
+ 244              		.loc 2 939 78 view .LVU85
+ 245 00be 18EB0608 		adds	r8, r8, r6
+ 246              	.LVL31:
+ 247              		.loc 2 939 78 view .LVU86
+ 248 00c2 DDF810C0 		ldr	ip, [sp, #16]
+ 249 00c6 4CEBE676 		adc	r6, ip, r6, asr #31
+ 250              	.LVL32:
+ 251              		.loc 2 939 78 view .LVU87
+ 252              	.LBE26:
+ 253              	.LBE25:
+ 283:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 284:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 285:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x3 = __PKHBT(x2, x1, 0);
+ 254              		.loc 1 285 7 is_stmt 1 view .LVU88
+ 255              		.loc 1 285 12 is_stmt 0 view .LVU89
+ 256 00ca BC46     		mov	ip, r7
+ 257 00cc BFB2     		uxth	r7, r7
+ 258 00ce 6FF30F03 		bfc	r3, #0, #16
+ 259              	.LVL33:
+ 260              		.loc 1 285 10 view .LVU90
+ 261 00d2 3B43     		orrs	r3, r3, r7
+ 262              	.LVL34:
+ 286:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #else
+ 287:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x3 = __PKHBT(x1, x2, 0);
+ 288:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #endif
+ 289:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 290:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc1 = __SMLALDX(x3, y1, acc1);
+ 263              		.loc 1 290 7 is_stmt 1 view .LVU91
+ 264              	.LBB27:
+ 265              	.LBI27:
+ 940:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ( ((q63_t)sum    )                                  )   ));
+ 941:Drivers/CMSIS/DSP/Include/arm_math.h ****   }
+ 942:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 943:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 944:Drivers/CMSIS/DSP/Include/arm_math.h ****   /*
+ 945:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief C custom defined SMLALDX for M3 and M0 processors
+ 946:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 947:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE uint64_t __SMLALDX(
+ 266              		.loc 2 947 41 view .LVU92
+ 267              	.LBB28:
+ 948:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 949:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t y,
+ 950:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint64_t sum)
+ 951:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 952:Drivers/CMSIS/DSP/Include/arm_math.h **** /*  return (sum + ((q15_t) (x >> 16) * (q15_t) y)) + ((q15_t) x * (q15_t) (y >> 16)); */
+ 953:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((uint64_t)(((((q31_t)x << 16) >> 16) * (((q31_t)y      ) >> 16)) +
+ 268              		.loc 2 953 5 view .LVU93
+ 269              		.loc 2 953 43 is_stmt 0 view .LVU94
+ 270 00d4 3FB2     		sxth	r7, r7
+ 954:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
+ 271              		.loc 2 954 43 view .LVU95
+ 272 00d6 1B14     		asrs	r3, r3, #16
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 28
+
+
+ 273              	.LVL35:
+ 274              		.loc 2 954 50 view .LVU96
+ 275 00d8 02FB03F3 		mul	r3, r2, r3
+ 953:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
+ 276              		.loc 2 953 78 view .LVU97
+ 277 00dc 05FB0733 		mla	r3, r5, r7, r3
+ 278              		.loc 2 954 78 view .LVU98
+ 279 00e0 1EEB030E 		adds	lr, lr, r3
+ 280              	.LVL36:
+ 281              		.loc 2 954 78 view .LVU99
+ 282 00e4 4BEBE37B 		adc	fp, fp, r3, asr #31
+ 283              	.LVL37:
+ 284              		.loc 2 954 78 view .LVU100
+ 285              	.LBE28:
+ 286              	.LBE27:
+ 291:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 292:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x1 = _SIMD32_OFFSET(pScr);
+ 287              		.loc 1 292 7 is_stmt 1 view .LVU101
+ 288              		.loc 1 292 10 is_stmt 0 view .LVU102
+ 289 00e8 029B     		ldr	r3, [sp, #8]
+ 290 00ea 1B68     		ldr	r3, [r3]
+ 291              	.LVL38:
+ 293:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 294:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc0 = __SMLALD(x2, y2, acc0);
+ 292              		.loc 1 294 7 is_stmt 1 view .LVU103
+ 293              	.LBB29:
+ 294              	.LBI29:
+ 932:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 295              		.loc 2 932 41 view .LVU104
+ 296              	.LBB30:
+ 938:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16)) +
+ 297              		.loc 2 938 5 view .LVU105
+ 938:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16)) +
+ 298              		.loc 2 938 70 is_stmt 0 view .LVU106
+ 299 00ec 27B2     		sxth	r7, r4
+ 939:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ( ((q63_t)sum    )                                  )   ));
+ 300              		.loc 2 939 70 view .LVU107
+ 301 00ee 2414     		asrs	r4, r4, #16
+ 302              	.LVL39:
+ 939:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ( ((q63_t)sum    )                                  )   ));
+ 303              		.loc 2 939 50 view .LVU108
+ 304 00f0 04FB00F0 		mul	r0, r4, r0
+ 938:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16)) +
+ 305              		.loc 2 938 78 view .LVU109
+ 306 00f4 0AFB0700 		mla	r0, r10, r7, r0
+ 939:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ( ((q63_t)sum    )                                  )   ));
+ 307              		.loc 2 939 78 view .LVU110
+ 308 00f8 10EB090A 		adds	r10, r0, r9
+ 309 00fc 41EBE070 		adc	r0, r1, r0, asr #31
+ 310              	.LVL40:
+ 939:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ( ((q63_t)sum    )                                  )   ));
+ 311              		.loc 2 939 78 view .LVU111
+ 312              	.LBE30:
+ 313              	.LBE29:
+ 295:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 296:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc2 = __SMLALD(x1, y2, acc2);
+ 314              		.loc 1 296 7 is_stmt 1 view .LVU112
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 29
+
+
+ 315              	.LBB31:
+ 316              	.LBI31:
+ 932:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 317              		.loc 2 932 41 view .LVU113
+ 318              	.LBB32:
+ 938:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16)) +
+ 319              		.loc 2 938 5 view .LVU114
+ 938:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16)) +
+ 320              		.loc 2 938 43 is_stmt 0 view .LVU115
+ 321 0100 0FFA83F9 		sxth	r9, r3
+ 939:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ( ((q63_t)sum    )                                  )   ));
+ 322              		.loc 2 939 43 view .LVU116
+ 323 0104 1914     		asrs	r1, r3, #16
+ 939:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ( ((q63_t)sum    )                                  )   ));
+ 324              		.loc 2 939 50 view .LVU117
+ 325 0106 04FB01F1 		mul	r1, r4, r1
+ 938:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y      ) >> 16)) +
+ 326              		.loc 2 938 78 view .LVU118
+ 327 010a 07FB0911 		mla	r1, r7, r9, r1
+ 939:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ( ((q63_t)sum    )                                  )   ));
+ 328              		.loc 2 939 78 view .LVU119
+ 329 010e 11EB0808 		adds	r8, r1, r8
+ 330              	.LVL41:
+ 939:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ( ((q63_t)sum    )                                  )   ));
+ 331              		.loc 2 939 78 view .LVU120
+ 332 0112 46EBE176 		adc	r6, r6, r1, asr #31
+ 333 0116 0496     		str	r6, [sp, #16]
+ 334              	.LVL42:
+ 939:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ( ((q63_t)sum    )                                  )   ));
+ 335              		.loc 2 939 78 view .LVU121
+ 336              	.LBE32:
+ 337              	.LBE31:
+ 297:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 298:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 299:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x3 = __PKHBT(x1, x2, 0);
+ 338              		.loc 1 299 7 is_stmt 1 view .LVU122
+ 339              		.loc 1 299 12 is_stmt 0 view .LVU123
+ 340 0118 9EB2     		uxth	r6, r3
+ 341              	.LVL43:
+ 342              		.loc 1 299 12 view .LVU124
+ 343 011a 6146     		mov	r1, ip
+ 344 011c 6FF30F01 		bfc	r1, #0, #16
+ 345              		.loc 1 299 10 view .LVU125
+ 346 0120 3143     		orrs	r1, r1, r6
+ 347              	.LVL44:
+ 300:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #else
+ 301:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x3 = __PKHBT(x2, x1, 0);
+ 302:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #endif
+ 303:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 304:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc3 = __SMLALDX(x3, y1, acc3);
+ 348              		.loc 1 304 7 is_stmt 1 view .LVU126
+ 349              	.LBB33:
+ 350              	.LBI33:
+ 947:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 351              		.loc 2 947 41 view .LVU127
+ 352              	.LBB34:
+ 953:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 30
+
+
+ 353              		.loc 2 953 5 view .LVU128
+ 953:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
+ 354              		.loc 2 953 43 is_stmt 0 view .LVU129
+ 355 0122 36B2     		sxth	r6, r6
+ 356              		.loc 2 954 43 view .LVU130
+ 357 0124 0914     		asrs	r1, r1, #16
+ 358              	.LVL45:
+ 359              		.loc 2 954 50 view .LVU131
+ 360 0126 01FB02F2 		mul	r2, r1, r2
+ 953:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
+ 361              		.loc 2 953 78 view .LVU132
+ 362 012a 05FB0622 		mla	r2, r5, r6, r2
+ 363              		.loc 2 954 78 view .LVU133
+ 364 012e 059D     		ldr	r5, [sp, #20]
+ 365 0130 AD18     		adds	r5, r5, r2
+ 366 0132 DDF818C0 		ldr	ip, [sp, #24]
+ 367 0136 4CEBE272 		adc	r2, ip, r2, asr #31
+ 368              	.LVL46:
+ 369              		.loc 2 954 78 view .LVU134
+ 370              	.LBE34:
+ 371              	.LBE33:
+ 305:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 306:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc1 = __SMLALDX(x3, y2, acc1);
+ 372              		.loc 1 306 7 is_stmt 1 view .LVU135
+ 373              	.LBB35:
+ 374              	.LBI35:
+ 947:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 375              		.loc 2 947 41 view .LVU136
+ 376              	.LBB36:
+ 953:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
+ 377              		.loc 2 953 5 view .LVU137
+ 378              		.loc 2 954 50 is_stmt 0 view .LVU138
+ 379 013a 07FB01F1 		mul	r1, r7, r1
+ 953:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
+ 380              		.loc 2 953 78 view .LVU139
+ 381 013e 04FB0611 		mla	r1, r4, r6, r1
+ 382              		.loc 2 954 78 view .LVU140
+ 383 0142 11EB0E0E 		adds	lr, r1, lr
+ 384              	.LVL47:
+ 385              		.loc 2 954 78 view .LVU141
+ 386 0146 4BEBE17B 		adc	fp, fp, r1, asr #31
+ 387              	.LVL48:
+ 388              		.loc 2 954 78 view .LVU142
+ 389              	.LBE36:
+ 390              	.LBE35:
+ 307:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 308:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x2 = _SIMD32_OFFSET(pScr + 2U);
+ 391              		.loc 1 308 7 is_stmt 1 view .LVU143
+ 392              		.loc 1 308 10 is_stmt 0 view .LVU144
+ 393 014a DDF80890 		ldr	r9, [sp, #8]
+ 394 014e D9F80410 		ldr	r1, [r9, #4]
+ 395 0152 0791     		str	r1, [sp, #28]
+ 396              	.LVL49:
+ 309:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 310:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 311:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x3 = __PKHBT(x2, x1, 0);
+ 397              		.loc 1 311 7 is_stmt 1 view .LVU145
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 31
+
+
+ 398              		.loc 1 311 12 is_stmt 0 view .LVU146
+ 399 0154 8EB2     		uxth	r6, r1
+ 400 0156 190C     		lsrs	r1, r3, #16
+ 401              	.LVL50:
+ 402              		.loc 1 311 12 view .LVU147
+ 403 0158 0904     		lsls	r1, r1, #16
+ 404              		.loc 1 311 10 view .LVU148
+ 405 015a 3143     		orrs	r1, r1, r6
+ 406              	.LVL51:
+ 312:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #else
+ 313:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x3 = __PKHBT(x1, x2, 0);
+ 314:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #endif
+ 315:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 316:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc3 = __SMLALDX(x3, y2, acc3);
+ 407              		.loc 1 316 7 is_stmt 1 view .LVU149
+ 408              	.LBB37:
+ 409              	.LBI37:
+ 947:Drivers/CMSIS/DSP/Include/arm_math.h ****   uint32_t x,
+ 410              		.loc 2 947 41 view .LVU150
+ 411              	.LBB38:
+ 953:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
+ 412              		.loc 2 953 5 view .LVU151
+ 953:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
+ 413              		.loc 2 953 43 is_stmt 0 view .LVU152
+ 414 015c 36B2     		sxth	r6, r6
+ 415              		.loc 2 954 43 view .LVU153
+ 416 015e 0914     		asrs	r1, r1, #16
+ 417              	.LVL52:
+ 418              		.loc 2 954 50 view .LVU154
+ 419 0160 07FB01F1 		mul	r1, r7, r1
+ 953:Drivers/CMSIS/DSP/Include/arm_math.h ****                        ((((q31_t)x      ) >> 16) * (((q31_t)y << 16) >> 16)) +
+ 420              		.loc 2 953 78 view .LVU155
+ 421 0164 04FB0611 		mla	r1, r4, r6, r1
+ 422              		.loc 2 954 78 view .LVU156
+ 423 0168 4C19     		adds	r4, r1, r5
+ 424 016a 0594     		str	r4, [sp, #20]
+ 425 016c 42EBE172 		adc	r2, r2, r1, asr #31
+ 426              	.LVL53:
+ 427              		.loc 2 954 78 view .LVU157
+ 428 0170 0692     		str	r2, [sp, #24]
+ 429              	.LVL54:
+ 430              		.loc 2 954 78 view .LVU158
+ 431              	.LBE38:
+ 432              	.LBE37:
+ 317:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 318:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #else
+ 319:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 320:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       /* Read four samples from smaller buffer */
+ 321:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 	  a = *pIn2;
+ 322:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 	  b = *(pIn2 + 1);
+ 323:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 324:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 325:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       y1 = __PKHBT(a, b, 16);
+ 326:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #else
+ 327:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       y1 = __PKHBT(b, a, 16);
+ 328:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #endif
+ 329:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 32
+
+
+ 330:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 	  a = *(pIn2 + 2);
+ 331:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 	  b = *(pIn2 + 3);
+ 332:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 333:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       y2 = __PKHBT(a, b, 16);
+ 334:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #else
+ 335:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       y2 = __PKHBT(b, a, 16);
+ 336:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #endif
+ 337:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 338:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc0 = __SMLALD(x1, y1, acc0);
+ 339:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 340:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc2 = __SMLALD(x2, y1, acc2);
+ 341:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 342:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 343:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x3 = __PKHBT(x2, x1, 0);
+ 344:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #else
+ 345:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x3 = __PKHBT(x1, x2, 0);
+ 346:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #endif
+ 347:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 348:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc1 = __SMLALDX(x3, y1, acc1);
+ 349:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 350:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 	  a = *pScr;
+ 351:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 	  b = *(pScr + 1);
+ 352:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 353:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 354:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x1 = __PKHBT(a, b, 16);
+ 355:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #else
+ 356:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x1 = __PKHBT(b, a, 16);
+ 357:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #endif
+ 358:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 359:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc0 = __SMLALD(x2, y2, acc0);
+ 360:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 361:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc2 = __SMLALD(x1, y2, acc2);
+ 362:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 363:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 364:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x3 = __PKHBT(x1, x2, 0);
+ 365:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #else
+ 366:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x3 = __PKHBT(x2, x1, 0);
+ 367:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #endif
+ 368:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 369:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc3 = __SMLALDX(x3, y1, acc3);
+ 370:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 371:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc1 = __SMLALDX(x3, y2, acc1);
+ 372:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 373:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 	  a = *(pScr + 2);
+ 374:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 	  b = *(pScr + 3);
+ 375:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 376:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 377:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x2 = __PKHBT(a, b, 16);
+ 378:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #else
+ 379:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x2 = __PKHBT(b, a, 16);
+ 380:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #endif
+ 381:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 382:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 383:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x3 = __PKHBT(x2, x1, 0);
+ 384:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #else
+ 385:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       x3 = __PKHBT(x1, x2, 0);
+ 386:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #endif
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 33
+
+
+ 387:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 388:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc3 = __SMLALDX(x3, y2, acc3);
+ 389:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 390:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** #endif	/*	#ifndef UNALIGNED_SUPPORT_DISABLE	*/
+ 391:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 392:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       pIn2 += 4U;
+ 433              		.loc 1 392 7 is_stmt 1 view .LVU159
+ 434              		.loc 1 392 12 is_stmt 0 view .LVU160
+ 435 0172 019A     		ldr	r2, [sp, #4]
+ 436              	.LVL55:
+ 437              		.loc 1 392 12 view .LVU161
+ 438 0174 0832     		adds	r2, r2, #8
+ 439 0176 0192     		str	r2, [sp, #4]
+ 440              	.LVL56:
+ 393:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 394:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       pScr += 4U;
+ 441              		.loc 1 394 7 is_stmt 1 view .LVU162
+ 442              		.loc 1 394 12 is_stmt 0 view .LVU163
+ 443 0178 09F10802 		add	r2, r9, #8
+ 444              	.LVL57:
+ 445              		.loc 1 394 12 view .LVU164
+ 446 017c 0292     		str	r2, [sp, #8]
+ 447              	.LVL58:
+ 395:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 396:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 397:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       /* Decrement the loop counter */
+ 398:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       tapCnt--;
+ 448              		.loc 1 398 7 is_stmt 1 view .LVU165
+ 449              		.loc 1 398 13 is_stmt 0 view .LVU166
+ 450 017e 039A     		ldr	r2, [sp, #12]
+ 451              	.LVL59:
+ 452              		.loc 1 398 13 view .LVU167
+ 453 0180 013A     		subs	r2, r2, #1
+ 454 0182 0392     		str	r2, [sp, #12]
+ 455              	.LVL60:
+ 456              	.L5:
+ 271:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     {
+ 457              		.loc 1 271 19 is_stmt 1 view .LVU168
+ 458 0184 039A     		ldr	r2, [sp, #12]
+ 459 0186 002A     		cmp	r2, #0
+ 460 0188 82D1     		bne	.L6
+ 399:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     }
+ 400:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 401:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 402:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 403:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Update scratch pointer for remaining samples of smaller length sequence */
+ 404:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pScr -= 4U;
+ 461              		.loc 1 404 10 is_stmt 0 view .LVU169
+ 462 018a 0A9E     		ldr	r6, [sp, #40]
+ 463 018c DDF804C0 		ldr	ip, [sp, #4]
+ 464 0190 0B99     		ldr	r1, [sp, #44]
+ 465 0192 0C9D     		ldr	r5, [sp, #48]
+ 466 0194 5C46     		mov	r4, fp
+ 467 0196 8346     		mov	fp, r0
+ 468              	.LVL61:
+ 469              		.loc 1 404 10 view .LVU170
+ 470 0198 C146     		mov	r9, r8
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 34
+
+
+ 471 019a F046     		mov	r8, lr
+ 472              	.LVL62:
+ 473              		.loc 1 404 10 view .LVU171
+ 474 019c DDF834E0 		ldr	lr, [sp, #52]
+ 475              	.LVL63:
+ 476              		.loc 1 404 5 is_stmt 1 view .LVU172
+ 477              		.loc 1 404 10 is_stmt 0 view .LVU173
+ 478 01a0 029B     		ldr	r3, [sp, #8]
+ 479              	.LVL64:
+ 480              		.loc 1 404 10 view .LVU174
+ 481 01a2 A3F10802 		sub	r2, r3, #8
+ 482              	.LVL65:
+ 405:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 406:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 407:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* apply same above for remaining samples of smaller length sequence */
+ 408:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     tapCnt = (srcBLen) & 3U;
+ 483              		.loc 1 408 5 is_stmt 1 view .LVU175
+ 484              		.loc 1 408 12 is_stmt 0 view .LVU176
+ 485 01a6 0EF00300 		and	r0, lr, #3
+ 486              	.LVL66:
+ 409:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 410:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     while (tapCnt > 0U)
+ 487              		.loc 1 410 5 is_stmt 1 view .LVU177
+ 488 01aa 0196     		str	r6, [sp, #4]
+ 489              	.LVL67:
+ 490              		.loc 1 410 5 is_stmt 0 view .LVU178
+ 491 01ac 0291     		str	r1, [sp, #8]
+ 492 01ae 0395     		str	r5, [sp, #12]
+ 493 01b0 2546     		mov	r5, r4
+ 494 01b2 049E     		ldr	r6, [sp, #16]
+ 495 01b4 0599     		ldr	r1, [sp, #20]
+ 496 01b6 069F     		ldr	r7, [sp, #24]
+ 497              		.loc 1 410 11 view .LVU179
+ 498 01b8 22E0     		b	.L7
+ 499              	.LVL68:
+ 500              	.L8:
+ 411:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     {
+ 412:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 413:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       /* accumlate the results */
+ 414:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc0 += (*pScr++ * *pIn2);
+ 501              		.loc 1 414 7 is_stmt 1 view .LVU180
+ 502              		.loc 1 414 16 is_stmt 0 view .LVU181
+ 503 01ba B2F90030 		ldrsh	r3, [r2]
+ 504              		.loc 1 414 26 view .LVU182
+ 505 01be 3CF9024B 		ldrsh	r4, [ip], #2
+ 506              	.LVL69:
+ 507              		.loc 1 414 24 view .LVU183
+ 508 01c2 04FB03F3 		mul	r3, r4, r3
+ 509              		.loc 1 414 12 view .LVU184
+ 510 01c6 13EB0A0A 		adds	r10, r3, r10
+ 511              	.LVL70:
+ 512              		.loc 1 414 12 view .LVU185
+ 513 01ca 4BEBE37B 		adc	fp, fp, r3, asr #31
+ 514              	.LVL71:
+ 415:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc1 += (*pScr++ * *pIn2);
+ 515              		.loc 1 415 7 is_stmt 1 view .LVU186
+ 516              		.loc 1 415 16 is_stmt 0 view .LVU187
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 35
+
+
+ 517 01ce B2F90230 		ldrsh	r3, [r2, #2]
+ 518              		.loc 1 415 24 view .LVU188
+ 519 01d2 04FB03F3 		mul	r3, r4, r3
+ 520              		.loc 1 415 12 view .LVU189
+ 521 01d6 13EB0808 		adds	r8, r3, r8
+ 522              	.LVL72:
+ 523              		.loc 1 415 12 view .LVU190
+ 524 01da 45EBE375 		adc	r5, r5, r3, asr #31
+ 525              	.LVL73:
+ 416:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc2 += (*pScr++ * *pIn2);
+ 526              		.loc 1 416 7 is_stmt 1 view .LVU191
+ 527              		.loc 1 416 16 is_stmt 0 view .LVU192
+ 528 01de B2F90430 		ldrsh	r3, [r2, #4]
+ 529              		.loc 1 416 24 view .LVU193
+ 530 01e2 04FB03F3 		mul	r3, r4, r3
+ 531              		.loc 1 416 12 view .LVU194
+ 532 01e6 13EB0909 		adds	r9, r3, r9
+ 533              	.LVL74:
+ 534              		.loc 1 416 12 view .LVU195
+ 535 01ea 46EBE376 		adc	r6, r6, r3, asr #31
+ 536              	.LVL75:
+ 417:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc3 += (*pScr++ * *pIn2++);
+ 537              		.loc 1 417 7 is_stmt 1 view .LVU196
+ 538              		.loc 1 417 16 is_stmt 0 view .LVU197
+ 539 01ee B2F90630 		ldrsh	r3, [r2, #6]
+ 540              	.LVL76:
+ 541              		.loc 1 417 24 view .LVU198
+ 542 01f2 04FB03F3 		mul	r3, r4, r3
+ 543              		.loc 1 417 12 view .LVU199
+ 544 01f6 5918     		adds	r1, r3, r1
+ 545              	.LVL77:
+ 546              		.loc 1 417 12 view .LVU200
+ 547 01f8 47EBE377 		adc	r7, r7, r3, asr #31
+ 548              	.LVL78:
+ 418:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 419:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       pScr -= 3U;
+ 549              		.loc 1 419 7 is_stmt 1 view .LVU201
+ 550              		.loc 1 419 12 is_stmt 0 view .LVU202
+ 551 01fc 0232     		adds	r2, r2, #2
+ 552              	.LVL79:
+ 420:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 421:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       /* Decrement the loop counter */
+ 422:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       tapCnt--;
+ 553              		.loc 1 422 7 is_stmt 1 view .LVU203
+ 554              		.loc 1 422 13 is_stmt 0 view .LVU204
+ 555 01fe 0138     		subs	r0, r0, #1
+ 556              	.LVL80:
+ 557              	.L7:
+ 410:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     {
+ 558              		.loc 1 410 19 is_stmt 1 view .LVU205
+ 559 0200 0028     		cmp	r0, #0
+ 560 0202 DAD1     		bne	.L8
+ 423:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     }
+ 424:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 425:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     blkCnt--;
+ 561              		.loc 1 425 11 is_stmt 0 view .LVU206
+ 562 0204 2846     		mov	r0, r5
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 36
+
+
+ 563              	.LVL81:
+ 564              		.loc 1 425 11 view .LVU207
+ 565 0206 039D     		ldr	r5, [sp, #12]
+ 566              	.LVL82:
+ 567              		.loc 1 425 11 view .LVU208
+ 568 0208 3446     		mov	r4, r6
+ 569 020a 019E     		ldr	r6, [sp, #4]
+ 570              	.LVL83:
+ 571              		.loc 1 425 11 view .LVU209
+ 572 020c 0B46     		mov	r3, r1
+ 573 020e 0299     		ldr	r1, [sp, #8]
+ 574              	.LVL84:
+ 575              		.loc 1 425 5 is_stmt 1 view .LVU210
+ 576              		.loc 1 425 11 is_stmt 0 view .LVU211
+ 577 0210 089A     		ldr	r2, [sp, #32]
+ 578              	.LVL85:
+ 579              		.loc 1 425 11 view .LVU212
+ 580 0212 013A     		subs	r2, r2, #1
+ 581 0214 0892     		str	r2, [sp, #32]
+ 582              	.LVL86:
+ 426:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 427:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 428:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Store the results in the accumulators in the destination buffer. */
+ 429:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     *pOut = (__SSAT(acc0 >> 15U, 16));
+ 583              		.loc 1 429 5 is_stmt 1 view .LVU213
+ 584              	.LBB39:
+ 585              		.loc 1 429 14 view .LVU214
+ 586 0216 4FEADA3A 		lsr	r10, r10, #15
+ 587              	.LVL87:
+ 588              		.loc 1 429 14 is_stmt 0 view .LVU215
+ 589 021a 4AEA4B4A 		orr	r10, r10, fp, lsl #17
+ 590              	.LVL88:
+ 591              		.loc 1 429 14 is_stmt 1 view .LVU216
+ 592              		.syntax unified
+ 593              	@ 429 "Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c" 1
+ 594 021e 0AF30F0A 		ssat r10, #16, r10
+ 595              	@ 0 "" 2
+ 596              	.LVL89:
+ 597              		.loc 1 429 14 view .LVU217
+ 598              		.thumb
+ 599              		.syntax unified
+ 600              	.LBE39:
+ 601              		.loc 1 429 11 is_stmt 0 view .LVU218
+ 602 0222 A5F800A0 		strh	r10, [r5]	@ movhi
+ 430:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pOut += inc;
+ 603              		.loc 1 430 5 is_stmt 1 view .LVU219
+ 604              	.LVL90:
+ 431:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     *pOut = (__SSAT(acc1 >> 15U, 16));
+ 605              		.loc 1 431 5 view .LVU220
+ 606              	.LBB40:
+ 607              		.loc 1 431 14 view .LVU221
+ 608 0226 4FEAD838 		lsr	r8, r8, #15
+ 609              	.LVL91:
+ 610              		.loc 1 431 14 is_stmt 0 view .LVU222
+ 611 022a 48EA4048 		orr	r8, r8, r0, lsl #17
+ 612              	.LVL92:
+ 613              		.loc 1 431 14 is_stmt 1 view .LVU223
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 37
+
+
+ 614              		.syntax unified
+ 615              	@ 431 "Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c" 1
+ 616 022e 08F30F08 		ssat r8, #16, r8
+ 617              	@ 0 "" 2
+ 618              	.LVL93:
+ 619              		.loc 1 431 14 view .LVU224
+ 620              		.thumb
+ 621              		.syntax unified
+ 622              	.LBE40:
+ 623              		.loc 1 431 11 is_stmt 0 view .LVU225
+ 624 0232 25F81180 		strh	r8, [r5, r1, lsl #1]	@ movhi
+ 432:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pOut += inc;
+ 625              		.loc 1 432 5 is_stmt 1 view .LVU226
+ 626              		.loc 1 432 10 is_stmt 0 view .LVU227
+ 627 0236 05EB8102 		add	r2, r5, r1, lsl #2
+ 628              	.LVL94:
+ 433:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     *pOut = (__SSAT(acc2 >> 15U, 16));
+ 629              		.loc 1 433 5 is_stmt 1 view .LVU228
+ 630              	.LBB41:
+ 631              		.loc 1 433 14 view .LVU229
+ 632 023a 4FEAD939 		lsr	r9, r9, #15
+ 633              	.LVL95:
+ 634              		.loc 1 433 14 is_stmt 0 view .LVU230
+ 635 023e 49EA4449 		orr	r9, r9, r4, lsl #17
+ 636              	.LVL96:
+ 637              		.loc 1 433 14 is_stmt 1 view .LVU231
+ 638              		.syntax unified
+ 639              	@ 433 "Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c" 1
+ 640 0242 09F30F09 		ssat r9, #16, r9
+ 641              	@ 0 "" 2
+ 642              	.LVL97:
+ 643              		.loc 1 433 14 view .LVU232
+ 644              		.thumb
+ 645              		.syntax unified
+ 646              	.LBE41:
+ 647              		.loc 1 433 11 is_stmt 0 view .LVU233
+ 648 0246 25F82190 		strh	r9, [r5, r1, lsl #2]	@ movhi
+ 434:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pOut += inc;
+ 649              		.loc 1 434 5 is_stmt 1 view .LVU234
+ 650              	.LVL98:
+ 435:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     *pOut = (__SSAT(acc3 >> 15U, 16));
+ 651              		.loc 1 435 5 view .LVU235
+ 652              	.LBB42:
+ 653              		.loc 1 435 14 view .LVU236
+ 654 024a DB0B     		lsrs	r3, r3, #15
+ 655              	.LVL99:
+ 656              		.loc 1 435 14 is_stmt 0 view .LVU237
+ 657 024c 43EA4743 		orr	r3, r3, r7, lsl #17
+ 658              	.LVL100:
+ 659              		.loc 1 435 14 is_stmt 1 view .LVU238
+ 660              		.syntax unified
+ 661              	@ 435 "Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c" 1
+ 662 0250 03F30F03 		ssat r3, #16, r3
+ 663              	@ 0 "" 2
+ 664              	.LVL101:
+ 665              		.loc 1 435 14 view .LVU239
+ 666              		.thumb
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 38
+
+
+ 667              		.syntax unified
+ 668              	.LBE42:
+ 669              		.loc 1 435 11 is_stmt 0 view .LVU240
+ 670 0254 22F81130 		strh	r3, [r2, r1, lsl #1]	@ movhi
+ 436:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pOut += inc;
+ 671              		.loc 1 436 5 is_stmt 1 view .LVU241
+ 672              		.loc 1 436 10 is_stmt 0 view .LVU242
+ 673 0258 02EB8105 		add	r5, r2, r1, lsl #2
+ 674              	.LVL102:
+ 437:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 438:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Initialization of inputB pointer */
+ 439:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pIn2 = py;
+ 675              		.loc 1 439 5 is_stmt 1 view .LVU243
+ 440:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 441:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pScratch += 4U;
+ 676              		.loc 1 441 5 view .LVU244
+ 677              		.loc 1 441 14 is_stmt 0 view .LVU245
+ 678 025c 3246     		mov	r2, r6
+ 679              	.LVL103:
+ 680              	.L4:
+ 252:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   {
+ 681              		.loc 1 252 17 is_stmt 1 view .LVU246
+ 682 025e 089B     		ldr	r3, [sp, #32]
+ 683 0260 D3B1     		cbz	r3, .L17
+ 255:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 684              		.loc 1 255 5 view .LVU247
+ 685              	.LVL104:
+ 258:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     acc1 = 0;
+ 686              		.loc 1 258 5 view .LVU248
+ 259:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     acc2 = 0;
+ 687              		.loc 1 259 5 view .LVU249
+ 260:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     acc3 = 0;
+ 688              		.loc 1 260 5 view .LVU250
+ 261:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 689              		.loc 1 261 5 view .LVU251
+ 264:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 690              		.loc 1 264 5 view .LVU252
+ 264:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 691              		.loc 1 264 8 is_stmt 0 view .LVU253
+ 692 0262 1646     		mov	r6, r2
+ 693 0264 56F8083B 		ldr	r3, [r6], #8
+ 694              	.LVL105:
+ 267:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 695              		.loc 1 267 5 is_stmt 1 view .LVU254
+ 267:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 696              		.loc 1 267 8 is_stmt 0 view .LVU255
+ 697 0268 5268     		ldr	r2, [r2, #4]
+ 698              	.LVL106:
+ 267:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 699              		.loc 1 267 8 view .LVU256
+ 700 026a 0792     		str	r2, [sp, #28]
+ 701              	.LVL107:
+ 269:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 702              		.loc 1 269 5 is_stmt 1 view .LVU257
+ 269:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 703              		.loc 1 269 12 is_stmt 0 view .LVU258
+ 704 026c 4FEA9E02 		lsr	r2, lr, #2
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 39
+
+
+ 705              	.LVL108:
+ 269:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 706              		.loc 1 269 12 view .LVU259
+ 707 0270 0392     		str	r2, [sp, #12]
+ 708              	.LVL109:
+ 271:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     {
+ 709              		.loc 1 271 5 is_stmt 1 view .LVU260
+ 267:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 710              		.loc 1 267 25 is_stmt 0 view .LVU261
+ 711 0272 0296     		str	r6, [sp, #8]
+ 271:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     {
+ 712              		.loc 1 271 11 view .LVU262
+ 713 0274 DDF824C0 		ldr	ip, [sp, #36]
+ 261:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 714              		.loc 1 261 10 view .LVU263
+ 715 0278 0020     		movs	r0, #0
+ 716 027a 8346     		mov	fp, r0
+ 717 027c 0590     		str	r0, [sp, #20]
+ 718 027e 0690     		str	r0, [sp, #24]
+ 260:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     acc3 = 0;
+ 719              		.loc 1 260 10 view .LVU264
+ 720 0280 0490     		str	r0, [sp, #16]
+ 259:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     acc2 = 0;
+ 721              		.loc 1 259 10 view .LVU265
+ 722 0282 8046     		mov	r8, r0
+ 258:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     acc1 = 0;
+ 723              		.loc 1 258 10 view .LVU266
+ 724 0284 8246     		mov	r10, r0
+ 725 0286 0A96     		str	r6, [sp, #40]
+ 726 0288 CDF804C0 		str	ip, [sp, #4]
+ 727 028c 0B91     		str	r1, [sp, #44]
+ 728 028e 0C95     		str	r5, [sp, #48]
+ 729 0290 CDF834E0 		str	lr, [sp, #52]
+ 730 0294 8646     		mov	lr, r0
+ 271:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     {
+ 731              		.loc 1 271 11 view .LVU267
+ 732 0296 75E7     		b	.L5
+ 733              	.LVL110:
+ 734              	.L17:
+ 442:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 443:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   }
+ 444:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 445:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 446:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   blkCnt = (srcALen + srcBLen - 1U) & 0x3;
+ 735              		.loc 1 446 10 view .LVU268
+ 736 0298 0F9B     		ldr	r3, [sp, #60]
+ 737              	.LVL111:
+ 738              		.loc 1 446 10 view .LVU269
+ 739 029a 8946     		mov	r9, r1
+ 740 029c 1746     		mov	r7, r2
+ 741              		.loc 1 446 3 is_stmt 1 view .LVU270
+ 742              		.loc 1 446 10 is_stmt 0 view .LVU271
+ 743 029e 03F00308 		and	r8, r3, #3
+ 744              	.LVL112:
+ 447:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 448:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   /* Calculate correlation for remaining samples of Bigger length sequence */
+ 449:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   while (blkCnt > 0)
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 40
+
+
+ 745              		.loc 1 449 3 is_stmt 1 view .LVU272
+ 746 02a2 4646     		mov	r6, r8
+ 747 02a4 DDF838C0 		ldr	ip, [sp, #56]
+ 748              		.loc 1 449 9 is_stmt 0 view .LVU273
+ 749 02a8 35E0     		b	.L10
+ 750              	.LVL113:
+ 751              	.L12:
+ 450:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   {
+ 451:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Initialze temporary scratch pointer as scratch1 */
+ 452:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pScr = pScratch;
+ 453:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 454:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Clear Accumlators */
+ 455:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     acc0 = 0;
+ 456:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 457:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     tapCnt = (srcBLen) >> 1U;
+ 458:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 459:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     while (tapCnt > 0U)
+ 460:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     {
+ 461:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 462:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc0 += (*pScr++ * *pIn2++);
+ 752              		.loc 1 462 7 is_stmt 1 view .LVU274
+ 753              		.loc 1 462 16 is_stmt 0 view .LVU275
+ 754 02aa C246     		mov	r10, r8
+ 755 02ac 3AF9044B 		ldrsh	r4, [r10], #4
+ 756              	.LVL114:
+ 757              		.loc 1 462 26 view .LVU276
+ 758 02b0 9646     		mov	lr, r2
+ 759 02b2 3EF904BB 		ldrsh	fp, [lr], #4
+ 760              		.loc 1 462 24 view .LVU277
+ 761 02b6 0BFB04F4 		mul	r4, fp, r4
+ 762              		.loc 1 462 12 view .LVU278
+ 763 02ba 2018     		adds	r0, r4, r0
+ 764              	.LVL115:
+ 765              		.loc 1 462 12 view .LVU279
+ 766 02bc 43EBE474 		adc	r4, r3, r4, asr #31
+ 767              	.LVL116:
+ 463:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc0 += (*pScr++ * *pIn2++);
+ 768              		.loc 1 463 7 is_stmt 1 view .LVU280
+ 769              		.loc 1 463 16 is_stmt 0 view .LVU281
+ 770 02c0 B8F90230 		ldrsh	r3, [r8, #2]
+ 771              	.LVL117:
+ 772              		.loc 1 463 26 view .LVU282
+ 773 02c4 B2F90220 		ldrsh	r2, [r2, #2]
+ 774              		.loc 1 463 24 view .LVU283
+ 775 02c8 03FB02F2 		mul	r2, r3, r2
+ 776              		.loc 1 463 12 view .LVU284
+ 777 02cc 1018     		adds	r0, r2, r0
+ 778              	.LVL118:
+ 779              		.loc 1 463 12 view .LVU285
+ 780 02ce 44EBE273 		adc	r3, r4, r2, asr #31
+ 781              	.LVL119:
+ 464:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 465:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       /* Decrement the loop counter */
+ 466:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       tapCnt--;
+ 782              		.loc 1 466 7 is_stmt 1 view .LVU286
+ 783              		.loc 1 466 13 is_stmt 0 view .LVU287
+ 784 02d2 0139     		subs	r1, r1, #1
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 41
+
+
+ 785              	.LVL120:
+ 463:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc0 += (*pScr++ * *pIn2++);
+ 786              		.loc 1 463 21 view .LVU288
+ 787 02d4 D046     		mov	r8, r10
+ 463:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc0 += (*pScr++ * *pIn2++);
+ 788              		.loc 1 463 31 view .LVU289
+ 789 02d6 7246     		mov	r2, lr
+ 790              	.LVL121:
+ 791              	.L11:
+ 459:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     {
+ 792              		.loc 1 459 19 is_stmt 1 view .LVU290
+ 793 02d8 0029     		cmp	r1, #0
+ 794 02da E6D1     		bne	.L12
+ 467:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     }
+ 468:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 469:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     tapCnt = (srcBLen) & 1U;
+ 795              		.loc 1 469 12 is_stmt 0 view .LVU291
+ 796 02dc 4146     		mov	r1, r8
+ 797              	.LVL122:
+ 798              		.loc 1 469 5 is_stmt 1 view .LVU292
+ 799              		.loc 1 469 12 is_stmt 0 view .LVU293
+ 800 02de 0CF0010E 		and	lr, ip, #1
+ 801              	.LVL123:
+ 470:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 471:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* apply same above for remaining samples of smaller length sequence */
+ 472:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     while (tapCnt > 0U)
+ 802              		.loc 1 472 5 is_stmt 1 view .LVU294
+ 803 02e2 1C46     		mov	r4, r3
+ 804 02e4 7346     		mov	r3, lr
+ 805              	.LVL124:
+ 806              		.loc 1 472 5 is_stmt 0 view .LVU295
+ 807 02e6 A646     		mov	lr, r4
+ 808              	.LVL125:
+ 809              		.loc 1 472 11 view .LVU296
+ 810 02e8 09E0     		b	.L13
+ 811              	.LVL126:
+ 812              	.L14:
+ 473:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     {
+ 474:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 475:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       /* accumlate the results */
+ 476:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       acc0 += (*pScr++ * *pIn2++);
+ 813              		.loc 1 476 7 is_stmt 1 view .LVU297
+ 814              		.loc 1 476 16 is_stmt 0 view .LVU298
+ 815 02ea 31F9024B 		ldrsh	r4, [r1], #2
+ 816              	.LVL127:
+ 817              		.loc 1 476 26 view .LVU299
+ 818 02ee 32F9028B 		ldrsh	r8, [r2], #2
+ 819              	.LVL128:
+ 820              		.loc 1 476 24 view .LVU300
+ 821 02f2 08FB04F4 		mul	r4, r8, r4
+ 822              		.loc 1 476 12 view .LVU301
+ 823 02f6 2018     		adds	r0, r4, r0
+ 824              	.LVL129:
+ 825              		.loc 1 476 12 view .LVU302
+ 826 02f8 4EEBE47E 		adc	lr, lr, r4, asr #31
+ 827              	.LVL130:
+ 477:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 42
+
+
+ 478:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       /* Decrement the loop counter */
+ 479:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****       tapCnt--;
+ 828              		.loc 1 479 7 is_stmt 1 view .LVU303
+ 829              		.loc 1 479 13 is_stmt 0 view .LVU304
+ 830 02fc 013B     		subs	r3, r3, #1
+ 831              	.LVL131:
+ 832              	.L13:
+ 472:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     {
+ 833              		.loc 1 472 19 is_stmt 1 view .LVU305
+ 834 02fe 002B     		cmp	r3, #0
+ 835 0300 F3D1     		bne	.L14
+ 480:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     }
+ 481:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 482:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     blkCnt--;
+ 836              		.loc 1 482 5 view .LVU306
+ 837              		.loc 1 482 11 is_stmt 0 view .LVU307
+ 838 0302 013E     		subs	r6, r6, #1
+ 839              	.LVL132:
+ 483:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 484:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Store the result in the accumulator in the destination buffer. */
+ 485:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     *pOut = (q15_t) (__SSAT((acc0 >> 15), 16));
+ 840              		.loc 1 485 5 is_stmt 1 view .LVU308
+ 841              	.LBB43:
+ 842              		.loc 1 485 22 view .LVU309
+ 843 0304 C00B     		lsrs	r0, r0, #15
+ 844              	.LVL133:
+ 845              		.loc 1 485 22 is_stmt 0 view .LVU310
+ 846 0306 40EA4E40 		orr	r0, r0, lr, lsl #17
+ 847              	.LVL134:
+ 848              		.loc 1 485 22 is_stmt 1 view .LVU311
+ 849              		.syntax unified
+ 850              	@ 485 "Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c" 1
+ 851 030a 00F30F00 		ssat r0, #16, r0
+ 852              	@ 0 "" 2
+ 853              	.LVL135:
+ 854              		.loc 1 485 22 view .LVU312
+ 855              		.thumb
+ 856              		.syntax unified
+ 857              	.LBE43:
+ 858              		.loc 1 485 11 is_stmt 0 view .LVU313
+ 859 030e 2880     		strh	r0, [r5]	@ movhi
+ 486:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 487:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pOut += inc;
+ 860              		.loc 1 487 5 is_stmt 1 view .LVU314
+ 861              		.loc 1 487 10 is_stmt 0 view .LVU315
+ 862 0310 05EB4905 		add	r5, r5, r9, lsl #1
+ 863              	.LVL136:
+ 488:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 489:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     /* Initialization of inputB pointer */
+ 490:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pIn2 = py;
+ 864              		.loc 1 490 5 is_stmt 1 view .LVU316
+ 491:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 492:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     pScratch += 1U;
+ 865              		.loc 1 492 5 view .LVU317
+ 866              		.loc 1 492 14 is_stmt 0 view .LVU318
+ 867 0314 0237     		adds	r7, r7, #2
+ 868              	.LVL137:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 43
+
+
+ 869              	.L10:
+ 449:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   {
+ 870              		.loc 1 449 17 is_stmt 1 view .LVU319
+ 871 0316 3EB1     		cbz	r6, .L18
+ 452:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 872              		.loc 1 452 5 view .LVU320
+ 873              	.LVL138:
+ 455:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 874              		.loc 1 455 5 view .LVU321
+ 457:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 875              		.loc 1 457 5 view .LVU322
+ 457:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 876              		.loc 1 457 12 is_stmt 0 view .LVU323
+ 877 0318 4FEA5C08 		lsr	r8, ip, #1
+ 878              	.LVL139:
+ 459:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     {
+ 879              		.loc 1 459 5 is_stmt 1 view .LVU324
+ 459:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     {
+ 880              		.loc 1 459 11 is_stmt 0 view .LVU325
+ 881 031c 099A     		ldr	r2, [sp, #36]
+ 455:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 882              		.loc 1 455 10 view .LVU326
+ 883 031e 0020     		movs	r0, #0
+ 884 0320 0346     		mov	r3, r0
+ 885 0322 4146     		mov	r1, r8
+ 886 0324 B846     		mov	r8, r7
+ 887              	.LVL140:
+ 459:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****     {
+ 888              		.loc 1 459 11 view .LVU327
+ 889 0326 D7E7     		b	.L11
+ 890              	.LVL141:
+ 891              	.L18:
+ 493:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 494:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c ****   }
+ 495:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 496:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** 
+ 497:Drivers/CMSIS/DSP/Source/FilteringFunctions/arm_correlate_opt_q15.c **** }
+ 892              		.loc 1 497 1 view .LVU328
+ 893 0328 11B0     		add	sp, sp, #68
+ 894              	.LCFI2:
+ 895              		.cfi_def_cfa_offset 36
+ 896              		@ sp needed
+ 897 032a BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 898              		.loc 1 497 1 view .LVU329
+ 899              		.cfi_endproc
+ 900              	.LFE100:
+ 902              		.text
+ 903              	.Letext0:
+ 904              		.file 3 "C:/ARM GNU Toolchain/arm-none-eabi/include/machine/_default_types.h"
+ 905              		.file 4 "C:/ARM GNU Toolchain/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s 			page 44
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 arm_correlate_opt_q15.c
+C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s:19     .text.arm_correlate_opt_q15:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccjF8dlB.s:25     .text.arm_correlate_opt_q15:00000000 arm_correlate_opt_q15
+
+UNDEFINED SYMBOLS
+arm_fill_q15
+arm_copy_q15

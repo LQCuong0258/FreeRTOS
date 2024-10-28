@@ -32,7 +32,7 @@ void MainTask(void * xTaskParameters) {
     // position = encoder * 360.0 / (4.0 * 11 * 45);
     PID_Vel(&dataToSend);
 
-    xQueueSend(CommuniQueue, (void *)&dataToSend, portMAX_DELAY);
+    xQueueSendToBack(CommuniQueue, (void *)&dataToSend, portMAX_DELAY);
     xSemaphoreGive(CommuniSemaphore);
 
     vTaskDelay(pdMS_TO_TICKS(Ts));

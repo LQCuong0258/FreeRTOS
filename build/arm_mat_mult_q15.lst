@@ -1,0 +1,769 @@
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccFRZEAh.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_mat_mult_q15.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c"
+  18              		.section	.text.arm_mat_mult_q15,"ax",%progbits
+  19              		.align	1
+  20              		.global	arm_mat_mult_q15
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	arm_mat_mult_q15:
+  26              	.LVL0:
+  27              	.LFB100:
+   1:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** /* ----------------------------------------------------------------------
+   2:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * Project:      CMSIS DSP Library
+   3:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * Title:        arm_mat_mult_q15.c
+   4:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * Description:  Q15 matrix multiplication
+   5:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  *
+   6:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * $Date:        27. January 2017
+   7:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * $Revision:    V.1.5.1
+   8:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  *
+   9:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * Target Processor: Cortex-M cores
+  10:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * -------------------------------------------------------------------- */
+  11:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** /*
+  12:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * Copyright (C) 2010-2017 ARM Limited or its affiliates. All rights reserved.
+  13:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  *
+  14:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * SPDX-License-Identifier: Apache-2.0
+  15:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  *
+  16:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  17:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * not use this file except in compliance with the License.
+  18:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * You may obtain a copy of the License at
+  19:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  *
+  20:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * www.apache.org/licenses/LICENSE-2.0
+  21:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  *
+  22:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * Unless required by applicable law or agreed to in writing, software
+  23:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  24:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  25:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * See the License for the specific language governing permissions and
+  26:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * limitations under the License.
+  27:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  */
+  28:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+  29:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #include "arm_math.h"
+  30:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+  31:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** /**
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccFRZEAh.s 			page 2
+
+
+  32:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * @ingroup groupMatrix
+  33:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  */
+  34:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+  35:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** /**
+  36:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * @addtogroup MatrixMult
+  37:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * @{
+  38:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  */
+  39:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+  40:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+  41:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** /**
+  42:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * @brief Q15 matrix multiplication
+  43:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * @param[in]       *pSrcA points to the first input matrix structure
+  44:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * @param[in]       *pSrcB points to the second input matrix structure
+  45:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * @param[out]      *pDst points to output matrix structure
+  46:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * @param[in]       *pState points to the array for storing intermediate results (Unused)
+  47:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * @return          The function returns either
+  48:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * <code>ARM_MATH_SIZE_MISMATCH</code> or <code>ARM_MATH_SUCCESS</code> based on the outcome of siz
+  49:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  *
+  50:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * @details
+  51:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * <b>Scaling and Overflow Behavior:</b>
+  52:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  *
+  53:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * \par
+  54:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * The function is implemented using a 64-bit internal accumulator. The inputs to the
+  55:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * multiplications are in 1.15 format and multiplications yield a 2.30 result.
+  56:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * The 2.30 intermediate
+  57:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * results are accumulated in a 64-bit accumulator in 34.30 format. This approach
+  58:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * provides 33 guard bits and there is no risk of overflow. The 34.30 result is then
+  59:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * truncated to 34.15 format by discarding the low 15 bits and then saturated to
+  60:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * 1.15 format.
+  61:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  *
+  62:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * \par
+  63:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  * Refer to <code>arm_mat_mult_fast_q15()</code> for a faster but less precise version of this func
+  64:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  *
+  65:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****  */
+  66:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+  67:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** arm_status arm_mat_mult_q15(
+  68:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   const arm_matrix_instance_q15 * pSrcA,
+  69:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   const arm_matrix_instance_q15 * pSrcB,
+  70:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   arm_matrix_instance_q15 * pDst,
+  71:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t * pState)
+  72:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** {
+  28              		.loc 1 72 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 16
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		.loc 1 72 1 is_stmt 0 view .LVU1
+  33 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 36
+  36              		.cfi_offset 4, -36
+  37              		.cfi_offset 5, -32
+  38              		.cfi_offset 6, -28
+  39              		.cfi_offset 7, -24
+  40              		.cfi_offset 8, -20
+  41              		.cfi_offset 9, -16
+  42              		.cfi_offset 10, -12
+  43              		.cfi_offset 11, -8
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccFRZEAh.s 			page 3
+
+
+  44              		.cfi_offset 14, -4
+  45 0004 85B0     		sub	sp, sp, #20
+  46              	.LCFI1:
+  47              		.cfi_def_cfa_offset 56
+  48 0006 0B46     		mov	r3, r1
+  49              	.LVL1:
+  73:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   q63_t sum;                                     /* accumulator */
+  50              		.loc 1 73 3 is_stmt 1 view .LVU2
+  74:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+  75:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #if defined (ARM_MATH_DSP)
+  76:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+  77:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   /* Run the below code for Cortex-M4 and Cortex-M3 */
+  78:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+  79:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *pSrcBT = pState;                        /* input data matrix pointer for transpose */
+  80:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *pInA = pSrcA->pData;                    /* input data matrix pointer A of Q15 type */
+  81:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *pInB = pSrcB->pData;                    /* input data matrix pointer B of Q15 type */
+  82:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *px;                                     /* Temporary output data matrix pointer */
+  83:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t numRowsA = pSrcA->numRows;            /* number of rows of input matrix A    */
+  84:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t numColsB = pSrcB->numCols;            /* number of columns of input matrix B */
+  85:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t numColsA = pSrcA->numCols;            /* number of columns of input matrix A */
+  86:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t numRowsB = pSrcB->numRows;            /* number of rows of input matrix A    */
+  87:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t col, i = 0U, row = numRowsB, colCnt;  /* loop counters */
+  88:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   arm_status status;                             /* status of matrix multiplication */
+  89:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+  90:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #ifndef UNALIGNED_SUPPORT_DISABLE
+  91:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+  92:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   q31_t in;                                      /* Temporary variable to hold the input value */
+  93:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   q31_t pSourceA1, pSourceB1, pSourceA2, pSourceB2;
+  94:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+  95:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #else
+  96:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+  97:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t in;                                      /* Temporary variable to hold the input value */
+  98:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t inA1, inB1, inA2, inB2;
+  99:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 100:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #endif /* #ifndef UNALIGNED_SUPPORT_DISABLE */
+ 101:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 102:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #ifdef ARM_MATH_MATRIX_CHECK
+ 103:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   /* Check for matrix mismatch condition */
+ 104:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   if ((pSrcA->numCols != pSrcB->numRows) ||
+ 105:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****      (pSrcA->numRows != pDst->numRows) || (pSrcB->numCols != pDst->numCols))
+ 106:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   {
+ 107:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     /* Set status as ARM_MATH_SIZE_MISMATCH */
+ 108:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     status = ARM_MATH_SIZE_MISMATCH;
+ 109:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   }
+ 110:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   else
+ 111:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #endif /*    #ifdef ARM_MATH_MATRIX_CHECK    */
+ 112:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   {
+ 113:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     /* Matrix transpose */
+ 114:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     do
+ 115:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     {
+ 116:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       /* Apply loop unrolling and exchange the columns with row elements */
+ 117:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       col = numColsB >> 2;
+ 118:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 119:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       /* The pointer px is set to starting address of the column being processed */
+ 120:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       px = pSrcBT + i;
+ 121:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 122:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       /* First part of the processing with loop unrolling.  Compute 4 outputs at a time.
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccFRZEAh.s 			page 4
+
+
+ 123:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****        ** a second loop below computes the remaining 1 to 3 samples. */
+ 124:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       while (col > 0U)
+ 125:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       {
+ 126:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #ifndef UNALIGNED_SUPPORT_DISABLE
+ 127:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 128:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Read two elements from the row */
+ 129:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         in = *__SIMD32(pInB)++;
+ 130:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 131:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Unpack and store one element in the destination */
+ 132:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 133:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 134:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) in;
+ 135:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 136:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #else
+ 137:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 138:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) ((in & (q31_t) 0xffff0000) >> 16);
+ 139:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 140:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #endif /* #ifndef ARM_MATH_BIG_ENDIAN */
+ 141:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 142:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 143:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 144:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 145:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Unpack and store the second element in the destination */
+ 146:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 147:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 148:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) ((in & (q31_t) 0xffff0000) >> 16);
+ 149:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 150:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #else
+ 151:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 152:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) in;
+ 153:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 154:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #endif /* #ifndef ARM_MATH_BIG_ENDIAN */
+ 155:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 156:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 157:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 158:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 159:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Read two elements from the row */
+ 160:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         in = *__SIMD32(pInB)++;
+ 161:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 162:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Unpack and store one element in the destination */
+ 163:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 164:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 165:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) in;
+ 166:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 167:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #else
+ 168:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 169:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) ((in & (q31_t) 0xffff0000) >> 16);
+ 170:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 171:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #endif /* #ifndef ARM_MATH_BIG_ENDIAN */
+ 172:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 173:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 174:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 175:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 176:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Unpack and store the second element in the destination */
+ 177:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 178:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 179:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccFRZEAh.s 			page 5
+
+
+ 180:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) ((in & (q31_t) 0xffff0000) >> 16);
+ 181:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 182:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #else
+ 183:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 184:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) in;
+ 185:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 186:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #endif /* #ifndef ARM_MATH_BIG_ENDIAN */
+ 187:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 188:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 189:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 190:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 191:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #else
+ 192:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 193:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Read one element from the row */
+ 194:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         in = *pInB++;
+ 195:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 196:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Store one element in the destination */
+ 197:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         *px = in;
+ 198:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 199:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 200:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 201:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 202:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Read one element from the row */
+ 203:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         in = *pInB++;
+ 204:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 205:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Store one element in the destination */
+ 206:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         *px = in;
+ 207:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 208:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 209:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 210:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 211:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Read one element from the row */
+ 212:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         in = *pInB++;
+ 213:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 214:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Store one element in the destination */
+ 215:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         *px = in;
+ 216:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 217:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 218:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 219:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 220:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Read one element from the row */
+ 221:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         in = *pInB++;
+ 222:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 223:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Store one element in the destination */
+ 224:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         *px = in;
+ 225:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 226:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 227:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 228:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 229:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #endif /* #ifndef UNALIGNED_SUPPORT_DISABLE */
+ 230:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 231:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****        /* Decrement the column loop counter */
+ 232:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         col--;
+ 233:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       }
+ 234:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 235:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       /* If the columns of pSrcB is not a multiple of 4, compute any remaining output samples here.
+ 236:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****        ** No loop unrolling is used. */
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccFRZEAh.s 			page 6
+
+
+ 237:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       col = numColsB % 0x4U;
+ 238:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 239:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       while (col > 0U)
+ 240:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       {
+ 241:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Read and store the input element in the destination */
+ 242:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         *px = *pInB++;
+ 243:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 244:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 245:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 246:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 247:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Decrement the column loop counter */
+ 248:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         col--;
+ 249:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       }
+ 250:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 251:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       i++;
+ 252:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 253:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       /* Decrement the row loop counter */
+ 254:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       row--;
+ 255:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 256:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     } while (row > 0U);
+ 257:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 258:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     /* Reset the variables for the usage in the following multiplication process */
+ 259:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     row = numRowsA;
+ 260:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     i = 0U;
+ 261:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     px = pDst->pData;
+ 262:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 263:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     /* The following loop performs the dot-product of each row in pSrcA with each column in pSrcB *
+ 264:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     /* row loop */
+ 265:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     do
+ 266:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     {
+ 267:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       /* For every row wise process, the column loop counter is to be initiated */
+ 268:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       col = numColsB;
+ 269:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 270:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       /* For every row wise process, the pIn2 pointer is set
+ 271:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****        ** to the starting address of the transposed pSrcB data */
+ 272:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       pInB = pSrcBT;
+ 273:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 274:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       /* column loop */
+ 275:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       do
+ 276:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       {
+ 277:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Set the variable sum, that acts as accumulator, to zero */
+ 278:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         sum = 0;
+ 279:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 280:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Apply loop unrolling and compute 2 MACs simultaneously. */
+ 281:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         colCnt = numColsA >> 2;
+ 282:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 283:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Initiate the pointer pIn1 to point to the starting address of the column being processed
+ 284:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         pInA = pSrcA->pData + i;
+ 285:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 286:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 287:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* matrix multiplication */
+ 288:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         while (colCnt > 0U)
+ 289:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         {
+ 290:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           /* c(m,n) = a(1,1)*b(1,1) + a(1,2) * b(2,1) + .... + a(m,p)*b(p,n) */
+ 291:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #ifndef UNALIGNED_SUPPORT_DISABLE
+ 292:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 293:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           /* read real and imag values from pSrcA and pSrcB buffer */
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccFRZEAh.s 			page 7
+
+
+ 294:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           pSourceA1 = *__SIMD32(pInA)++;
+ 295:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           pSourceB1 = *__SIMD32(pInB)++;
+ 296:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 297:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           pSourceA2 = *__SIMD32(pInA)++;
+ 298:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           pSourceB2 = *__SIMD32(pInB)++;
+ 299:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 300:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           /* Multiply and Accumlates */
+ 301:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           sum = __SMLALD(pSourceA1, pSourceB1, sum);
+ 302:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           sum = __SMLALD(pSourceA2, pSourceB2, sum);
+ 303:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 304:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #else
+ 305:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           /* read real and imag values from pSrcA and pSrcB buffer */
+ 306:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           inA1 = *pInA++;
+ 307:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           inB1 = *pInB++;
+ 308:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           inA2 = *pInA++;
+ 309:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           /* Multiply and Accumlates */
+ 310:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           sum += inA1 * inB1;
+ 311:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           inB2 = *pInB++;
+ 312:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 313:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           inA1 = *pInA++;
+ 314:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           inB1 = *pInB++;
+ 315:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           /* Multiply and Accumlates */
+ 316:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           sum += inA2 * inB2;
+ 317:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           inA2 = *pInA++;
+ 318:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           inB2 = *pInB++;
+ 319:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 320:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           /* Multiply and Accumlates */
+ 321:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           sum += inA1 * inB1;
+ 322:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           sum += inA2 * inB2;
+ 323:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 324:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #endif /* #ifndef UNALIGNED_SUPPORT_DISABLE */
+ 325:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 326:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           /* Decrement the loop counter */
+ 327:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           colCnt--;
+ 328:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         }
+ 329:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 330:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* process remaining column samples */
+ 331:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         colCnt = numColsA & 3U;
+ 332:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 333:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         while (colCnt > 0U)
+ 334:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         {
+ 335:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           /* c(m,n) = a(1,1)*b(1,1) + a(1,2) * b(2,1) + .... + a(m,p)*b(p,n) */
+ 336:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           sum += *pInA++ * *pInB++;
+ 337:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 338:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           /* Decrement the loop counter */
+ 339:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           colCnt--;
+ 340:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         }
+ 341:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 342:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Saturate and store the result in the destination buffer */
+ 343:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) (__SSAT((sum >> 15), 16));
+ 344:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         px++;
+ 345:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 346:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Decrement the column loop counter */
+ 347:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         col--;
+ 348:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 349:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       } while (col > 0U);
+ 350:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccFRZEAh.s 			page 8
+
+
+ 351:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       i = i + numColsA;
+ 352:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 353:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       /* Decrement the row loop counter */
+ 354:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       row--;
+ 355:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 356:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     } while (row > 0U);
+ 357:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 358:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #else
+ 359:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 360:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   /* Run the below code for Cortex-M0 */
+ 361:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 362:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *pIn1 = pSrcA->pData;                    /* input data matrix pointer A */
+  51              		.loc 1 362 3 view .LVU3
+ 363:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *pIn2 = pSrcB->pData;                    /* input data matrix pointer B */
+  52              		.loc 1 363 3 view .LVU4
+ 364:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *pInA = pSrcA->pData;                    /* input data matrix pointer A of Q15 type */
+  53              		.loc 1 364 3 view .LVU5
+  54              		.loc 1 364 10 is_stmt 0 view .LVU6
+  55 0008 4768     		ldr	r7, [r0, #4]
+  56              	.LVL2:
+ 365:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *pInB = pSrcB->pData;                    /* input data matrix pointer B of Q15 type */
+  57              		.loc 1 365 3 is_stmt 1 view .LVU7
+  58              		.loc 1 365 10 is_stmt 0 view .LVU8
+  59 000a D1F80480 		ldr	r8, [r1, #4]
+  60              	.LVL3:
+ 366:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *pOut = pDst->pData;                     /* output data matrix pointer */
+  61              		.loc 1 366 3 is_stmt 1 view .LVU9
+  62              		.loc 1 366 10 is_stmt 0 view .LVU10
+  63 000e 5268     		ldr	r2, [r2, #4]
+  64              	.LVL4:
+ 367:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *px;                                     /* Temporary output data matrix pointer */
+  65              		.loc 1 367 3 is_stmt 1 view .LVU11
+ 368:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t numColsB = pSrcB->numCols;            /* number of columns of input matrix B */
+  66              		.loc 1 368 3 view .LVU12
+  67              		.loc 1 368 12 is_stmt 0 view .LVU13
+  68 0010 4D88     		ldrh	r5, [r1, #2]
+  69              	.LVL5:
+ 369:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t numColsA = pSrcA->numCols;            /* number of columns of input matrix A */
+  70              		.loc 1 369 3 is_stmt 1 view .LVU14
+  71              		.loc 1 369 12 is_stmt 0 view .LVU15
+  72 0012 B0F802B0 		ldrh	fp, [r0, #2]
+  73              	.LVL6:
+ 370:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t numRowsA = pSrcA->numRows;            /* number of rows of input matrix A    */
+  74              		.loc 1 370 3 is_stmt 1 view .LVU16
+  75              		.loc 1 370 12 is_stmt 0 view .LVU17
+  76 0016 0188     		ldrh	r1, [r0]
+  77              	.LVL7:
+ 371:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t col, i = 0U, row = numRowsA, colCnt;  /* loop counters */
+  78              		.loc 1 371 3 is_stmt 1 view .LVU18
+  79              		.loc 1 371 17 is_stmt 0 view .LVU19
+  80 0018 4FF00009 		mov	r9, #0
+  81 001c 0846     		mov	r0, r1
+  82              	.LVL8:
+  83              		.loc 1 371 17 view .LVU20
+  84 001e 0392     		str	r2, [sp, #12]
+  85 0020 32E0     		b	.L5
+  86              	.LVL9:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccFRZEAh.s 			page 9
+
+
+  87              	.L3:
+ 372:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   arm_status status;                             /* status of matrix multiplication */
+ 373:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 374:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #ifdef ARM_MATH_MATRIX_CHECK
+ 375:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 376:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   /* Check for matrix mismatch condition */
+ 377:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   if ((pSrcA->numCols != pSrcB->numRows) ||
+ 378:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****      (pSrcA->numRows != pDst->numRows) || (pSrcB->numCols != pDst->numCols))
+ 379:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   {
+ 380:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     /* Set status as ARM_MATH_SIZE_MISMATCH */
+ 381:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     status = ARM_MATH_SIZE_MISMATCH;
+ 382:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   }
+ 383:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   else
+ 384:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #endif /* #ifdef ARM_MATH_MATRIX_CHECK */
+ 385:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 386:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   {
+ 387:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     /* The following loop performs the dot-product of each row in pSrcA with each column in pSrcB *
+ 388:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     /* row loop */
+ 389:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     do
+ 390:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     {
+ 391:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       /* Output pointer is set to starting address of the row being processed */
+ 392:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       px = pOut + i;
+ 393:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 394:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       /* For every row wise process, the column loop counter is to be initiated */
+ 395:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       col = numColsB;
+ 396:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 397:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       /* For every row wise process, the pIn2 pointer is set
+ 398:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****        ** to the starting address of the pSrcB data */
+ 399:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       pIn2 = pSrcB->pData;
+ 400:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 401:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       /* column loop */
+ 402:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       do
+ 403:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       {
+ 404:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Set the variable sum, that acts as accumulator, to zero */
+ 405:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         sum = 0;
+ 406:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 407:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Initiate the pointer pIn1 to point to the starting address of pSrcA */
+ 408:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         pIn1 = pInA;
+ 409:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 410:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Matrix A columns number of MAC operations are to be performed */
+ 411:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         colCnt = numColsA;
+ 412:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 413:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* matrix multiplication */
+ 414:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         while (colCnt > 0U)
+ 415:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         {
+ 416:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           /* c(m,n) = a(1,1)*b(1,1) + a(1,2) * b(2,1) + .... + a(m,p)*b(p,n) */
+ 417:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           /* Perform the multiply-accumulates */
+ 418:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           sum += (q31_t) * pIn1++ * *pIn2;
+  88              		.loc 1 418 11 is_stmt 1 view .LVU21
+  89              		.loc 1 418 26 is_stmt 0 view .LVU22
+  90 0022 34F9022B 		ldrsh	r2, [r4], #2
+  91              	.LVL10:
+  92              		.loc 1 418 37 view .LVU23
+  93 0026 B6F90070 		ldrsh	r7, [r6]
+  94              		.loc 1 418 35 view .LVU24
+  95 002a 07FB02F2 		mul	r2, r7, r2
+  96              		.loc 1 418 15 view .LVU25
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccFRZEAh.s 			page 10
+
+
+  97 002e 12EB0C0C 		adds	ip, r2, ip
+  98              	.LVL11:
+  99              		.loc 1 418 15 view .LVU26
+ 100 0032 4EEBE27E 		adc	lr, lr, r2, asr #31
+ 101              	.LVL12:
+ 419:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           pIn2 += numColsB;
+ 102              		.loc 1 419 11 is_stmt 1 view .LVU27
+ 103              		.loc 1 419 16 is_stmt 0 view .LVU28
+ 104 0036 06EB4506 		add	r6, r6, r5, lsl #1
+ 105              	.LVL13:
+ 420:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 421:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           /* Decrement the loop counter */
+ 422:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****           colCnt--;
+ 106              		.loc 1 422 11 is_stmt 1 view .LVU29
+ 107              		.loc 1 422 17 is_stmt 0 view .LVU30
+ 108 003a 0139     		subs	r1, r1, #1
+ 109              	.LVL14:
+ 110              		.loc 1 422 17 view .LVU31
+ 111 003c 89B2     		uxth	r1, r1
+ 112              	.LVL15:
+ 113              	.L2:
+ 414:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         {
+ 114              		.loc 1 414 23 is_stmt 1 view .LVU32
+ 115 003e 0029     		cmp	r1, #0
+ 116 0040 EFD1     		bne	.L3
+ 423:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         }
+ 424:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 425:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Convert the result from 34.30 to 1.15 format and store the saturated value in destinatio
+ 426:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Saturate and store the result in the destination buffer */
+ 427:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         *px++ = (q15_t) __SSAT((sum >> 15), 16);
+ 117              		.loc 1 427 9 view .LVU33
+ 118              	.LBB2:
+ 119              		.loc 1 427 25 view .LVU34
+ 120 0042 4FEADC3C 		lsr	ip, ip, #15
+ 121              	.LVL16:
+ 122              		.loc 1 427 25 is_stmt 0 view .LVU35
+ 123 0046 4CEA4E4C 		orr	ip, ip, lr, lsl #17
+ 124              	.LVL17:
+ 125              		.loc 1 427 25 is_stmt 1 view .LVU36
+ 126              		.syntax unified
+ 127              	@ 427 "Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c" 1
+ 128 004a 0CF30F0C 		ssat ip, #16, ip
+ 129              	@ 0 "" 2
+ 130              	.LVL18:
+ 131              		.loc 1 427 25 view .LVU37
+ 132              		.thumb
+ 133              		.syntax unified
+ 134              	.LBE2:
+ 135              		.loc 1 427 12 is_stmt 0 view .LVU38
+ 136 004e 0199     		ldr	r1, [sp, #4]
+ 137              	.LVL19:
+ 138              		.loc 1 427 15 view .LVU39
+ 139 0050 21F802CB 		strh	ip, [r1], #2	@ movhi
+ 140              	.LVL20:
+ 428:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 429:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Decrement the column loop counter */
+ 430:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         col--;
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccFRZEAh.s 			page 11
+
+
+ 141              		.loc 1 430 9 is_stmt 1 view .LVU40
+ 142              		.loc 1 430 12 is_stmt 0 view .LVU41
+ 143 0054 013B     		subs	r3, r3, #1
+ 144              	.LVL21:
+ 145              		.loc 1 430 12 view .LVU42
+ 146 0056 9BB2     		uxth	r3, r3
+ 147              	.LVL22:
+ 431:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 432:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer pIn2 to point to the  starting address of the next column */
+ 433:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         pIn2 = pInB + (numColsB - col);
+ 148              		.loc 1 433 9 is_stmt 1 view .LVU43
+ 149              		.loc 1 433 33 is_stmt 0 view .LVU44
+ 150 0058 EE1A     		subs	r6, r5, r3
+ 151              	.LVL23:
+ 152              		.loc 1 433 14 view .LVU45
+ 153 005a 08EB4606 		add	r6, r8, r6, lsl #1
+ 154              	.LVL24:
+ 434:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 435:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       } while (col > 0U);
+ 155              		.loc 1 435 20 is_stmt 1 view .LVU46
+ 156 005e 33B1     		cbz	r3, .L8
+ 427:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 157              		.loc 1 427 12 is_stmt 0 view .LVU47
+ 158 0060 0191     		str	r1, [sp, #4]
+ 159              	.LVL25:
+ 160              	.L4:
+ 402:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       {
+ 161              		.loc 1 402 7 is_stmt 1 view .LVU48
+ 405:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 162              		.loc 1 405 9 view .LVU49
+ 408:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 163              		.loc 1 408 9 view .LVU50
+ 411:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 164              		.loc 1 411 9 view .LVU51
+ 414:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         {
+ 165              		.loc 1 414 9 view .LVU52
+ 411:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 166              		.loc 1 411 16 is_stmt 0 view .LVU53
+ 167 0062 5946     		mov	r1, fp
+ 408:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 168              		.loc 1 408 14 view .LVU54
+ 169 0064 029C     		ldr	r4, [sp, #8]
+ 405:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 170              		.loc 1 405 13 view .LVU55
+ 171 0066 4FF0000C 		mov	ip, #0
+ 172 006a E646     		mov	lr, ip
+ 414:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****         {
+ 173              		.loc 1 414 15 view .LVU56
+ 174 006c E7E7     		b	.L2
+ 175              	.LVL26:
+ 176              	.L8:
+ 436:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 437:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       /* Update the pointer pSrcA to point to the  starting address of the next row */
+ 438:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       i = i + numColsB;
+ 177              		.loc 1 438 9 view .LVU57
+ 178 006e 029F     		ldr	r7, [sp, #8]
+ 179 0070 4B46     		mov	r3, r9
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccFRZEAh.s 			page 12
+
+
+ 180              	.LVL27:
+ 181              		.loc 1 438 9 view .LVU58
+ 182 0072 8146     		mov	r9, r0
+ 183              	.LVL28:
+ 184              		.loc 1 438 7 is_stmt 1 view .LVU59
+ 185              		.loc 1 438 9 is_stmt 0 view .LVU60
+ 186 0074 A944     		add	r9, r9, r5
+ 187 0076 1FFA89F9 		uxth	r9, r9
+ 188              	.LVL29:
+ 439:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       pInA = pInA + numColsA;
+ 189              		.loc 1 439 7 is_stmt 1 view .LVU61
+ 190              		.loc 1 439 12 is_stmt 0 view .LVU62
+ 191 007a 07EB4B07 		add	r7, r7, fp, lsl #1
+ 192              	.LVL30:
+ 440:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 441:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       /* Decrement the row loop counter */
+ 442:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****       row--;
+ 193              		.loc 1 442 7 is_stmt 1 view .LVU63
+ 194              		.loc 1 442 10 is_stmt 0 view .LVU64
+ 195 007e 0AF1FF3A 		add	r10, r10, #-1
+ 196              	.LVL31:
+ 197              		.loc 1 442 10 view .LVU65
+ 198 0082 1FFA8AF0 		uxth	r0, r10
+ 199              	.LVL32:
+ 443:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 444:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     } while (row > 0U);
+ 200              		.loc 1 444 18 is_stmt 1 view .LVU66
+ 201 0086 58B1     		cbz	r0, .L9
+ 202              	.LVL33:
+ 203              	.L5:
+ 372:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 204              		.loc 1 372 3 view .LVU67
+ 389:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     {
+ 205              		.loc 1 389 5 view .LVU68
+ 392:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 206              		.loc 1 392 7 view .LVU69
+ 392:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 207              		.loc 1 392 10 is_stmt 0 view .LVU70
+ 208 0088 039A     		ldr	r2, [sp, #12]
+ 209 008a 02EB490E 		add	lr, r2, r9, lsl #1
+ 210              	.LVL34:
+ 395:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 211              		.loc 1 395 7 is_stmt 1 view .LVU71
+ 399:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 212              		.loc 1 399 7 view .LVU72
+ 399:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 213              		.loc 1 399 12 is_stmt 0 view .LVU73
+ 214 008e 5E68     		ldr	r6, [r3, #4]
+ 215              	.LVL35:
+ 399:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 216              		.loc 1 399 12 view .LVU74
+ 217 0090 0297     		str	r7, [sp, #8]
+ 218 0092 CDF804E0 		str	lr, [sp, #4]
+ 219 0096 8246     		mov	r10, r0
+ 220 0098 4846     		mov	r0, r9
+ 221              	.LVL36:
+ 399:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccFRZEAh.s 			page 13
+
+
+ 222              		.loc 1 399 12 view .LVU75
+ 223 009a 9946     		mov	r9, r3
+ 224              	.LVL37:
+ 399:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 225              		.loc 1 399 12 view .LVU76
+ 226 009c 2B46     		mov	r3, r5
+ 227              	.LVL38:
+ 399:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 228              		.loc 1 399 12 view .LVU77
+ 229 009e E0E7     		b	.L4
+ 230              	.LVL39:
+ 231              	.L9:
+ 445:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 446:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** #endif /* #if defined (ARM_MATH_DSP) */
+ 447:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     /* set status as ARM_MATH_SUCCESS */
+ 448:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****     status = ARM_MATH_SUCCESS;
+ 232              		.loc 1 448 5 is_stmt 1 view .LVU78
+ 449:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   }
+ 450:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 451:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   /* Return to application */
+ 452:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c ****   return (status);
+ 233              		.loc 1 452 3 view .LVU79
+ 453:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q15.c **** }
+ 234              		.loc 1 453 1 is_stmt 0 view .LVU80
+ 235 00a0 05B0     		add	sp, sp, #20
+ 236              	.LCFI2:
+ 237              		.cfi_def_cfa_offset 36
+ 238              		@ sp needed
+ 239 00a2 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 240              		.loc 1 453 1 view .LVU81
+ 241              		.cfi_endproc
+ 242              	.LFE100:
+ 244              		.text
+ 245              	.Letext0:
+ 246              		.file 2 "C:/ARM GNU Toolchain/arm-none-eabi/include/machine/_default_types.h"
+ 247              		.file 3 "C:/ARM GNU Toolchain/arm-none-eabi/include/sys/_stdint.h"
+ 248              		.file 4 "Drivers/CMSIS/DSP/Include/arm_math.h"
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccFRZEAh.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 arm_mat_mult_q15.c
+C:\Users\Lamp\AppData\Local\Temp\ccFRZEAh.s:19     .text.arm_mat_mult_q15:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccFRZEAh.s:25     .text.arm_mat_mult_q15:00000000 arm_mat_mult_q15
+
+NO UNDEFINED SYMBOLS

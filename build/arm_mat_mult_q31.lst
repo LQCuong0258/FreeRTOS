@@ -1,0 +1,1168 @@
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_mat_mult_q31.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c"
+  18              		.section	.text.arm_mat_mult_q31,"ax",%progbits
+  19              		.align	1
+  20              		.global	arm_mat_mult_q31
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	arm_mat_mult_q31:
+  26              	.LVL0:
+  27              	.LFB100:
+   1:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** /* ----------------------------------------------------------------------
+   2:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * Project:      CMSIS DSP Library
+   3:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * Title:        arm_mat_mult_q31.c
+   4:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * Description:  Q31 matrix multiplication
+   5:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  *
+   6:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * $Date:        27. January 2017
+   7:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * $Revision:    V.1.5.1
+   8:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  *
+   9:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * Target Processor: Cortex-M cores
+  10:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * -------------------------------------------------------------------- */
+  11:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** /*
+  12:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * Copyright (C) 2010-2017 ARM Limited or its affiliates. All rights reserved.
+  13:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  *
+  14:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * SPDX-License-Identifier: Apache-2.0
+  15:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  *
+  16:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  17:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * not use this file except in compliance with the License.
+  18:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * You may obtain a copy of the License at
+  19:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  *
+  20:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * www.apache.org/licenses/LICENSE-2.0
+  21:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  *
+  22:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * Unless required by applicable law or agreed to in writing, software
+  23:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  24:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  25:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * See the License for the specific language governing permissions and
+  26:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * limitations under the License.
+  27:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  */
+  28:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+  29:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** #include "arm_math.h"
+  30:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+  31:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** /**
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 2
+
+
+  32:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * @ingroup groupMatrix
+  33:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  */
+  34:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+  35:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** /**
+  36:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * @addtogroup MatrixMult
+  37:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * @{
+  38:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  */
+  39:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+  40:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** /**
+  41:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * @brief Q31 matrix multiplication
+  42:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * @param[in]       *pSrcA points to the first input matrix structure
+  43:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * @param[in]       *pSrcB points to the second input matrix structure
+  44:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * @param[out]      *pDst points to output matrix structure
+  45:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * @return     		The function returns either
+  46:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * <code>ARM_MATH_SIZE_MISMATCH</code> or <code>ARM_MATH_SUCCESS</code> based on the outcome of siz
+  47:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  *
+  48:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * @details
+  49:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * <b>Scaling and Overflow Behavior:</b>
+  50:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  *
+  51:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * \par
+  52:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * The function is implemented using an internal 64-bit accumulator.
+  53:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * The accumulator has a 2.62 format and maintains full precision of the intermediate
+  54:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * multiplication results but provides only a single guard bit. There is no saturation
+  55:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * on intermediate additions. Thus, if the accumulator overflows it wraps around and
+  56:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * distorts the result. The input signals should be scaled down to avoid intermediate
+  57:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * overflows. The input is thus scaled down by log2(numColsA) bits
+  58:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * to avoid overflows, as a total of numColsA additions are performed internally.
+  59:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * The 2.62 accumulator is right shifted by 31 bits and saturated to 1.31 format to yield the final
+  60:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  *
+  61:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * \par
+  62:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  * See <code>arm_mat_mult_fast_q31()</code> for a faster but less precise implementation of this fu
+  63:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  *
+  64:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****  */
+  65:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+  66:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** arm_status arm_mat_mult_q31(
+  67:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   const arm_matrix_instance_q31 * pSrcA,
+  68:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   const arm_matrix_instance_q31 * pSrcB,
+  69:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   arm_matrix_instance_q31 * pDst)
+  70:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** {
+  28              		.loc 1 70 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 24
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		.loc 1 70 1 is_stmt 0 view .LVU1
+  33 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 36
+  36              		.cfi_offset 4, -36
+  37              		.cfi_offset 5, -32
+  38              		.cfi_offset 6, -28
+  39              		.cfi_offset 7, -24
+  40              		.cfi_offset 8, -20
+  41              		.cfi_offset 9, -16
+  42              		.cfi_offset 10, -12
+  43              		.cfi_offset 11, -8
+  44              		.cfi_offset 14, -4
+  45 0004 87B0     		sub	sp, sp, #28
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 3
+
+
+  46              	.LCFI1:
+  47              		.cfi_def_cfa_offset 64
+  48 0006 0446     		mov	r4, r0
+  49 0008 0B46     		mov	r3, r1
+  71:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   q31_t *pIn1 = pSrcA->pData;                    /* input data matrix pointer A */
+  50              		.loc 1 71 3 is_stmt 1 view .LVU2
+  51              	.LVL1:
+  72:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   q31_t *pIn2 = pSrcB->pData;                    /* input data matrix pointer B */
+  52              		.loc 1 72 3 view .LVU3
+  73:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   q31_t *pInA = pSrcA->pData;                    /* input data matrix pointer A */
+  53              		.loc 1 73 3 view .LVU4
+  54              		.loc 1 73 10 is_stmt 0 view .LVU5
+  55 000a 4068     		ldr	r0, [r0, #4]
+  56              	.LVL2:
+  74:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   q31_t *pOut = pDst->pData;                     /* output data matrix pointer */
+  57              		.loc 1 74 3 is_stmt 1 view .LVU6
+  58              		.loc 1 74 10 is_stmt 0 view .LVU7
+  59 000c 5268     		ldr	r2, [r2, #4]
+  60              	.LVL3:
+  75:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   q31_t *px;                                     /* Temporary output data matrix pointer */
+  61              		.loc 1 75 3 is_stmt 1 view .LVU8
+  76:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   q63_t sum;                                     /* Accumulator */
+  62              		.loc 1 76 3 view .LVU9
+  77:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   uint16_t numRowsA = pSrcA->numRows;            /* number of rows of input matrix A    */
+  63              		.loc 1 77 3 view .LVU10
+  64              		.loc 1 77 12 is_stmt 0 view .LVU11
+  65 000e B4F800A0 		ldrh	r10, [r4]
+  66              	.LVL4:
+  78:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   uint16_t numColsB = pSrcB->numCols;            /* number of columns of input matrix B */
+  67              		.loc 1 78 3 is_stmt 1 view .LVU12
+  68              		.loc 1 78 12 is_stmt 0 view .LVU13
+  69 0012 4F88     		ldrh	r7, [r1, #2]
+  70              	.LVL5:
+  79:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   uint16_t numColsA = pSrcA->numCols;            /* number of columns of input matrix A */
+  71              		.loc 1 79 3 is_stmt 1 view .LVU14
+  72              		.loc 1 79 12 is_stmt 0 view .LVU15
+  73 0014 6188     		ldrh	r1, [r4, #2]
+  74              	.LVL6:
+  80:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+  81:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** #if defined (ARM_MATH_DSP)
+  82:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+  83:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   /* Run the below code for Cortex-M4 and Cortex-M3 */
+  84:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+  85:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   uint16_t col, i = 0U, j, row = numRowsA, colCnt;      /* loop counters */
+  86:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   arm_status status;                             /* status of matrix multiplication */
+  87:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   q31_t a0, a1, a2, a3, b0, b1, b2, b3;
+  88:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+  89:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** #ifdef ARM_MATH_MATRIX_CHECK
+  90:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+  91:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+  92:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   /* Check for matrix mismatch condition */
+  93:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   if ((pSrcA->numCols != pSrcB->numRows) ||
+  94:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****      (pSrcA->numRows != pDst->numRows) || (pSrcB->numCols != pDst->numCols))
+  95:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   {
+  96:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****     /* Set status as ARM_MATH_SIZE_MISMATCH */
+  97:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****     status = ARM_MATH_SIZE_MISMATCH;
+  98:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   }
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 4
+
+
+  99:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   else
+ 100:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** #endif /*    #ifdef ARM_MATH_MATRIX_CHECK    */
+ 101:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 102:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   {
+ 103:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****     /* The following loop performs the dot-product of each row in pSrcA with each column in pSrcB *
+ 104:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****     /* row loop */
+ 105:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****     do
+ 106:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****     {
+ 107:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       /* Output pointer is set to starting address of the row being processed */
+ 108:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       px = pOut + i;
+ 109:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 110:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       /* For every row wise process, the column loop counter is to be initiated */
+ 111:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       col = numColsB;
+ 112:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 113:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       /* For every row wise process, the pIn2 pointer is set
+ 114:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****        ** to the starting address of the pSrcB data */
+ 115:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       pIn2 = pSrcB->pData;
+ 116:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 117:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       j = 0U;
+ 118:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 119:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       /* column loop */
+ 120:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       do
+ 121:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       {
+ 122:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         /* Set the variable sum, that acts as accumulator, to zero */
+ 123:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         sum = 0;
+ 124:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 125:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         /* Initiate the pointer pIn1 to point to the starting address of pInA */
+ 126:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         pIn1 = pInA;
+ 127:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 128:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         /* Apply loop unrolling and compute 4 MACs simultaneously. */
+ 129:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         colCnt = numColsA >> 2;
+ 130:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 131:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 132:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         /* matrix multiplication */
+ 133:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         while (colCnt > 0U)
+ 134:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         {
+ 135:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           /* c(m,n) = a(1,1)*b(1,1) + a(1,2) * b(2,1) + .... + a(m,p)*b(p,n) */
+ 136:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           /* Perform the multiply-accumulates */
+ 137:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           b0 = *pIn2;
+ 138:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           pIn2 += numColsB;
+ 139:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 140:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           a0 = *pIn1++;
+ 141:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           a1 = *pIn1++;
+ 142:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 143:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           b1 = *pIn2;
+ 144:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           pIn2 += numColsB;
+ 145:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           b2 = *pIn2;
+ 146:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           pIn2 += numColsB;
+ 147:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 148:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           sum += (q63_t) a0 *b0;
+ 149:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           sum += (q63_t) a1 *b1;
+ 150:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 151:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           a2 = *pIn1++;
+ 152:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           a3 = *pIn1++;
+ 153:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 154:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           b3 = *pIn2;
+ 155:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           pIn2 += numColsB;
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 5
+
+
+ 156:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 157:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           sum += (q63_t) a2 *b2;
+ 158:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           sum += (q63_t) a3 *b3;
+ 159:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 160:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           /* Decrement the loop counter */
+ 161:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           colCnt--;
+ 162:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         }
+ 163:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 164:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         /* If the columns of pSrcA is not a multiple of 4, compute any remaining output samples her
+ 165:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****          ** No loop unrolling is used. */
+ 166:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         colCnt = numColsA % 0x4U;
+ 167:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 168:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         while (colCnt > 0U)
+ 169:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         {
+ 170:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           /* c(m,n) = a(1,1)*b(1,1) + a(1,2) * b(2,1) + .... + a(m,p)*b(p,n) */
+ 171:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           /* Perform the multiply-accumulates */
+ 172:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           sum += (q63_t) * pIn1++ * *pIn2;
+ 173:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           pIn2 += numColsB;
+ 174:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 175:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           /* Decrement the loop counter */
+ 176:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           colCnt--;
+ 177:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         }
+ 178:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 179:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         /* Convert the result from 2.62 to 1.31 format and store in destination buffer */
+ 180:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         *px++ = (q31_t) (sum >> 31);
+ 181:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 182:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         /* Update the pointer pIn2 to point to the  starting address of the next column */
+ 183:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         j++;
+ 184:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         pIn2 = (pSrcB->pData) + j;
+ 185:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 186:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         /* Decrement the column loop counter */
+ 187:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         col--;
+ 188:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 189:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       } while (col > 0U);
+ 190:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 191:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** #else
+ 192:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 193:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   /* Run the below code for Cortex-M0 */
+ 194:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 195:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   q31_t *pInB = pSrcB->pData;                    /* input data matrix pointer B */
+  75              		.loc 1 195 3 is_stmt 1 view .LVU16
+  76              		.loc 1 195 10 is_stmt 0 view .LVU17
+  77 0016 D3F80490 		ldr	r9, [r3, #4]
+  78              	.LVL7:
+ 196:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   uint16_t col, i = 0U, row = numRowsA, colCnt;  /* loop counters */
+  79              		.loc 1 196 3 is_stmt 1 view .LVU18
+  80              		.loc 1 196 17 is_stmt 0 view .LVU19
+  81 001a 4FF0000B 		mov	fp, #0
+  82 001e 5446     		mov	r4, r10
+  83              	.LVL8:
+  84              		.loc 1 196 17 view .LVU20
+  85 0020 1D46     		mov	r5, r3
+  86 0022 4AE0     		b	.L6
+  87              	.LVL9:
+  88              	.L3:
+ 197:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   arm_status status;                             /* status of matrix multiplication */
+ 198:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 6
+
+
+ 199:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 200:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** #ifdef ARM_MATH_MATRIX_CHECK
+ 201:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 202:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   /* Check for matrix mismatch condition */
+ 203:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   if ((pSrcA->numCols != pSrcB->numRows) ||
+ 204:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****      (pSrcA->numRows != pDst->numRows) || (pSrcB->numCols != pDst->numCols))
+ 205:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   {
+ 206:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****     /* Set status as ARM_MATH_SIZE_MISMATCH */
+ 207:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****     status = ARM_MATH_SIZE_MISMATCH;
+ 208:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   }
+ 209:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   else
+ 210:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** #endif /*    #ifdef ARM_MATH_MATRIX_CHECK    */
+ 211:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 212:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   {
+ 213:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****     /* The following loop performs the dot-product of each row in pSrcA with each column in pSrcB *
+ 214:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****     /* row loop */
+ 215:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****     do
+ 216:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****     {
+ 217:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       /* Output pointer is set to starting address of the row being processed */
+ 218:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       px = pOut + i;
+ 219:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 220:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       /* For every row wise process, the column loop counter is to be initiated */
+ 221:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       col = numColsB;
+ 222:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 223:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       /* For every row wise process, the pIn2 pointer is set
+ 224:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****        ** to the starting address of the pSrcB data */
+ 225:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       pIn2 = pSrcB->pData;
+ 226:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 227:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       /* column loop */
+ 228:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       do
+ 229:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       {
+ 230:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         /* Set the variable sum, that acts as accumulator, to zero */
+ 231:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         sum = 0;
+ 232:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 233:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         /* Initiate the pointer pIn1 to point to the starting address of pInA */
+ 234:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         pIn1 = pInA;
+ 235:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 236:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         /* Matrix A columns number of MAC operations are to be performed */
+ 237:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         colCnt = numColsA;
+ 238:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 239:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         /* matrix multiplication */
+ 240:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         while (colCnt > 0U)
+ 241:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         {
+ 242:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           /* c(m,n) = a(1,1)*b(1,1) + a(1,2) * b(2,1) + .... + a(m,p)*b(p,n) */
+ 243:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           /* Perform the multiply-accumulates */
+ 244:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           sum += (q63_t) * pIn1++ * *pIn2;
+  89              		.loc 1 244 11 is_stmt 1 view .LVU21
+  90              		.loc 1 244 26 is_stmt 0 view .LVU22
+  91 0024 5CF8042B 		ldr	r2, [ip], #4
+  92              	.LVL10:
+  93              		.loc 1 244 18 view .LVU23
+  94 0028 4FEAE27B 		asr	fp, r2, #31
+  95              		.loc 1 244 37 view .LVU24
+  96 002c D8F80060 		ldr	r6, [r8]
+  97 0030 F117     		asrs	r1, r6, #31
+  98              		.loc 1 244 35 view .LVU25
+  99 0032 02FB01F1 		mul	r1, r2, r1
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 7
+
+
+ 100 0036 06FB0B11 		mla	r1, r6, fp, r1
+ 101 003a A2FB0626 		umull	r2, r6, r2, r6
+ 102 003e 3144     		add	r1, r1, r6
+ 103              		.loc 1 244 15 view .LVU26
+ 104 0040 8218     		adds	r2, r0, r2
+ 105 0042 1046     		mov	r0, r2
+ 106              	.LVL11:
+ 107              		.loc 1 244 15 view .LVU27
+ 108 0044 41EB0E0E 		adc	lr, r1, lr
+ 109              	.LVL12:
+ 245:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           pIn2 += numColsB;
+ 110              		.loc 1 245 11 is_stmt 1 view .LVU28
+ 111              		.loc 1 245 16 is_stmt 0 view .LVU29
+ 112 0048 08EB8708 		add	r8, r8, r7, lsl #2
+ 113              	.LVL13:
+ 246:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 247:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           /* Decrement the loop counter */
+ 248:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****           colCnt--;
+ 114              		.loc 1 248 11 is_stmt 1 view .LVU30
+ 115              		.loc 1 248 17 is_stmt 0 view .LVU31
+ 116 004c 013B     		subs	r3, r3, #1
+ 117              	.LVL14:
+ 118              		.loc 1 248 17 view .LVU32
+ 119 004e 9BB2     		uxth	r3, r3
+ 120              	.LVL15:
+ 121              	.L2:
+ 240:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         {
+ 122              		.loc 1 240 23 is_stmt 1 view .LVU33
+ 123 0050 002B     		cmp	r3, #0
+ 124 0052 E7D1     		bne	.L3
+ 249:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         }
+ 250:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 251:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         /* Convert the result from 2.62 to 1.31 format and store in destination buffer */
+ 252:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         *px++ = (q31_t) clip_q63_to_q31(sum >> 31);
+ 125              		.loc 1 252 25 is_stmt 0 view .LVU34
+ 126 0054 DDF80480 		ldr	r8, [sp, #4]
+ 127              	.LVL16:
+ 128              		.loc 1 252 25 view .LVU35
+ 129 0058 0299     		ldr	r1, [sp, #8]
+ 130              		.loc 1 252 9 is_stmt 1 view .LVU36
+ 131              		.loc 1 252 25 is_stmt 0 view .LVU37
+ 132 005a C00F     		lsrs	r0, r0, #31
+ 133              	.LVL17:
+ 134              		.loc 1 252 25 view .LVU38
+ 135 005c 40EA4E00 		orr	r0, r0, lr, lsl #1
+ 136              		.loc 1 252 12 view .LVU39
+ 137 0060 08F1040C 		add	ip, r8, #4
+ 138              	.LVL18:
+ 139              	.LBB4:
+ 140              	.LBI4:
+ 141              		.file 2 "Drivers/CMSIS/DSP/Include/arm_math.h"
+   1:Drivers/CMSIS/DSP/Include/arm_math.h **** /******************************************************************************
+   2:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @file     arm_math.h
+   3:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @brief    Public header file for CMSIS DSP LibraryU
+   4:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @version  V1.5.3
+   5:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @date     10. January 2018
+   6:Drivers/CMSIS/DSP/Include/arm_math.h ****  ******************************************************************************/
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 8
+
+
+   7:Drivers/CMSIS/DSP/Include/arm_math.h **** /*
+   8:Drivers/CMSIS/DSP/Include/arm_math.h ****  * Copyright (c) 2010-2018 Arm Limited or its affiliates. All rights reserved.
+   9:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+  10:Drivers/CMSIS/DSP/Include/arm_math.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+  12:Drivers/CMSIS/DSP/Include/arm_math.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:Drivers/CMSIS/DSP/Include/arm_math.h ****  * not use this file except in compliance with the License.
+  14:Drivers/CMSIS/DSP/Include/arm_math.h ****  * You may obtain a copy of the License at
+  15:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+  16:Drivers/CMSIS/DSP/Include/arm_math.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+  18:Drivers/CMSIS/DSP/Include/arm_math.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:Drivers/CMSIS/DSP/Include/arm_math.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:Drivers/CMSIS/DSP/Include/arm_math.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:Drivers/CMSIS/DSP/Include/arm_math.h ****  * See the License for the specific language governing permissions and
+  22:Drivers/CMSIS/DSP/Include/arm_math.h ****  * limitations under the License.
+  23:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+  24:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+  25:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+  26:Drivers/CMSIS/DSP/Include/arm_math.h ****    \mainpage CMSIS DSP Software Library
+  27:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  28:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Introduction
+  29:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ------------
+  30:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  31:Drivers/CMSIS/DSP/Include/arm_math.h ****    * This user manual describes the CMSIS DSP software library,
+  32:Drivers/CMSIS/DSP/Include/arm_math.h ****    * a suite of common signal processing functions for use on Cortex-M processor based devices.
+  33:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  34:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The library is divided into a number of functions each covering a specific category:
+  35:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Basic math functions
+  36:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Fast math functions
+  37:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Complex math functions
+  38:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Filters
+  39:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Matrix functions
+  40:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Transforms
+  41:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Motor control functions
+  42:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Statistical functions
+  43:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Support functions
+  44:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - Interpolation functions
+  45:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  46:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The library has separate functions for operating on 8-bit integers, 16-bit integers,
+  47:Drivers/CMSIS/DSP/Include/arm_math.h ****    * 32-bit integer and 32-bit floating-point values.
+  48:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  49:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Using the Library
+  50:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ------------
+  51:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  52:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The library installer contains prebuilt versions of the libraries in the <code>Lib</code> fold
+  53:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM7lfdp_math.lib (Cortex-M7, Little endian, Double Precision Floating Point Unit)
+  54:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM7bfdp_math.lib (Cortex-M7, Big endian, Double Precision Floating Point Unit)
+  55:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM7lfsp_math.lib (Cortex-M7, Little endian, Single Precision Floating Point Unit)
+  56:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM7bfsp_math.lib (Cortex-M7, Big endian and Single Precision Floating Point Unit on
+  57:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM7l_math.lib (Cortex-M7, Little endian)
+  58:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM7b_math.lib (Cortex-M7, Big endian)
+  59:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM4lf_math.lib (Cortex-M4, Little endian, Floating Point Unit)
+  60:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM4bf_math.lib (Cortex-M4, Big endian, Floating Point Unit)
+  61:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM4l_math.lib (Cortex-M4, Little endian)
+  62:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM4b_math.lib (Cortex-M4, Big endian)
+  63:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM3l_math.lib (Cortex-M3, Little endian)
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 9
+
+
+  64:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM3b_math.lib (Cortex-M3, Big endian)
+  65:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM0l_math.lib (Cortex-M0 / Cortex-M0+, Little endian)
+  66:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM0b_math.lib (Cortex-M0 / Cortex-M0+, Big endian)
+  67:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_ARMv8MBLl_math.lib (Armv8-M Baseline, Little endian)
+  68:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_ARMv8MMLl_math.lib (Armv8-M Mainline, Little endian)
+  69:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_ARMv8MMLlfsp_math.lib (Armv8-M Mainline, Little endian, Single Precision Floating Point 
+  70:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_ARMv8MMLld_math.lib (Armv8-M Mainline, Little endian, DSP instructions)
+  71:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_ARMv8MMLldfsp_math.lib (Armv8-M Mainline, Little endian, DSP instructions, Single Precis
+  72:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  73:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The library functions are declared in the public file <code>arm_math.h</code> which is placed 
+  74:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Simply include this file and link the appropriate library in the application and begin calling
+  75:Drivers/CMSIS/DSP/Include/arm_math.h ****    * public header file <code> arm_math.h</code> for Cortex-M cores with little endian and big endi
+  76:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Define the appropriate preprocessor macro ARM_MATH_CM7 or ARM_MATH_CM4 or ARM_MATH_CM3 or
+  77:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ARM_MATH_CM0 or ARM_MATH_CM0PLUS depending on the target processor in the application.
+  78:Drivers/CMSIS/DSP/Include/arm_math.h ****    * For Armv8-M cores define preprocessor macro ARM_MATH_ARMV8MBL or ARM_MATH_ARMV8MML.
+  79:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Set preprocessor macro __DSP_PRESENT if Armv8-M Mainline core supports DSP instructions.
+  80:Drivers/CMSIS/DSP/Include/arm_math.h ****    * 
+  81:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  82:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Examples
+  83:Drivers/CMSIS/DSP/Include/arm_math.h ****    * --------
+  84:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  85:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The library ships with a number of examples which demonstrate how to use the library functions
+  86:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  87:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Toolchain Support
+  88:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ------------
+  89:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  90:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The library has been developed and tested with MDK version 5.14.0.0
+  91:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The library is being tested in GCC and IAR toolchains and updates on this activity will be mad
+  92:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  93:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Building the Library
+  94:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ------------
+  95:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  96:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The library installer contains a project file to rebuild libraries on MDK toolchain in the <co
+  97:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - arm_cortexM_math.uvprojx
+  98:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+  99:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 100:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The libraries can be built by opening the arm_cortexM_math.uvprojx project in MDK-ARM, selecti
+ 101:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 102:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Preprocessor Macros
+ 103:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ------------
+ 104:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 105:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Each library project have different preprocessor macros.
+ 106:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 107:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - UNALIGNED_SUPPORT_DISABLE:
+ 108:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 109:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Define macro UNALIGNED_SUPPORT_DISABLE, If the silicon does not support unaligned memory acces
+ 110:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 111:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - ARM_MATH_BIG_ENDIAN:
+ 112:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 113:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Define macro ARM_MATH_BIG_ENDIAN to build the library for big endian targets. By default libra
+ 114:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 115:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - ARM_MATH_MATRIX_CHECK:
+ 116:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 117:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Define macro ARM_MATH_MATRIX_CHECK for checking on the input and output sizes of matrices
+ 118:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 119:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - ARM_MATH_ROUNDING:
+ 120:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 10
+
+
+ 121:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Define macro ARM_MATH_ROUNDING for rounding on support functions
+ 122:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 123:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - ARM_MATH_CMx:
+ 124:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 125:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Define macro ARM_MATH_CM4 for building the library on Cortex-M4 target, ARM_MATH_CM3 for build
+ 126:Drivers/CMSIS/DSP/Include/arm_math.h ****    * and ARM_MATH_CM0 for building library on Cortex-M0 target, ARM_MATH_CM0PLUS for building libra
+ 127:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ARM_MATH_CM7 for building the library on cortex-M7.
+ 128:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 129:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - ARM_MATH_ARMV8MxL:
+ 130:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 131:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Define macro ARM_MATH_ARMV8MBL for building the library on Armv8-M Baseline target, ARM_MATH_A
+ 132:Drivers/CMSIS/DSP/Include/arm_math.h ****    * on Armv8-M Mainline target.
+ 133:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 134:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - __FPU_PRESENT:
+ 135:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 136:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Initialize macro __FPU_PRESENT = 1 when building on FPU supported Targets. Enable this macro f
+ 137:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 138:Drivers/CMSIS/DSP/Include/arm_math.h ****    * - __DSP_PRESENT:
+ 139:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 140:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Initialize macro __DSP_PRESENT = 1 when Armv8-M Mainline core supports DSP instructions.
+ 141:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 142:Drivers/CMSIS/DSP/Include/arm_math.h ****    * <hr>
+ 143:Drivers/CMSIS/DSP/Include/arm_math.h ****    * CMSIS-DSP in ARM::CMSIS Pack
+ 144:Drivers/CMSIS/DSP/Include/arm_math.h ****    * -----------------------------
+ 145:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 146:Drivers/CMSIS/DSP/Include/arm_math.h ****    * The following files relevant to CMSIS-DSP are present in the <b>ARM::CMSIS</b> Pack directorie
+ 147:Drivers/CMSIS/DSP/Include/arm_math.h ****    * |File/Folder                   |Content                                                       
+ 148:Drivers/CMSIS/DSP/Include/arm_math.h ****    * |------------------------------|--------------------------------------------------------------
+ 149:Drivers/CMSIS/DSP/Include/arm_math.h ****    * |\b CMSIS\\Documentation\\DSP  | This documentation                                           
+ 150:Drivers/CMSIS/DSP/Include/arm_math.h ****    * |\b CMSIS\\DSP_Lib             | Software license agreement (license.txt)                     
+ 151:Drivers/CMSIS/DSP/Include/arm_math.h ****    * |\b CMSIS\\DSP_Lib\\Examples   | Example projects demonstrating the usage of the library funct
+ 152:Drivers/CMSIS/DSP/Include/arm_math.h ****    * |\b CMSIS\\DSP_Lib\\Source     | Source files for rebuilding the library                      
+ 153:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 154:Drivers/CMSIS/DSP/Include/arm_math.h ****    * <hr>
+ 155:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Revision History of CMSIS-DSP
+ 156:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ------------
+ 157:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Please refer to \ref ChangeLog_pg.
+ 158:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 159:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Copyright Notice
+ 160:Drivers/CMSIS/DSP/Include/arm_math.h ****    * ------------
+ 161:Drivers/CMSIS/DSP/Include/arm_math.h ****    *
+ 162:Drivers/CMSIS/DSP/Include/arm_math.h ****    * Copyright (C) 2010-2015 Arm Limited. All rights reserved.
+ 163:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 164:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 165:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 166:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 167:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupMath Basic Math Functions
+ 168:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 169:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 170:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 171:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupFastMath Fast Math Functions
+ 172:Drivers/CMSIS/DSP/Include/arm_math.h ****  * This set of functions provides a fast approximation to sine, cosine, and square root.
+ 173:Drivers/CMSIS/DSP/Include/arm_math.h ****  * As compared to most of the other functions in the CMSIS math library, the fast math functions
+ 174:Drivers/CMSIS/DSP/Include/arm_math.h ****  * operate on individual values and not arrays.
+ 175:Drivers/CMSIS/DSP/Include/arm_math.h ****  * There are separate functions for Q15, Q31, and floating-point data.
+ 176:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+ 177:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 11
+
+
+ 178:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 179:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 180:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupCmplxMath Complex Math Functions
+ 181:Drivers/CMSIS/DSP/Include/arm_math.h ****  * This set of functions operates on complex data vectors.
+ 182:Drivers/CMSIS/DSP/Include/arm_math.h ****  * The data in the complex arrays is stored in an interleaved fashion
+ 183:Drivers/CMSIS/DSP/Include/arm_math.h ****  * (real, imag, real, imag, ...).
+ 184:Drivers/CMSIS/DSP/Include/arm_math.h ****  * In the API functions, the number of samples in a complex array refers
+ 185:Drivers/CMSIS/DSP/Include/arm_math.h ****  * to the number of complex values; the array contains twice this number of
+ 186:Drivers/CMSIS/DSP/Include/arm_math.h ****  * real values.
+ 187:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 188:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 189:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 190:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupFilters Filtering Functions
+ 191:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 192:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 193:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 194:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupMatrix Matrix Functions
+ 195:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+ 196:Drivers/CMSIS/DSP/Include/arm_math.h ****  * This set of functions provides basic matrix math operations.
+ 197:Drivers/CMSIS/DSP/Include/arm_math.h ****  * The functions operate on matrix data structures.  For example,
+ 198:Drivers/CMSIS/DSP/Include/arm_math.h ****  * the type
+ 199:Drivers/CMSIS/DSP/Include/arm_math.h ****  * definition for the floating-point matrix structure is shown
+ 200:Drivers/CMSIS/DSP/Include/arm_math.h ****  * below:
+ 201:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <pre>
+ 202:Drivers/CMSIS/DSP/Include/arm_math.h ****  *     typedef struct
+ 203:Drivers/CMSIS/DSP/Include/arm_math.h ****  *     {
+ 204:Drivers/CMSIS/DSP/Include/arm_math.h ****  *       uint16_t numRows;     // number of rows of the matrix.
+ 205:Drivers/CMSIS/DSP/Include/arm_math.h ****  *       uint16_t numCols;     // number of columns of the matrix.
+ 206:Drivers/CMSIS/DSP/Include/arm_math.h ****  *       float32_t *pData;     // points to the data of the matrix.
+ 207:Drivers/CMSIS/DSP/Include/arm_math.h ****  *     } arm_matrix_instance_f32;
+ 208:Drivers/CMSIS/DSP/Include/arm_math.h ****  * </pre>
+ 209:Drivers/CMSIS/DSP/Include/arm_math.h ****  * There are similar definitions for Q15 and Q31 data types.
+ 210:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+ 211:Drivers/CMSIS/DSP/Include/arm_math.h ****  * The structure specifies the size of the matrix and then points to
+ 212:Drivers/CMSIS/DSP/Include/arm_math.h ****  * an array of data.  The array is of size <code>numRows X numCols</code>
+ 213:Drivers/CMSIS/DSP/Include/arm_math.h ****  * and the values are arranged in row order.  That is, the
+ 214:Drivers/CMSIS/DSP/Include/arm_math.h ****  * matrix element (i, j) is stored at:
+ 215:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <pre>
+ 216:Drivers/CMSIS/DSP/Include/arm_math.h ****  *     pData[i*numCols + j]
+ 217:Drivers/CMSIS/DSP/Include/arm_math.h ****  * </pre>
+ 218:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+ 219:Drivers/CMSIS/DSP/Include/arm_math.h ****  * \par Init Functions
+ 220:Drivers/CMSIS/DSP/Include/arm_math.h ****  * There is an associated initialization function for each type of matrix
+ 221:Drivers/CMSIS/DSP/Include/arm_math.h ****  * data structure.
+ 222:Drivers/CMSIS/DSP/Include/arm_math.h ****  * The initialization function sets the values of the internal structure fields.
+ 223:Drivers/CMSIS/DSP/Include/arm_math.h ****  * Refer to the function <code>arm_mat_init_f32()</code>, <code>arm_mat_init_q31()</code>
+ 224:Drivers/CMSIS/DSP/Include/arm_math.h ****  * and <code>arm_mat_init_q15()</code> for floating-point, Q31 and Q15 types,  respectively.
+ 225:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+ 226:Drivers/CMSIS/DSP/Include/arm_math.h ****  * \par
+ 227:Drivers/CMSIS/DSP/Include/arm_math.h ****  * Use of the initialization function is optional. However, if initialization function is used
+ 228:Drivers/CMSIS/DSP/Include/arm_math.h ****  * then the instance structure cannot be placed into a const data section.
+ 229:Drivers/CMSIS/DSP/Include/arm_math.h ****  * To place the instance structure in a const data
+ 230:Drivers/CMSIS/DSP/Include/arm_math.h ****  * section, manually initialize the data structure.  For example:
+ 231:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <pre>
+ 232:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <code>arm_matrix_instance_f32 S = {nRows, nColumns, pData};</code>
+ 233:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <code>arm_matrix_instance_q31 S = {nRows, nColumns, pData};</code>
+ 234:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <code>arm_matrix_instance_q15 S = {nRows, nColumns, pData};</code>
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 12
+
+
+ 235:Drivers/CMSIS/DSP/Include/arm_math.h ****  * </pre>
+ 236:Drivers/CMSIS/DSP/Include/arm_math.h ****  * where <code>nRows</code> specifies the number of rows, <code>nColumns</code>
+ 237:Drivers/CMSIS/DSP/Include/arm_math.h ****  * specifies the number of columns, and <code>pData</code> points to the
+ 238:Drivers/CMSIS/DSP/Include/arm_math.h ****  * data array.
+ 239:Drivers/CMSIS/DSP/Include/arm_math.h ****  *
+ 240:Drivers/CMSIS/DSP/Include/arm_math.h ****  * \par Size Checking
+ 241:Drivers/CMSIS/DSP/Include/arm_math.h ****  * By default all of the matrix functions perform size checking on the input and
+ 242:Drivers/CMSIS/DSP/Include/arm_math.h ****  * output matrices. For example, the matrix addition function verifies that the
+ 243:Drivers/CMSIS/DSP/Include/arm_math.h ****  * two input matrices and the output matrix all have the same number of rows and
+ 244:Drivers/CMSIS/DSP/Include/arm_math.h ****  * columns. If the size check fails the functions return:
+ 245:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <pre>
+ 246:Drivers/CMSIS/DSP/Include/arm_math.h ****  *     ARM_MATH_SIZE_MISMATCH
+ 247:Drivers/CMSIS/DSP/Include/arm_math.h ****  * </pre>
+ 248:Drivers/CMSIS/DSP/Include/arm_math.h ****  * Otherwise the functions return
+ 249:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <pre>
+ 250:Drivers/CMSIS/DSP/Include/arm_math.h ****  *     ARM_MATH_SUCCESS
+ 251:Drivers/CMSIS/DSP/Include/arm_math.h ****  * </pre>
+ 252:Drivers/CMSIS/DSP/Include/arm_math.h ****  * There is some overhead associated with this matrix size checking.
+ 253:Drivers/CMSIS/DSP/Include/arm_math.h ****  * The matrix size checking is enabled via the \#define
+ 254:Drivers/CMSIS/DSP/Include/arm_math.h ****  * <pre>
+ 255:Drivers/CMSIS/DSP/Include/arm_math.h ****  *     ARM_MATH_MATRIX_CHECK
+ 256:Drivers/CMSIS/DSP/Include/arm_math.h ****  * </pre>
+ 257:Drivers/CMSIS/DSP/Include/arm_math.h ****  * within the library project settings.  By default this macro is defined
+ 258:Drivers/CMSIS/DSP/Include/arm_math.h ****  * and size checking is enabled. By changing the project settings and
+ 259:Drivers/CMSIS/DSP/Include/arm_math.h ****  * undefining this macro size checking is eliminated and the functions
+ 260:Drivers/CMSIS/DSP/Include/arm_math.h ****  * run a bit faster. With size checking disabled the functions always
+ 261:Drivers/CMSIS/DSP/Include/arm_math.h ****  * return <code>ARM_MATH_SUCCESS</code>.
+ 262:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 263:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 264:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 265:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupTransforms Transform Functions
+ 266:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 267:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 268:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 269:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupController Controller Functions
+ 270:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 271:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 272:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 273:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupStats Statistics Functions
+ 274:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 275:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 276:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupSupport Support Functions
+ 277:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 278:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 279:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 280:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupInterpolation Interpolation Functions
+ 281:Drivers/CMSIS/DSP/Include/arm_math.h ****  * These functions perform 1- and 2-dimensional interpolation of data.
+ 282:Drivers/CMSIS/DSP/Include/arm_math.h ****  * Linear interpolation is used for 1-dimensional data and
+ 283:Drivers/CMSIS/DSP/Include/arm_math.h ****  * bilinear interpolation is used for 2-dimensional data.
+ 284:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 285:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 286:Drivers/CMSIS/DSP/Include/arm_math.h **** /**
+ 287:Drivers/CMSIS/DSP/Include/arm_math.h ****  * @defgroup groupExamples Examples
+ 288:Drivers/CMSIS/DSP/Include/arm_math.h ****  */
+ 289:Drivers/CMSIS/DSP/Include/arm_math.h **** #ifndef _ARM_MATH_H
+ 290:Drivers/CMSIS/DSP/Include/arm_math.h **** #define _ARM_MATH_H
+ 291:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 13
+
+
+ 292:Drivers/CMSIS/DSP/Include/arm_math.h **** /* Compiler specific diagnostic adjustment */
+ 293:Drivers/CMSIS/DSP/Include/arm_math.h **** #if   defined ( __CC_ARM )
+ 294:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 295:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __ARMCC_VERSION ) && ( __ARMCC_VERSION >= 6010050 )
+ 296:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 297:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __GNUC__ )
+ 298:Drivers/CMSIS/DSP/Include/arm_math.h **** #pragma GCC diagnostic push
+ 299:Drivers/CMSIS/DSP/Include/arm_math.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+ 300:Drivers/CMSIS/DSP/Include/arm_math.h **** #pragma GCC diagnostic ignored "-Wconversion"
+ 301:Drivers/CMSIS/DSP/Include/arm_math.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+ 302:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 303:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __ICCARM__ )
+ 304:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 305:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __TI_ARM__ )
+ 306:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 307:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __CSMC__ )
+ 308:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 309:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __TASKING__ )
+ 310:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 311:Drivers/CMSIS/DSP/Include/arm_math.h **** #else
+ 312:Drivers/CMSIS/DSP/Include/arm_math.h ****   #error Unknown compiler
+ 313:Drivers/CMSIS/DSP/Include/arm_math.h **** #endif
+ 314:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 315:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 316:Drivers/CMSIS/DSP/Include/arm_math.h **** #define __CMSIS_GENERIC         /* disable NVIC and Systick functions */
+ 317:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 318:Drivers/CMSIS/DSP/Include/arm_math.h **** #if defined(ARM_MATH_CM7)
+ 319:Drivers/CMSIS/DSP/Include/arm_math.h ****   #include "core_cm7.h"
+ 320:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define ARM_MATH_DSP
+ 321:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined (ARM_MATH_CM4)
+ 322:Drivers/CMSIS/DSP/Include/arm_math.h ****   #include "core_cm4.h"
+ 323:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define ARM_MATH_DSP
+ 324:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined (ARM_MATH_CM3)
+ 325:Drivers/CMSIS/DSP/Include/arm_math.h ****   #include "core_cm3.h"
+ 326:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined (ARM_MATH_CM0)
+ 327:Drivers/CMSIS/DSP/Include/arm_math.h ****   #include "core_cm0.h"
+ 328:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define ARM_MATH_CM0_FAMILY
+ 329:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined (ARM_MATH_CM0PLUS)
+ 330:Drivers/CMSIS/DSP/Include/arm_math.h ****   #include "core_cm0plus.h"
+ 331:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define ARM_MATH_CM0_FAMILY
+ 332:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined (ARM_MATH_ARMV8MBL)
+ 333:Drivers/CMSIS/DSP/Include/arm_math.h ****   #include "core_armv8mbl.h"
+ 334:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define ARM_MATH_CM0_FAMILY
+ 335:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined (ARM_MATH_ARMV8MML)
+ 336:Drivers/CMSIS/DSP/Include/arm_math.h ****   #include "core_armv8mml.h"
+ 337:Drivers/CMSIS/DSP/Include/arm_math.h ****   #if (defined (__DSP_PRESENT) && (__DSP_PRESENT == 1))
+ 338:Drivers/CMSIS/DSP/Include/arm_math.h ****     #define ARM_MATH_DSP
+ 339:Drivers/CMSIS/DSP/Include/arm_math.h ****   #endif
+ 340:Drivers/CMSIS/DSP/Include/arm_math.h **** #else
+ 341:Drivers/CMSIS/DSP/Include/arm_math.h ****   #error "Define according the used Cortex core ARM_MATH_CM7, ARM_MATH_CM4, ARM_MATH_CM3, ARM_MATH_
+ 342:Drivers/CMSIS/DSP/Include/arm_math.h **** #endif
+ 343:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 344:Drivers/CMSIS/DSP/Include/arm_math.h **** #undef  __CMSIS_GENERIC         /* enable NVIC and Systick functions */
+ 345:Drivers/CMSIS/DSP/Include/arm_math.h **** #include "string.h"
+ 346:Drivers/CMSIS/DSP/Include/arm_math.h **** #include "math.h"
+ 347:Drivers/CMSIS/DSP/Include/arm_math.h **** #ifdef   __cplusplus
+ 348:Drivers/CMSIS/DSP/Include/arm_math.h **** extern "C"
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 14
+
+
+ 349:Drivers/CMSIS/DSP/Include/arm_math.h **** {
+ 350:Drivers/CMSIS/DSP/Include/arm_math.h **** #endif
+ 351:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 352:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 353:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 354:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Macros required for reciprocal calculation in Normalized LMS
+ 355:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 356:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 357:Drivers/CMSIS/DSP/Include/arm_math.h **** #define DELTA_Q31          (0x100)
+ 358:Drivers/CMSIS/DSP/Include/arm_math.h **** #define DELTA_Q15          0x5
+ 359:Drivers/CMSIS/DSP/Include/arm_math.h **** #define INDEX_MASK         0x0000003F
+ 360:Drivers/CMSIS/DSP/Include/arm_math.h **** #ifndef PI
+ 361:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define PI               3.14159265358979f
+ 362:Drivers/CMSIS/DSP/Include/arm_math.h **** #endif
+ 363:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 364:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 365:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Macros required for SINE and COSINE Fast math approximations
+ 366:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 367:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 368:Drivers/CMSIS/DSP/Include/arm_math.h **** #define FAST_MATH_TABLE_SIZE  512
+ 369:Drivers/CMSIS/DSP/Include/arm_math.h **** #define FAST_MATH_Q31_SHIFT   (32 - 10)
+ 370:Drivers/CMSIS/DSP/Include/arm_math.h **** #define FAST_MATH_Q15_SHIFT   (16 - 10)
+ 371:Drivers/CMSIS/DSP/Include/arm_math.h **** #define CONTROLLER_Q31_SHIFT  (32 - 9)
+ 372:Drivers/CMSIS/DSP/Include/arm_math.h **** #define TABLE_SPACING_Q31     0x400000
+ 373:Drivers/CMSIS/DSP/Include/arm_math.h **** #define TABLE_SPACING_Q15     0x80
+ 374:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 375:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 376:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Macros required for SINE and COSINE Controller functions
+ 377:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 378:Drivers/CMSIS/DSP/Include/arm_math.h ****   /* 1.31(q31) Fixed value of 2/360 */
+ 379:Drivers/CMSIS/DSP/Include/arm_math.h ****   /* -1 to +1 is divided into 360 values so total spacing is (2/360) */
+ 380:Drivers/CMSIS/DSP/Include/arm_math.h **** #define INPUT_SPACING         0xB60B61
+ 381:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 382:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 383:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Macro for Unaligned Support
+ 384:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 385:Drivers/CMSIS/DSP/Include/arm_math.h **** #ifndef UNALIGNED_SUPPORT_DISABLE
+ 386:Drivers/CMSIS/DSP/Include/arm_math.h ****     #define ALIGN4
+ 387:Drivers/CMSIS/DSP/Include/arm_math.h **** #else
+ 388:Drivers/CMSIS/DSP/Include/arm_math.h ****   #if defined  (__GNUC__)
+ 389:Drivers/CMSIS/DSP/Include/arm_math.h ****     #define ALIGN4 __attribute__((aligned(4)))
+ 390:Drivers/CMSIS/DSP/Include/arm_math.h ****   #else
+ 391:Drivers/CMSIS/DSP/Include/arm_math.h ****     #define ALIGN4 __align(4)
+ 392:Drivers/CMSIS/DSP/Include/arm_math.h ****   #endif
+ 393:Drivers/CMSIS/DSP/Include/arm_math.h **** #endif   /* #ifndef UNALIGNED_SUPPORT_DISABLE */
+ 394:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 395:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 396:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Error status returned by some functions in the library.
+ 397:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 398:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 399:Drivers/CMSIS/DSP/Include/arm_math.h ****   typedef enum
+ 400:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 401:Drivers/CMSIS/DSP/Include/arm_math.h ****     ARM_MATH_SUCCESS = 0,                /**< No error */
+ 402:Drivers/CMSIS/DSP/Include/arm_math.h ****     ARM_MATH_ARGUMENT_ERROR = -1,        /**< One or more arguments are incorrect */
+ 403:Drivers/CMSIS/DSP/Include/arm_math.h ****     ARM_MATH_LENGTH_ERROR = -2,          /**< Length of data buffer is incorrect */
+ 404:Drivers/CMSIS/DSP/Include/arm_math.h ****     ARM_MATH_SIZE_MISMATCH = -3,         /**< Size of matrices is not compatible with the operation
+ 405:Drivers/CMSIS/DSP/Include/arm_math.h ****     ARM_MATH_NANINF = -4,                /**< Not-a-number (NaN) or infinity is generated */
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 15
+
+
+ 406:Drivers/CMSIS/DSP/Include/arm_math.h ****     ARM_MATH_SINGULAR = -5,              /**< Generated by matrix inversion if the input matrix is 
+ 407:Drivers/CMSIS/DSP/Include/arm_math.h ****     ARM_MATH_TEST_FAILURE = -6           /**< Test Failed  */
+ 408:Drivers/CMSIS/DSP/Include/arm_math.h ****   } arm_status;
+ 409:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 410:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 411:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief 8-bit fractional data type in 1.7 format.
+ 412:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 413:Drivers/CMSIS/DSP/Include/arm_math.h ****   typedef int8_t q7_t;
+ 414:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 415:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 416:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief 16-bit fractional data type in 1.15 format.
+ 417:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 418:Drivers/CMSIS/DSP/Include/arm_math.h ****   typedef int16_t q15_t;
+ 419:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 420:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 421:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief 32-bit fractional data type in 1.31 format.
+ 422:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 423:Drivers/CMSIS/DSP/Include/arm_math.h ****   typedef int32_t q31_t;
+ 424:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 425:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 426:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief 64-bit fractional data type in 1.63 format.
+ 427:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 428:Drivers/CMSIS/DSP/Include/arm_math.h ****   typedef int64_t q63_t;
+ 429:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 430:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 431:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief 32-bit floating-point type definition.
+ 432:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 433:Drivers/CMSIS/DSP/Include/arm_math.h ****   typedef float float32_t;
+ 434:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 435:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 436:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief 64-bit floating-point type definition.
+ 437:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 438:Drivers/CMSIS/DSP/Include/arm_math.h ****   typedef double float64_t;
+ 439:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 440:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 441:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief definition to read/write two 16 bit values.
+ 442:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 443:Drivers/CMSIS/DSP/Include/arm_math.h **** #if   defined ( __CC_ARM )
+ 444:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define __SIMD32_TYPE int32_t __packed
+ 445:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_UNUSED __attribute__((unused))
+ 446:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_INLINE __attribute__((always_inline))
+ 447:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 448:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __ARMCC_VERSION ) && ( __ARMCC_VERSION >= 6010050 )
+ 449:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define __SIMD32_TYPE int32_t
+ 450:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_UNUSED __attribute__((unused))
+ 451:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_INLINE __attribute__((always_inline))
+ 452:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 453:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __GNUC__ )
+ 454:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define __SIMD32_TYPE int32_t
+ 455:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_UNUSED __attribute__((unused))
+ 456:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_INLINE __attribute__((always_inline))
+ 457:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 458:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __ICCARM__ )
+ 459:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define __SIMD32_TYPE int32_t __packed
+ 460:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_UNUSED
+ 461:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_INLINE
+ 462:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 16
+
+
+ 463:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __TI_ARM__ )
+ 464:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define __SIMD32_TYPE int32_t
+ 465:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_UNUSED __attribute__((unused))
+ 466:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_INLINE
+ 467:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 468:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __CSMC__ )
+ 469:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define __SIMD32_TYPE int32_t
+ 470:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_UNUSED
+ 471:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_INLINE
+ 472:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 473:Drivers/CMSIS/DSP/Include/arm_math.h **** #elif defined ( __TASKING__ )
+ 474:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define __SIMD32_TYPE __unaligned int32_t
+ 475:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_UNUSED
+ 476:Drivers/CMSIS/DSP/Include/arm_math.h ****   #define CMSIS_INLINE
+ 477:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 478:Drivers/CMSIS/DSP/Include/arm_math.h **** #else
+ 479:Drivers/CMSIS/DSP/Include/arm_math.h ****   #error Unknown compiler
+ 480:Drivers/CMSIS/DSP/Include/arm_math.h **** #endif
+ 481:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 482:Drivers/CMSIS/DSP/Include/arm_math.h **** #define __SIMD32(addr)        (*(__SIMD32_TYPE **) & (addr))
+ 483:Drivers/CMSIS/DSP/Include/arm_math.h **** #define __SIMD32_CONST(addr)  ((__SIMD32_TYPE *)(addr))
+ 484:Drivers/CMSIS/DSP/Include/arm_math.h **** #define _SIMD32_OFFSET(addr)  (*(__SIMD32_TYPE *)  (addr))
+ 485:Drivers/CMSIS/DSP/Include/arm_math.h **** #define __SIMD64(addr)        (*(int64_t **) & (addr))
+ 486:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 487:Drivers/CMSIS/DSP/Include/arm_math.h **** #if !defined (ARM_MATH_DSP)
+ 488:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 489:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief definition to pack two 16 bit values.
+ 490:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 491:Drivers/CMSIS/DSP/Include/arm_math.h **** #define __PKHBT(ARG1, ARG2, ARG3) ( (((int32_t)(ARG1) <<    0) & (int32_t)0x0000FFFF) | \
+ 492:Drivers/CMSIS/DSP/Include/arm_math.h ****                                     (((int32_t)(ARG2) << ARG3) & (int32_t)0xFFFF0000)  )
+ 493:Drivers/CMSIS/DSP/Include/arm_math.h **** #define __PKHTB(ARG1, ARG2, ARG3) ( (((int32_t)(ARG1) <<    0) & (int32_t)0xFFFF0000) | \
+ 494:Drivers/CMSIS/DSP/Include/arm_math.h ****                                     (((int32_t)(ARG2) >> ARG3) & (int32_t)0x0000FFFF)  )
+ 495:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 496:Drivers/CMSIS/DSP/Include/arm_math.h **** #endif /* !defined (ARM_MATH_DSP) */
+ 497:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 498:Drivers/CMSIS/DSP/Include/arm_math.h ****    /**
+ 499:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief definition to pack four 8 bit values.
+ 500:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ 501:Drivers/CMSIS/DSP/Include/arm_math.h **** #ifndef ARM_MATH_BIG_ENDIAN
+ 502:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 503:Drivers/CMSIS/DSP/Include/arm_math.h **** #define __PACKq7(v0,v1,v2,v3) ( (((int32_t)(v0) <<  0) & (int32_t)0x000000FF) | \
+ 504:Drivers/CMSIS/DSP/Include/arm_math.h ****                                 (((int32_t)(v1) <<  8) & (int32_t)0x0000FF00) | \
+ 505:Drivers/CMSIS/DSP/Include/arm_math.h ****                                 (((int32_t)(v2) << 16) & (int32_t)0x00FF0000) | \
+ 506:Drivers/CMSIS/DSP/Include/arm_math.h ****                                 (((int32_t)(v3) << 24) & (int32_t)0xFF000000)  )
+ 507:Drivers/CMSIS/DSP/Include/arm_math.h **** #else
+ 508:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 509:Drivers/CMSIS/DSP/Include/arm_math.h **** #define __PACKq7(v0,v1,v2,v3) ( (((int32_t)(v3) <<  0) & (int32_t)0x000000FF) | \
+ 510:Drivers/CMSIS/DSP/Include/arm_math.h ****                                 (((int32_t)(v2) <<  8) & (int32_t)0x0000FF00) | \
+ 511:Drivers/CMSIS/DSP/Include/arm_math.h ****                                 (((int32_t)(v1) << 16) & (int32_t)0x00FF0000) | \
+ 512:Drivers/CMSIS/DSP/Include/arm_math.h ****                                 (((int32_t)(v0) << 24) & (int32_t)0xFF000000)  )
+ 513:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 514:Drivers/CMSIS/DSP/Include/arm_math.h **** #endif
+ 515:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 516:Drivers/CMSIS/DSP/Include/arm_math.h **** 
+ 517:Drivers/CMSIS/DSP/Include/arm_math.h ****   /**
+ 518:Drivers/CMSIS/DSP/Include/arm_math.h ****    * @brief Clips Q63 to Q31 values.
+ 519:Drivers/CMSIS/DSP/Include/arm_math.h ****    */
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 17
+
+
+ 520:Drivers/CMSIS/DSP/Include/arm_math.h ****   CMSIS_INLINE __STATIC_INLINE q31_t clip_q63_to_q31(
+ 142              		.loc 2 520 38 is_stmt 1 view .LVU40
+ 143              	.LBB5:
+ 521:Drivers/CMSIS/DSP/Include/arm_math.h ****   q63_t x)
+ 522:Drivers/CMSIS/DSP/Include/arm_math.h ****   {
+ 523:Drivers/CMSIS/DSP/Include/arm_math.h ****     return ((q31_t) (x >> 32) != ((q31_t) x >> 31)) ?
+ 144              		.loc 2 523 5 view .LVU41
+ 145              		.loc 2 523 24 is_stmt 0 view .LVU42
+ 146 0064 4FEAEE76 		asr	r6, lr, #31
+ 147              	.LVL19:
+ 148              		.loc 2 523 35 view .LVU43
+ 149 0068 0346     		mov	r3, r0
+ 150              	.LVL20:
+ 151              		.loc 2 523 45 view .LVU44
+ 152 006a C017     		asrs	r0, r0, #31
+ 153              	.LVL21:
+ 524:Drivers/CMSIS/DSP/Include/arm_math.h ****       ((0x7FFFFFFF ^ ((q31_t) (x >> 63)))) : (q31_t) x;
+ 154              		.loc 2 524 44 view .LVU45
+ 155 006c B0EBEE7F 		cmp	r0, lr, asr #31
+ 156 0070 02D0     		beq	.L4
+ 157              		.loc 2 524 44 discriminator 1 view .LVU46
+ 158 0072 86F00043 		eor	r3, r6, #-2147483648
+ 159              	.LVL22:
+ 160              		.loc 2 524 44 discriminator 1 view .LVU47
+ 161 0076 DB43     		mvns	r3, r3
+ 162              	.L4:
+ 163              	.LVL23:
+ 164              		.loc 2 524 44 discriminator 1 view .LVU48
+ 165              	.LBE5:
+ 166              	.LBE4:
+ 167              		.loc 1 252 15 discriminator 1 view .LVU49
+ 168 0078 C8F80030 		str	r3, [r8]
+ 253:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 254:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         /* Decrement the column loop counter */
+ 255:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         col--;
+ 169              		.loc 1 255 9 is_stmt 1 view .LVU50
+ 170              		.loc 1 255 12 is_stmt 0 view .LVU51
+ 171 007c 0139     		subs	r1, r1, #1
+ 172 007e 89B2     		uxth	r1, r1
+ 173              	.LVL24:
+ 256:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 257:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         /* Update the pointer pIn2 to point to the  starting address of the next column */
+ 258:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         pIn2 = pInB + (numColsB - col);
+ 174              		.loc 1 258 9 is_stmt 1 view .LVU52
+ 175              		.loc 1 258 33 is_stmt 0 view .LVU53
+ 176 0080 7E1A     		subs	r6, r7, r1
+ 177              		.loc 1 258 14 view .LVU54
+ 178 0082 09EB8606 		add	r6, r9, r6, lsl #2
+ 179              	.LVL25:
+ 259:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 260:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       } while (col > 0U);
+ 180              		.loc 1 260 20 is_stmt 1 view .LVU55
+ 181 0086 51B1     		cbz	r1, .L9
+ 252:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 182              		.loc 1 252 12 is_stmt 0 view .LVU56
+ 183 0088 E046     		mov	r8, ip
+ 184              	.LVL26:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 18
+
+
+ 185              	.L5:
+ 228:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       {
+ 186              		.loc 1 228 7 is_stmt 1 view .LVU57
+ 231:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 187              		.loc 1 231 9 view .LVU58
+ 234:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 188              		.loc 1 234 9 view .LVU59
+ 237:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 189              		.loc 1 237 9 view .LVU60
+ 240:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         {
+ 190              		.loc 1 240 9 view .LVU61
+ 237:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 191              		.loc 1 237 16 is_stmt 0 view .LVU62
+ 192 008a 5346     		mov	r3, r10
+ 234:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 193              		.loc 1 234 14 view .LVU63
+ 194 008c DDF80CC0 		ldr	ip, [sp, #12]
+ 231:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 195              		.loc 1 231 13 view .LVU64
+ 196 0090 0020     		movs	r0, #0
+ 197 0092 8646     		mov	lr, r0
+ 198 0094 CDF80480 		str	r8, [sp, #4]
+ 199 0098 B046     		mov	r8, r6
+ 200              	.LVL27:
+ 231:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 201              		.loc 1 231 13 view .LVU65
+ 202 009a 0291     		str	r1, [sp, #8]
+ 240:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****         {
+ 203              		.loc 1 240 15 view .LVU66
+ 204 009c D8E7     		b	.L2
+ 205              	.LVL28:
+ 206              	.L9:
+ 261:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 262:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** #endif
+ 263:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 264:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       /* Update the pointer pInA to point to the  starting address of the next row */
+ 265:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       i = i + numColsB;
+ 207              		.loc 1 265 9 view .LVU67
+ 208 009e 0398     		ldr	r0, [sp, #12]
+ 209 00a0 DDF810B0 		ldr	fp, [sp, #16]
+ 210 00a4 2246     		mov	r2, r4
+ 211 00a6 059C     		ldr	r4, [sp, #20]
+ 212              	.LVL29:
+ 213              		.loc 1 265 9 view .LVU68
+ 214 00a8 5146     		mov	r1, r10
+ 215              	.LVL30:
+ 216              		.loc 1 265 7 is_stmt 1 view .LVU69
+ 217              		.loc 1 265 9 is_stmt 0 view .LVU70
+ 218 00aa BB44     		add	fp, fp, r7
+ 219 00ac 1FFA8BFB 		uxth	fp, fp
+ 220              	.LVL31:
+ 266:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       pInA = pInA + numColsA;
+ 221              		.loc 1 266 7 is_stmt 1 view .LVU71
+ 222              		.loc 1 266 12 is_stmt 0 view .LVU72
+ 223 00b0 00EB8A00 		add	r0, r0, r10, lsl #2
+ 224              	.LVL32:
+ 267:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 19
+
+
+ 268:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       /* Decrement the row loop counter */
+ 269:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****       row--;
+ 225              		.loc 1 269 7 is_stmt 1 view .LVU73
+ 226              		.loc 1 269 10 is_stmt 0 view .LVU74
+ 227 00b4 013C     		subs	r4, r4, #1
+ 228 00b6 A4B2     		uxth	r4, r4
+ 229              	.LVL33:
+ 270:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 271:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****     } while (row > 0U);
+ 230              		.loc 1 271 18 is_stmt 1 view .LVU75
+ 231 00b8 54B1     		cbz	r4, .L10
+ 232              	.LVL34:
+ 233              	.L6:
+ 197:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 234              		.loc 1 197 3 view .LVU76
+ 215:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****     {
+ 235              		.loc 1 215 5 view .LVU77
+ 218:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 236              		.loc 1 218 7 view .LVU78
+ 218:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 237              		.loc 1 218 10 is_stmt 0 view .LVU79
+ 238 00ba 02EB8B08 		add	r8, r2, fp, lsl #2
+ 239              	.LVL35:
+ 221:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 240              		.loc 1 221 7 is_stmt 1 view .LVU80
+ 225:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 241              		.loc 1 225 7 view .LVU81
+ 225:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 242              		.loc 1 225 12 is_stmt 0 view .LVU82
+ 243 00be 6E68     		ldr	r6, [r5, #4]
+ 244              	.LVL36:
+ 225:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 245              		.loc 1 225 12 view .LVU83
+ 246 00c0 0390     		str	r0, [sp, #12]
+ 247 00c2 CDF810B0 		str	fp, [sp, #16]
+ 248 00c6 0594     		str	r4, [sp, #20]
+ 249 00c8 1446     		mov	r4, r2
+ 250              	.LVL37:
+ 225:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 251              		.loc 1 225 12 view .LVU84
+ 252 00ca 8A46     		mov	r10, r1
+ 253 00cc 3946     		mov	r1, r7
+ 254              	.LVL38:
+ 225:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 255              		.loc 1 225 12 view .LVU85
+ 256 00ce DCE7     		b	.L5
+ 257              	.LVL39:
+ 258              	.L10:
+ 272:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** 
+ 273:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****     /* set status as ARM_MATH_SUCCESS */
+ 274:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****     status = ARM_MATH_SUCCESS;
+ 259              		.loc 1 274 5 is_stmt 1 view .LVU86
+ 275:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   }
+ 276:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   /* Return to application */
+ 277:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c ****   return (status);
+ 260              		.loc 1 277 3 view .LVU87
+ 278:Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_q31.c **** }
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 20
+
+
+ 261              		.loc 1 278 1 is_stmt 0 view .LVU88
+ 262 00d0 0020     		movs	r0, #0
+ 263              	.LVL40:
+ 264              		.loc 1 278 1 view .LVU89
+ 265 00d2 07B0     		add	sp, sp, #28
+ 266              	.LCFI2:
+ 267              		.cfi_def_cfa_offset 36
+ 268              		@ sp needed
+ 269 00d4 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 270              		.loc 1 278 1 view .LVU90
+ 271              		.cfi_endproc
+ 272              	.LFE100:
+ 274              		.text
+ 275              	.Letext0:
+ 276              		.file 3 "C:/ARM GNU Toolchain/arm-none-eabi/include/machine/_default_types.h"
+ 277              		.file 4 "C:/ARM GNU Toolchain/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s 			page 21
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 arm_mat_mult_q31.c
+C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s:19     .text.arm_mat_mult_q31:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccss1S4d.s:25     .text.arm_mat_mult_q31:00000000 arm_mat_mult_q31
+
+NO UNDEFINED SYMBOLS

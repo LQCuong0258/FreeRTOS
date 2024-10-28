@@ -1,0 +1,508 @@
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccr9mAiI.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_sqrt_q31.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c"
+  18              		.global	__aeabi_i2f
+  19              		.global	__aeabi_fmul
+  20              		.global	__aeabi_f2iz
+  21              		.section	.text.arm_sqrt_q31,"ax",%progbits
+  22              		.align	1
+  23              		.global	arm_sqrt_q31
+  24              		.syntax unified
+  25              		.thumb
+  26              		.thumb_func
+  28              	arm_sqrt_q31:
+  29              	.LVL0:
+  30              	.LFB100:
+   1:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** /* ----------------------------------------------------------------------
+   2:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * Project:      CMSIS DSP Library
+   3:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * Title:        arm_sqrt_q31.c
+   4:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * Description:  Q31 square root function
+   5:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  *
+   6:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * $Date:        27. January 2017
+   7:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * $Revision:    V.1.5.1
+   8:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  *
+   9:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * Target Processor: Cortex-M cores
+  10:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * -------------------------------------------------------------------- */
+  11:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** /*
+  12:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * Copyright (C) 2010-2017 ARM Limited or its affiliates. All rights reserved.
+  13:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  *
+  14:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * SPDX-License-Identifier: Apache-2.0
+  15:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  *
+  16:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  17:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * not use this file except in compliance with the License.
+  18:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * You may obtain a copy of the License at
+  19:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  *
+  20:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * www.apache.org/licenses/LICENSE-2.0
+  21:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  *
+  22:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * Unless required by applicable law or agreed to in writing, software
+  23:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  24:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  25:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * See the License for the specific language governing permissions and
+  26:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * limitations under the License.
+  27:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  */
+  28:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccr9mAiI.s 			page 2
+
+
+  29:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** #include "arm_math.h"
+  30:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** #include "arm_common_tables.h"
+  31:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** 
+  32:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** /**
+  33:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * @ingroup groupFastMath
+  34:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  */
+  35:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** 
+  36:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** /**
+  37:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * @addtogroup SQRT
+  38:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * @{
+  39:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  */
+  40:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** 
+  41:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** /**
+  42:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * @brief Q31 square root function.
+  43:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * @param[in]   in    input value.  The range of the input value is [0 +1) or 0x00000000 to 0x7FFFF
+  44:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * @param[out]  *pOut square root of input value.
+  45:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * @return The function returns ARM_MATH_SUCCESS if the input value is positive
+  46:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * and ARM_MATH_ARGUMENT_ERROR if the input is negative.  For
+  47:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  * negative inputs, the function returns *pOut = 0.
+  48:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****  */
+  49:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** 
+  50:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** arm_status arm_sqrt_q31(
+  51:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   q31_t in,
+  52:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   q31_t * pOut)
+  53:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** {
+  31              		.loc 1 53 1 view -0
+  32              		.cfi_startproc
+  33              		@ args = 0, pretend = 0, frame = 0
+  34              		@ frame_needed = 0, uses_anonymous_args = 0
+  35              		.loc 1 53 1 is_stmt 0 view .LVU1
+  36 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+  37              	.LCFI0:
+  38              		.cfi_def_cfa_offset 32
+  39              		.cfi_offset 3, -32
+  40              		.cfi_offset 4, -28
+  41              		.cfi_offset 5, -24
+  42              		.cfi_offset 6, -20
+  43              		.cfi_offset 7, -16
+  44              		.cfi_offset 8, -12
+  45              		.cfi_offset 9, -8
+  46              		.cfi_offset 14, -4
+  47 0004 8846     		mov	r8, r1
+  54:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   q31_t number, temp1, bits_val1, var1, signBits1, half;
+  48              		.loc 1 54 3 is_stmt 1 view .LVU2
+  55:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   float32_t temp_float1;
+  49              		.loc 1 55 3 view .LVU3
+  56:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   union
+  50              		.loc 1 56 3 view .LVU4
+  57:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   {
+  58:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****       q31_t fracval;
+  59:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****       float32_t floatval;
+  60:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   } tempconv;
+  61:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** 
+  62:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   number = in;
+  51              		.loc 1 62 3 view .LVU5
+  52              	.LVL1:
+  63:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccr9mAiI.s 			page 3
+
+
+  64:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   /* If the input is a positive number then compute the signBits. */
+  65:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   if (number > 0)
+  53              		.loc 1 65 3 view .LVU6
+  54              		.loc 1 65 6 is_stmt 0 view .LVU7
+  55 0006 0028     		cmp	r0, #0
+  56              		.loc 1 65 6 view .LVU8
+  57 0008 40F3AE80 		ble	.L2
+  66:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   {
+  67:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     signBits1 = __CLZ(number) - 1;
+  58              		.loc 1 67 5 is_stmt 1 view .LVU9
+  59 000c B0FA80F6 		clz	r6, r0
+  60              		.loc 1 67 15 is_stmt 0 discriminator 1 view .LVU10
+  61 0010 771E     		subs	r7, r6, #1
+  62              	.LVL2:
+  68:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** 
+  69:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     /* Shift by the number of signBits1 */
+  70:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     if ((signBits1 % 2) == 0)
+  63              		.loc 1 70 5 is_stmt 1 view .LVU11
+  64              		.loc 1 70 8 is_stmt 0 view .LVU12
+  65 0012 17F00109 		ands	r9, r7, #1
+  66 0016 40F09D80 		bne	.L3
+  71:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     {
+  72:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****       number = number << signBits1;
+  67              		.loc 1 72 7 is_stmt 1 view .LVU13
+  68              		.loc 1 72 14 is_stmt 0 view .LVU14
+  69 001a 00FA07F5 		lsl	r5, r0, r7
+  70              	.LVL3:
+  71              	.L4:
+  73:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     }
+  74:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     else
+  75:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     {
+  76:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****       number = number << (signBits1 - 1);
+  77:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     }
+  78:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** 
+  79:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     /* Calculate half value of the number */
+  80:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     half = number >> 1;
+  72              		.loc 1 80 5 is_stmt 1 view .LVU15
+  73              		.loc 1 80 10 is_stmt 0 view .LVU16
+  74 001e 6C10     		asrs	r4, r5, #1
+  75              	.LVL4:
+  81:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     /* Store the number for later use */
+  82:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     temp1 = number;
+  76              		.loc 1 82 5 is_stmt 1 view .LVU17
+  83:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** 
+  84:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     /*Convert to float */
+  85:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     temp_float1 = number * 4.6566128731e-010f;
+  77              		.loc 1 85 5 view .LVU18
+  78              		.loc 1 85 26 is_stmt 0 view .LVU19
+  79 0020 2846     		mov	r0, r5
+  80              	.LVL5:
+  81              		.loc 1 85 26 view .LVU20
+  82 0022 FFF7FEFF 		bl	__aeabi_i2f
+  83              	.LVL6:
+  84              		.loc 1 85 17 view .LVU21
+  85 0026 4FF04051 		mov	r1, #805306368
+  86 002a FFF7FEFF 		bl	__aeabi_fmul
+  87              	.LVL7:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccr9mAiI.s 			page 4
+
+
+  86:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     /*Store as integer */
+  87:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     tempconv.floatval = temp_float1;
+  88              		.loc 1 87 5 is_stmt 1 view .LVU22
+  88:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     bits_val1 = tempconv.fracval;
+  89              		.loc 1 88 5 view .LVU23
+  89:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     /* Subtract the shifted value from the magic number to give intial guess */
+  90:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     bits_val1 = 0x5f3759df - (bits_val1 >> 1);  /* gives initial guess */
+  90              		.loc 1 90 5 view .LVU24
+  91:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     /* Store as float */
+  92:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     tempconv.fracval = bits_val1;
+  91              		.loc 1 92 5 view .LVU25
+  93:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     temp_float1 = tempconv.floatval;
+  92              		.loc 1 93 5 view .LVU26
+  94:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     /* Convert to integer format */
+  95:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     var1 = (q31_t) (temp_float1 * 1073741824);
+  93              		.loc 1 95 5 view .LVU27
+  94              		.loc 1 95 33 is_stmt 0 view .LVU28
+  95 002e 4FF09D41 		mov	r1, #1317011456
+  96 0032 504B     		ldr	r3, .L9
+  97 0034 A3EB6000 		sub	r0, r3, r0, asr #1
+  98              	.LVL8:
+  99              		.loc 1 95 33 view .LVU29
+ 100 0038 FFF7FEFF 		bl	__aeabi_fmul
+ 101              	.LVL9:
+ 102              		.loc 1 95 10 view .LVU30
+ 103 003c FFF7FEFF 		bl	__aeabi_f2iz
+ 104              	.LVL10:
+  96:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** 
+  97:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     /* 1st iteration */
+  98:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     var1 = ((q31_t) ((q63_t) var1 * (0x30000000 -
+ 105              		.loc 1 98 5 is_stmt 1 view .LVU31
+ 106              		.loc 1 98 22 is_stmt 0 view .LVU32
+ 107 0040 4FEAE07C 		asr	ip, r0, #31
+  99:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                      ((q31_t)
+ 100:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                       ((((q31_t)
+ 101:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                          (((q63_t) var1 * var1) >> 31)) *
+ 108              		.loc 1 101 57 view .LVU33
+ 109 0044 00FB0CF1 		mul	r1, r0, ip
+ 110 0048 A0FB0032 		umull	r3, r2, r0, r0
+ 111 004c 02EB4102 		add	r2, r2, r1, lsl #1
+ 112              		.loc 1 101 65 view .LVU34
+ 113 0050 DB0F     		lsrs	r3, r3, #31
+ 114 0052 43EA4203 		orr	r3, r3, r2, lsl #1
+ 100:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                          (((q63_t) var1 * var1) >> 31)) *
+ 115              		.loc 1 100 42 view .LVU35
+ 116 0056 4FEAE37E 		asr	lr, r3, #31
+ 102:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                         (q63_t) half) >> 31))) >> 31)) << 2;
+ 117              		.loc 1 102 41 view .LVU36
+ 118 005a EA17     		asrs	r2, r5, #31
+ 101:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                         (q63_t) half) >> 31))) >> 31)) << 2;
+ 119              		.loc 1 101 73 view .LVU37
+ 120 005c 03FB02F1 		mul	r1, r3, r2
+ 121 0060 04FB0E11 		mla	r1, r4, lr, r1
+ 122 0064 A3FB043E 		umull	r3, lr, r3, r4
+ 123 0068 7144     		add	r1, r1, lr
+ 124              		.loc 1 102 55 view .LVU38
+ 125 006a DB0F     		lsrs	r3, r3, #31
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccr9mAiI.s 			page 5
+
+
+ 126 006c 43EA4103 		orr	r3, r3, r1, lsl #1
+  98:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                      ((q31_t)
+ 127              		.loc 1 98 49 view .LVU39
+ 128 0070 C3F14053 		rsb	r3, r3, #805306368
+ 129 0074 D917     		asrs	r1, r3, #31
+  98:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                      ((q31_t)
+ 130              		.loc 1 98 35 view .LVU40
+ 131 0076 00FB01F1 		mul	r1, r0, r1
+ 132 007a 03FB0C11 		mla	r1, r3, ip, r1
+ 133 007e A0FB0303 		umull	r0, r3, r0, r3
+ 134              	.LVL11:
+  98:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                      ((q31_t)
+ 135              		.loc 1 98 35 view .LVU41
+ 136 0082 0B44     		add	r3, r3, r1
+ 137              		.loc 1 102 64 view .LVU42
+ 138 0084 C00F     		lsrs	r0, r0, #31
+ 139 0086 40EA4300 		orr	r0, r0, r3, lsl #1
+  98:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                      ((q31_t)
+ 140              		.loc 1 98 10 view .LVU43
+ 141 008a 8100     		lsls	r1, r0, #2
+ 142              	.LVL12:
+ 103:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     /* 2nd iteration */
+ 104:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     var1 = ((q31_t) ((q63_t) var1 * (0x30000000 -
+ 143              		.loc 1 104 5 is_stmt 1 view .LVU44
+ 144              		.loc 1 104 22 is_stmt 0 view .LVU45
+ 145 008c 40F34070 		sbfx	r0, r0, #29, #1
+ 105:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                      ((q31_t)
+ 106:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                       ((((q31_t)
+ 107:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                          (((q63_t) var1 * var1) >> 31)) *
+ 146              		.loc 1 107 57 view .LVU46
+ 147 0090 01FB00FE 		mul	lr, r1, r0
+ 148 0094 A1FB013C 		umull	r3, ip, r1, r1
+ 149 0098 0CEB4E0C 		add	ip, ip, lr, lsl #1
+ 150              		.loc 1 107 65 view .LVU47
+ 151 009c DB0F     		lsrs	r3, r3, #31
+ 152 009e 43EA4C03 		orr	r3, r3, ip, lsl #1
+ 106:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                          (((q63_t) var1 * var1) >> 31)) *
+ 153              		.loc 1 106 42 view .LVU48
+ 154 00a2 4FEAE37C 		asr	ip, r3, #31
+ 155              		.loc 1 107 73 view .LVU49
+ 156 00a6 04FB0CFC 		mul	ip, r4, ip
+ 157 00aa 03FB02CC 		mla	ip, r3, r2, ip
+ 158 00ae A4FB033E 		umull	r3, lr, r4, r3
+ 159 00b2 F444     		add	ip, ip, lr
+ 108:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                         (q63_t) half) >> 31))) >> 31)) << 2;
+ 160              		.loc 1 108 55 view .LVU50
+ 161 00b4 DB0F     		lsrs	r3, r3, #31
+ 162 00b6 43EA4C03 		orr	r3, r3, ip, lsl #1
+ 104:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                      ((q31_t)
+ 163              		.loc 1 104 49 view .LVU51
+ 164 00ba C3F14053 		rsb	r3, r3, #805306368
+ 165 00be 4FEAE37C 		asr	ip, r3, #31
+ 104:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                      ((q31_t)
+ 166              		.loc 1 104 35 view .LVU52
+ 167 00c2 01FB0CFC 		mul	ip, r1, ip
+ 168 00c6 03FB00C0 		mla	r0, r3, r0, ip
+ 169 00ca A1FB0313 		umull	r1, r3, r1, r3
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccr9mAiI.s 			page 6
+
+
+ 170              	.LVL13:
+ 104:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                      ((q31_t)
+ 171              		.loc 1 104 35 view .LVU53
+ 172 00ce 0344     		add	r3, r3, r0
+ 173              		.loc 1 108 64 view .LVU54
+ 174 00d0 C90F     		lsrs	r1, r1, #31
+ 175 00d2 41EA4301 		orr	r1, r1, r3, lsl #1
+ 104:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                      ((q31_t)
+ 176              		.loc 1 104 10 view .LVU55
+ 177 00d6 8B00     		lsls	r3, r1, #2
+ 178              	.LVL14:
+ 109:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     /* 3rd iteration */
+ 110:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     var1 = ((q31_t) ((q63_t) var1 * (0x30000000 -
+ 179              		.loc 1 110 5 is_stmt 1 view .LVU56
+ 180              		.loc 1 110 22 is_stmt 0 view .LVU57
+ 181 00d8 41F34071 		sbfx	r1, r1, #29, #1
+ 111:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                      ((q31_t)
+ 112:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                       ((((q31_t)
+ 113:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                          (((q63_t) var1 * var1) >> 31)) *
+ 182              		.loc 1 113 57 view .LVU58
+ 183 00dc 03FB01FE 		mul	lr, r3, r1
+ 184 00e0 A3FB030C 		umull	r0, ip, r3, r3
+ 185 00e4 0CEB4E0C 		add	ip, ip, lr, lsl #1
+ 186              		.loc 1 113 65 view .LVU59
+ 187 00e8 C00F     		lsrs	r0, r0, #31
+ 188 00ea 40EA4C00 		orr	r0, r0, ip, lsl #1
+ 112:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                          (((q63_t) var1 * var1) >> 31)) *
+ 189              		.loc 1 112 42 view .LVU60
+ 190 00ee 4FEAE07C 		asr	ip, r0, #31
+ 191              		.loc 1 113 73 view .LVU61
+ 192 00f2 04FB0CFC 		mul	ip, r4, ip
+ 193 00f6 00FB02CC 		mla	ip, r0, r2, ip
+ 194 00fa A4FB0040 		umull	r4, r0, r4, r0
+ 195              	.LVL15:
+ 196              		.loc 1 113 73 view .LVU62
+ 197 00fe 6044     		add	r0, r0, ip
+ 114:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                         (q63_t) half) >> 31))) >> 31)) << 2;
+ 198              		.loc 1 114 55 view .LVU63
+ 199 0100 E40F     		lsrs	r4, r4, #31
+ 200 0102 44EA4004 		orr	r4, r4, r0, lsl #1
+ 110:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                      ((q31_t)
+ 201              		.loc 1 110 49 view .LVU64
+ 202 0106 C4F14054 		rsb	r4, r4, #805306368
+ 203 010a E017     		asrs	r0, r4, #31
+ 110:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                      ((q31_t)
+ 204              		.loc 1 110 35 view .LVU65
+ 205 010c 03FB00F0 		mul	r0, r3, r0
+ 206 0110 04FB0101 		mla	r1, r4, r1, r0
+ 207 0114 A3FB0434 		umull	r3, r4, r3, r4
+ 208              	.LVL16:
+ 110:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                      ((q31_t)
+ 209              		.loc 1 110 35 view .LVU66
+ 210 0118 2144     		add	r1, r1, r4
+ 211              		.loc 1 114 64 view .LVU67
+ 212 011a DB0F     		lsrs	r3, r3, #31
+ 213 011c 43EA4103 		orr	r3, r3, r1, lsl #1
+ 110:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****                                      ((q31_t)
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccr9mAiI.s 			page 7
+
+
+ 214              		.loc 1 110 10 view .LVU68
+ 215 0120 9900     		lsls	r1, r3, #2
+ 216              	.LVL17:
+ 115:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** 
+ 116:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     /* Multiply the inverse square root with the original value */
+ 117:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     var1 = ((q31_t) (((q63_t) temp1 * var1) >> 31)) << 1;
+ 217              		.loc 1 117 5 is_stmt 1 view .LVU69
+ 218              		.loc 1 117 37 is_stmt 0 view .LVU70
+ 219 0122 43F34073 		sbfx	r3, r3, #29, #1
+ 220 0126 01FB02F2 		mul	r2, r1, r2
+ 221 012a 05FB0322 		mla	r2, r5, r3, r2
+ 222 012e A1FB0535 		umull	r3, r5, r1, r5
+ 223              	.LVL18:
+ 224              		.loc 1 117 37 view .LVU71
+ 225 0132 2A44     		add	r2, r2, r5
+ 226              		.loc 1 117 45 view .LVU72
+ 227 0134 DB0F     		lsrs	r3, r3, #31
+ 228 0136 43EA4203 		orr	r3, r3, r2, lsl #1
+ 229              		.loc 1 117 10 view .LVU73
+ 230 013a 5B00     		lsls	r3, r3, #1
+ 231              	.LVL19:
+ 118:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** 
+ 119:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     /* Shift the output down accordingly */
+ 120:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     if ((signBits1 % 2) == 0)
+ 232              		.loc 1 120 5 is_stmt 1 view .LVU74
+ 233              		.loc 1 120 8 is_stmt 0 view .LVU75
+ 234 013c B9F1000F 		cmp	r9, #0
+ 235 0140 0CD1     		bne	.L5
+ 121:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     {
+ 122:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****       var1 = var1 >> (signBits1 / 2);
+ 236              		.loc 1 122 7 is_stmt 1 view .LVU76
+ 237              		.loc 1 122 33 is_stmt 0 view .LVU77
+ 238 0142 07EBD777 		add	r7, r7, r7, lsr #31
+ 239              	.LVL20:
+ 240              		.loc 1 122 33 view .LVU78
+ 241 0146 7F10     		asrs	r7, r7, #1
+ 242              		.loc 1 122 12 view .LVU79
+ 243 0148 3B41     		asrs	r3, r3, r7
+ 244              	.LVL21:
+ 245              	.L6:
+ 123:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     }
+ 124:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     else
+ 125:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     {
+ 126:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****       var1 = var1 >> ((signBits1 - 1) / 2);
+ 127:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     }
+ 128:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     *pOut = var1;
+ 246              		.loc 1 128 5 is_stmt 1 view .LVU80
+ 247              		.loc 1 128 11 is_stmt 0 view .LVU81
+ 248 014a C8F80030 		str	r3, [r8]
+ 129:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** 
+ 130:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     return (ARM_MATH_SUCCESS);
+ 249              		.loc 1 130 5 is_stmt 1 view .LVU82
+ 250              		.loc 1 130 12 is_stmt 0 view .LVU83
+ 251 014e 0020     		movs	r0, #0
+ 252              	.LVL22:
+ 253              	.L7:
+ 131:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   }
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccr9mAiI.s 			page 8
+
+
+ 132:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   /* If the number is a negative number then store zero as its square root value */
+ 133:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   else
+ 134:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   {
+ 135:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     *pOut = 0;
+ 136:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     return (ARM_MATH_ARGUMENT_ERROR);
+ 137:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   }
+ 138:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c **** }
+ 254              		.loc 1 138 1 view .LVU84
+ 255 0150 BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 256              	.LVL23:
+ 257              	.L3:
+  76:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     }
+ 258              		.loc 1 76 7 is_stmt 1 view .LVU85
+  76:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     }
+ 259              		.loc 1 76 37 is_stmt 0 view .LVU86
+ 260 0154 B31E     		subs	r3, r6, #2
+  76:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     }
+ 261              		.loc 1 76 14 view .LVU87
+ 262 0156 00FA03F5 		lsl	r5, r0, r3
+ 263              	.LVL24:
+  76:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     }
+ 264              		.loc 1 76 14 view .LVU88
+ 265 015a 60E7     		b	.L4
+ 266              	.LVL25:
+ 267              	.L5:
+ 126:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     }
+ 268              		.loc 1 126 7 is_stmt 1 view .LVU89
+ 126:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     }
+ 269              		.loc 1 126 34 is_stmt 0 view .LVU90
+ 270 015c 023E     		subs	r6, r6, #2
+ 126:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     }
+ 271              		.loc 1 126 39 view .LVU91
+ 272 015e 06EBD676 		add	r6, r6, r6, lsr #31
+ 273 0162 7610     		asrs	r6, r6, #1
+ 126:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     }
+ 274              		.loc 1 126 12 view .LVU92
+ 275 0164 3341     		asrs	r3, r3, r6
+ 276              	.LVL26:
+ 126:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     }
+ 277              		.loc 1 126 12 view .LVU93
+ 278 0166 F0E7     		b	.L6
+ 279              	.LVL27:
+ 280              	.L2:
+ 135:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     return (ARM_MATH_ARGUMENT_ERROR);
+ 281              		.loc 1 135 5 is_stmt 1 view .LVU94
+ 135:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****     return (ARM_MATH_ARGUMENT_ERROR);
+ 282              		.loc 1 135 11 is_stmt 0 view .LVU95
+ 283 0168 0023     		movs	r3, #0
+ 284 016a 0B60     		str	r3, [r1]
+ 136:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   }
+ 285              		.loc 1 136 5 is_stmt 1 view .LVU96
+ 136:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   }
+ 286              		.loc 1 136 12 is_stmt 0 view .LVU97
+ 287 016c 4FF0FF30 		mov	r0, #-1
+ 288              	.LVL28:
+ 136:Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c ****   }
+ 289              		.loc 1 136 12 view .LVU98
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccr9mAiI.s 			page 9
+
+
+ 290 0170 EEE7     		b	.L7
+ 291              	.L10:
+ 292 0172 00BF     		.align	2
+ 293              	.L9:
+ 294 0174 DF59375F 		.word	1597463007
+ 295              		.cfi_endproc
+ 296              	.LFE100:
+ 298              		.text
+ 299              	.Letext0:
+ 300              		.file 2 "C:/ARM GNU Toolchain/arm-none-eabi/include/machine/_default_types.h"
+ 301              		.file 3 "C:/ARM GNU Toolchain/arm-none-eabi/include/sys/_stdint.h"
+ 302              		.file 4 "Drivers/CMSIS/DSP/Include/arm_math.h"
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccr9mAiI.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 arm_sqrt_q31.c
+C:\Users\Lamp\AppData\Local\Temp\ccr9mAiI.s:22     .text.arm_sqrt_q31:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccr9mAiI.s:28     .text.arm_sqrt_q31:00000000 arm_sqrt_q31
+C:\Users\Lamp\AppData\Local\Temp\ccr9mAiI.s:294    .text.arm_sqrt_q31:00000174 $d
+
+UNDEFINED SYMBOLS
+__aeabi_i2f
+__aeabi_fmul
+__aeabi_f2iz

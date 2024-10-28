@@ -1,6 +1,6 @@
 build/usart.o: Core/Src/Drivers/Src/usart.c Core/Src/Drivers/Inc/usart.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
- Core/Inc/stm32f1xx_hal_conf.h \
+ Core/Src/stm32f1xx_hal_conf.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h \
  Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h \
@@ -24,7 +24,7 @@ build/usart.o: Core/Src/Drivers/Src/usart.c Core/Src/Drivers/Inc/usart.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 Core/Src/Drivers/Inc/usart.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
-Core/Inc/stm32f1xx_hal_conf.h:
+Core/Src/stm32f1xx_hal_conf.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h:
 Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h:

@@ -1,0 +1,2846 @@
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_cfft_radix4_f32.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c"
+  18              		.global	__aeabi_fadd
+  19              		.global	__aeabi_fsub
+  20              		.global	__aeabi_fmul
+  21              		.section	.text.arm_radix4_butterfly_f32,"ax",%progbits
+  22              		.align	1
+  23              		.global	arm_radix4_butterfly_f32
+  24              		.syntax unified
+  25              		.thumb
+  26              		.thumb_func
+  28              	arm_radix4_butterfly_f32:
+  29              	.LVL0:
+  30              	.LFB101:
+   1:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** /* ----------------------------------------------------------------------
+   2:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * Project:      CMSIS DSP Library
+   3:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * Title:        arm_cfft_radix4_f32.c
+   4:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * Description:  Radix-4 Decimation in Frequency CFFT & CIFFT Floating point processing function
+   5:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  *
+   6:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * $Date:        27. January 2017
+   7:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * $Revision:    V.1.5.1
+   8:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  *
+   9:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * Target Processor: Cortex-M cores
+  10:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * -------------------------------------------------------------------- */
+  11:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** /*
+  12:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * Copyright (C) 2010-2017 ARM Limited or its affiliates. All rights reserved.
+  13:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  *
+  14:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * SPDX-License-Identifier: Apache-2.0
+  15:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  *
+  16:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  17:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * not use this file except in compliance with the License.
+  18:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * You may obtain a copy of the License at
+  19:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  *
+  20:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * www.apache.org/licenses/LICENSE-2.0
+  21:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  *
+  22:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * Unless required by applicable law or agreed to in writing, software
+  23:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  24:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  25:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * See the License for the specific language governing permissions and
+  26:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * limitations under the License.
+  27:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  */
+  28:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 2
+
+
+  29:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** #include "arm_math.h"
+  30:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+  31:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** extern void arm_bitreversal_f32(
+  32:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** float32_t * pSrc,
+  33:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** uint16_t fftSize,
+  34:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** uint16_t bitRevFactor,
+  35:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** uint16_t * pBitRevTab);
+  36:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+  37:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** void arm_radix4_butterfly_f32(
+  38:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** float32_t * pSrc,
+  39:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** uint16_t fftLen,
+  40:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** float32_t * pCoef,
+  41:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** uint16_t twidCoefModifier);
+  42:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+  43:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** void arm_radix4_butterfly_inverse_f32(
+  44:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** float32_t * pSrc,
+  45:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** uint16_t fftLen,
+  46:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** float32_t * pCoef,
+  47:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** uint16_t twidCoefModifier,
+  48:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** float32_t onebyfftLen);
+  49:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+  50:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+  51:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** /**
+  52:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @ingroup groupTransforms
+  53:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** */
+  54:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+  55:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** /**
+  56:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @addtogroup ComplexFFT
+  57:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @{
+  58:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** */
+  59:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+  60:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** /**
+  61:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @details
+  62:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @brief Processing function for the floating-point Radix-4 CFFT/CIFFT.
+  63:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @deprecated Do not use this function.  It has been superseded by \ref arm_cfft_f32 and will be re
+  64:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * in the future.
+  65:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @param[in]      *S    points to an instance of the floating-point Radix-4 CFFT/CIFFT structure.
+  66:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @param[in, out] *pSrc points to the complex data buffer of size <code>2*fftLen</code>. Processing
+  67:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @return none.
+  68:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** */
+  69:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+  70:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** void arm_cfft_radix4_f32(
+  71:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****   const arm_cfft_radix4_instance_f32 * S,
+  72:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****   float32_t * pSrc)
+  73:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** {
+  74:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    if (S->ifftFlag == 1U)
+  75:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+  76:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  Complex IFFT radix-4  */
+  77:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       arm_radix4_butterfly_inverse_f32(pSrc, S->fftLen, S->pTwiddle, S->twidCoefModifier, S->onebyf
+  78:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+  79:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    else
+  80:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+  81:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  Complex FFT radix-4  */
+  82:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       arm_radix4_butterfly_f32(pSrc, S->fftLen, S->pTwiddle, S->twidCoefModifier);
+  83:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+  84:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+  85:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    if (S->bitReverseFlag == 1U)
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 3
+
+
+  86:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+  87:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  Bit Reversal */
+  88:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       arm_bitreversal_f32(pSrc, S->fftLen, S->bitRevFactor, S->pBitRevTable);
+  89:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+  90:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+  91:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** }
+  92:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+  93:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** /**
+  94:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @} end of ComplexFFT group
+  95:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** */
+  96:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+  97:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** /* ----------------------------------------------------------------------
+  98:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * Internal helper function used by the FFTs
+  99:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****  * ---------------------------------------------------------------------- */
+ 100:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 101:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** /*
+ 102:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @brief  Core function for the floating-point CFFT butterfly process.
+ 103:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @param[in, out] *pSrc            points to the in-place buffer of floating-point data type.
+ 104:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @param[in]      fftLen           length of the FFT.
+ 105:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @param[in]      *pCoef           points to the twiddle coefficient buffer.
+ 106:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @param[in]      twidCoefModifier twiddle coefficient modifier that supports different size FFTs w
+ 107:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @return none.
+ 108:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** */
+ 109:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 110:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** void arm_radix4_butterfly_f32(
+ 111:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** float32_t * pSrc,
+ 112:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** uint16_t fftLen,
+ 113:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** float32_t * pCoef,
+ 114:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** uint16_t twidCoefModifier)
+ 115:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** {
+  31              		.loc 1 115 1 view -0
+  32              		.cfi_startproc
+  33              		@ args = 0, pretend = 0, frame = 88
+  34              		@ frame_needed = 0, uses_anonymous_args = 0
+  35              		.loc 1 115 1 is_stmt 0 view .LVU1
+  36 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  37              	.LCFI0:
+  38              		.cfi_def_cfa_offset 36
+  39              		.cfi_offset 4, -36
+  40              		.cfi_offset 5, -32
+  41              		.cfi_offset 6, -28
+  42              		.cfi_offset 7, -24
+  43              		.cfi_offset 8, -20
+  44              		.cfi_offset 9, -16
+  45              		.cfi_offset 10, -12
+  46              		.cfi_offset 11, -8
+  47              		.cfi_offset 14, -4
+  48 0004 97B0     		sub	sp, sp, #92
+  49              	.LCFI1:
+  50              		.cfi_def_cfa_offset 128
+  51 0006 1091     		str	r1, [sp, #64]
+  52 0008 1646     		mov	r6, r2
+  53 000a 9846     		mov	r8, r3
+ 116:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 117:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t co1, co2, co3, si1, si2, si3;
+  54              		.loc 1 117 4 is_stmt 1 view .LVU2
+ 118:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    uint32_t ia1, ia2, ia3;
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 4
+
+
+  55              		.loc 1 118 4 view .LVU3
+ 119:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    uint32_t i0, i1, i2, i3;
+  56              		.loc 1 119 4 view .LVU4
+ 120:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    uint32_t n1, n2, j, k;
+  57              		.loc 1 120 4 view .LVU5
+ 121:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 122:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** #if defined (ARM_MATH_DSP)
+ 123:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 124:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /* Run the below code for Cortex-M4 and Cortex-M3 */
+ 125:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 126:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t xaIn, yaIn, xbIn, ybIn, xcIn, ycIn, xdIn, ydIn;
+ 127:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t Xaplusc, Xbplusd, Yaplusc, Ybplusd, Xaminusc, Xbminusd, Yaminusc,
+ 128:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    Ybminusd;
+ 129:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t Xb12C_out, Yb12C_out, Xc12C_out, Yc12C_out, Xd12C_out, Yd12C_out;
+ 130:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t Xb12_out, Yb12_out, Xc12_out, Yc12_out, Xd12_out, Yd12_out;
+ 131:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t *ptr1;
+ 132:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t p0,p1,p2,p3,p4,p5;
+ 133:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t a0,a1,a2,a3,a4,a5,a6,a7;
+ 134:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 135:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /*  Initializations for the first stage */
+ 136:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    n2 = fftLen;
+ 137:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    n1 = n2;
+ 138:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 139:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /* n2 = fftLen/4 */
+ 140:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    n2 >>= 2U;
+ 141:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    i0 = 0U;
+ 142:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    ia1 = 0U;
+ 143:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 144:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    j = n2;
+ 145:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 146:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /*  Calculation of first stage */
+ 147:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    do
+ 148:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 149:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  index calculation for the input as, */
+ 150:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  pSrc[i0 + 0], pSrc[i0 + fftLen/4], pSrc[i0 + fftLen/2], pSrc[i0 + 3fftLen/4] */
+ 151:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       i1 = i0 + n2;
+ 152:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       i2 = i1 + n2;
+ 153:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       i3 = i2 + n2;
+ 154:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 155:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       xaIn = pSrc[(2U * i0)];
+ 156:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       yaIn = pSrc[(2U * i0) + 1U];
+ 157:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 158:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       xbIn = pSrc[(2U * i1)];
+ 159:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ybIn = pSrc[(2U * i1) + 1U];
+ 160:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 161:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       xcIn = pSrc[(2U * i2)];
+ 162:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ycIn = pSrc[(2U * i2) + 1U];
+ 163:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 164:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       xdIn = pSrc[(2U * i3)];
+ 165:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ydIn = pSrc[(2U * i3) + 1U];
+ 166:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 167:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xa + xc */
+ 168:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xaplusc = xaIn + xcIn;
+ 169:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xb + xd */
+ 170:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xbplusd = xbIn + xdIn;
+ 171:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* ya + yc */
+ 172:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yaplusc = yaIn + ycIn;
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 5
+
+
+ 173:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yb + yd */
+ 174:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Ybplusd = ybIn + ydIn;
+ 175:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 176:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  index calculation for the coefficients */
+ 177:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ia2 = ia1 + ia1;
+ 178:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       co2 = pCoef[ia2 * 2U];
+ 179:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       si2 = pCoef[(ia2 * 2U) + 1U];
+ 180:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 181:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xa - xc */
+ 182:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xaminusc = xaIn - xcIn;
+ 183:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xb - xd */
+ 184:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xbminusd = xbIn - xdIn;
+ 185:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* ya - yc */
+ 186:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yaminusc = yaIn - ycIn;
+ 187:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yb - yd */
+ 188:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Ybminusd = ybIn - ydIn;
+ 189:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 190:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xa' = xa + xb + xc + xd */
+ 191:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[(2U * i0)] = Xaplusc + Xbplusd;
+ 192:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* ya' = ya + yb + yc + yd */
+ 193:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[(2U * i0) + 1U] = Yaplusc + Ybplusd;
+ 194:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 195:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (xa - xc) + (yb - yd) */
+ 196:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xb12C_out = (Xaminusc + Ybminusd);
+ 197:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (ya - yc) + (xb - xd) */
+ 198:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yb12C_out = (Yaminusc - Xbminusd);
+ 199:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (xa + xc) - (xb + xd) */
+ 200:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xc12C_out = (Xaplusc - Xbplusd);
+ 201:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (ya + yc) - (yb + yd) */
+ 202:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yc12C_out = (Yaplusc - Ybplusd);
+ 203:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (xa - xc) - (yb - yd) */
+ 204:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xd12C_out = (Xaminusc - Ybminusd);
+ 205:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (ya - yc) + (xb - xd) */
+ 206:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yd12C_out = (Xbminusd + Yaminusc);
+ 207:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 208:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       co1 = pCoef[ia1 * 2U];
+ 209:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       si1 = pCoef[(ia1 * 2U) + 1U];
+ 210:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 211:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  index calculation for the coefficients */
+ 212:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ia3 = ia2 + ia1;
+ 213:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       co3 = pCoef[ia3 * 2U];
+ 214:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       si3 = pCoef[(ia3 * 2U) + 1U];
+ 215:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 216:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xb12_out = Xb12C_out * co1;
+ 217:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yb12_out = Yb12C_out * co1;
+ 218:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xc12_out = Xc12C_out * co2;
+ 219:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yc12_out = Yc12C_out * co2;
+ 220:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xd12_out = Xd12C_out * co3;
+ 221:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yd12_out = Yd12C_out * co3;
+ 222:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 223:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xb' = (xa+yb-xc-yd)co1 - (ya-xb-yc+xd)(si1) */
+ 224:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       //Xb12_out -= Yb12C_out * si1;
+ 225:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p0 = Yb12C_out * si1;
+ 226:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yb' = (ya-xb-yc+xd)co1 + (xa+yb-xc-yd)(si1) */
+ 227:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       //Yb12_out += Xb12C_out * si1;
+ 228:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p1 = Xb12C_out * si1;
+ 229:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xc' = (xa-xb+xc-xd)co2 - (ya-yb+yc-yd)(si2) */
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 6
+
+
+ 230:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       //Xc12_out -= Yc12C_out * si2;
+ 231:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p2 = Yc12C_out * si2;
+ 232:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yc' = (ya-yb+yc-yd)co2 + (xa-xb+xc-xd)(si2) */
+ 233:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       //Yc12_out += Xc12C_out * si2;
+ 234:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p3 = Xc12C_out * si2;
+ 235:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xd' = (xa-yb-xc+yd)co3 - (ya+xb-yc-xd)(si3) */
+ 236:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       //Xd12_out -= Yd12C_out * si3;
+ 237:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p4 = Yd12C_out * si3;
+ 238:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yd' = (ya+xb-yc-xd)co3 + (xa-yb-xc+yd)(si3) */
+ 239:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       //Yd12_out += Xd12C_out * si3;
+ 240:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p5 = Xd12C_out * si3;
+ 241:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 242:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xb12_out += p0;
+ 243:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yb12_out -= p1;
+ 244:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xc12_out += p2;
+ 245:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yc12_out -= p3;
+ 246:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xd12_out += p4;
+ 247:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yd12_out -= p5;
+ 248:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 249:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xc' = (xa-xb+xc-xd)co2 + (ya-yb+yc-yd)(si2) */
+ 250:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[2U * i1] = Xc12_out;
+ 251:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 252:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yc' = (ya-yb+yc-yd)co2 - (xa-xb+xc-xd)(si2) */
+ 253:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[(2U * i1) + 1U] = Yc12_out;
+ 254:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 255:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xb' = (xa+yb-xc-yd)co1 + (ya-xb-yc+xd)(si1) */
+ 256:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[2U * i2] = Xb12_out;
+ 257:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 258:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yb' = (ya-xb-yc+xd)co1 - (xa+yb-xc-yd)(si1) */
+ 259:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[(2U * i2) + 1U] = Yb12_out;
+ 260:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 261:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xd' = (xa-yb-xc+yd)co3 + (ya+xb-yc-xd)(si3) */
+ 262:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[2U * i3] = Xd12_out;
+ 263:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 264:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yd' = (ya+xb-yc-xd)co3 - (xa-yb-xc+yd)(si3) */
+ 265:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[(2U * i3) + 1U] = Yd12_out;
+ 266:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 267:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  Twiddle coefficients index modifier */
+ 268:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ia1 += twidCoefModifier;
+ 269:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 270:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  Updating input index */
+ 271:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       i0++;
+ 272:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 273:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+ 274:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    while (--j);
+ 275:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 276:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    twidCoefModifier <<= 2U;
+ 277:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 278:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /*  Calculation of second stage to excluding last stage */
+ 279:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    for (k = fftLen >> 2U; k > 4U; k >>= 2U)
+ 280:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 281:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  Initializations for the first stage */
+ 282:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       n1 = n2;
+ 283:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       n2 >>= 2U;
+ 284:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ia1 = 0U;
+ 285:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 286:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  Calculation of first stage */
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 7
+
+
+ 287:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       j = 0;
+ 288:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       do
+ 289:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       {
+ 290:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          /*  index calculation for the coefficients */
+ 291:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          ia2 = ia1 + ia1;
+ 292:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          ia3 = ia2 + ia1;
+ 293:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          co1 = pCoef[ia1 * 2U];
+ 294:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          si1 = pCoef[(ia1 * 2U) + 1U];
+ 295:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          co2 = pCoef[ia2 * 2U];
+ 296:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          si2 = pCoef[(ia2 * 2U) + 1U];
+ 297:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          co3 = pCoef[ia3 * 2U];
+ 298:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          si3 = pCoef[(ia3 * 2U) + 1U];
+ 299:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 300:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          /*  Twiddle coefficients index modifier */
+ 301:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          ia1 += twidCoefModifier;
+ 302:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 303:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          i0 = j;
+ 304:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          do
+ 305:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          {
+ 306:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /*  index calculation for the input as, */
+ 307:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /*  pSrc[i0 + 0], pSrc[i0 + fftLen/4], pSrc[i0 + fftLen/2], pSrc[i0 + 3fftLen/4] */
+ 308:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             i1 = i0 + n2;
+ 309:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             i2 = i1 + n2;
+ 310:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             i3 = i2 + n2;
+ 311:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 312:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             xaIn = pSrc[(2U * i0)];
+ 313:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             yaIn = pSrc[(2U * i0) + 1U];
+ 314:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 315:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             xbIn = pSrc[(2U * i1)];
+ 316:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             ybIn = pSrc[(2U * i1) + 1U];
+ 317:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 318:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             xcIn = pSrc[(2U * i2)];
+ 319:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             ycIn = pSrc[(2U * i2) + 1U];
+ 320:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 321:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             xdIn = pSrc[(2U * i3)];
+ 322:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             ydIn = pSrc[(2U * i3) + 1U];
+ 323:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 324:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xa - xc */
+ 325:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xaminusc = xaIn - xcIn;
+ 326:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (xb - xd) */
+ 327:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xbminusd = xbIn - xdIn;
+ 328:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* ya - yc */
+ 329:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yaminusc = yaIn - ycIn;
+ 330:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (yb - yd) */
+ 331:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Ybminusd = ybIn - ydIn;
+ 332:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 333:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xa + xc */
+ 334:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xaplusc = xaIn + xcIn;
+ 335:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xb + xd */
+ 336:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xbplusd = xbIn + xdIn;
+ 337:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* ya + yc */
+ 338:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yaplusc = yaIn + ycIn;
+ 339:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yb + yd */
+ 340:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Ybplusd = ybIn + ydIn;
+ 341:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 342:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (xa - xc) + (yb - yd) */
+ 343:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xb12C_out = (Xaminusc + Ybminusd);
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 8
+
+
+ 344:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (ya - yc) -  (xb - xd) */
+ 345:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yb12C_out = (Yaminusc - Xbminusd);
+ 346:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xa + xc -(xb + xd) */
+ 347:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xc12C_out = (Xaplusc - Xbplusd);
+ 348:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (ya + yc) - (yb + yd) */
+ 349:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yc12C_out = (Yaplusc - Ybplusd);
+ 350:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (xa - xc) - (yb - yd) */
+ 351:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xd12C_out = (Xaminusc - Ybminusd);
+ 352:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (ya - yc) +  (xb - xd) */
+ 353:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yd12C_out = (Xbminusd + Yaminusc);
+ 354:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 355:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i0)] = Xaplusc + Xbplusd;
+ 356:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i0) + 1U] = Yaplusc + Ybplusd;
+ 357:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 358:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xb12_out = Xb12C_out * co1;
+ 359:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yb12_out = Yb12C_out * co1;
+ 360:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xc12_out = Xc12C_out * co2;
+ 361:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yc12_out = Yc12C_out * co2;
+ 362:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xd12_out = Xd12C_out * co3;
+ 363:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yd12_out = Yd12C_out * co3;
+ 364:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 365:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xb' = (xa+yb-xc-yd)co1 - (ya-xb-yc+xd)(si1) */
+ 366:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             //Xb12_out -= Yb12C_out * si1;
+ 367:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             p0 = Yb12C_out * si1;
+ 368:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yb' = (ya-xb-yc+xd)co1 + (xa+yb-xc-yd)(si1) */
+ 369:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             //Yb12_out += Xb12C_out * si1;
+ 370:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             p1 = Xb12C_out * si1;
+ 371:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xc' = (xa-xb+xc-xd)co2 - (ya-yb+yc-yd)(si2) */
+ 372:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             //Xc12_out -= Yc12C_out * si2;
+ 373:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             p2 = Yc12C_out * si2;
+ 374:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yc' = (ya-yb+yc-yd)co2 + (xa-xb+xc-xd)(si2) */
+ 375:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             //Yc12_out += Xc12C_out * si2;
+ 376:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             p3 = Xc12C_out * si2;
+ 377:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xd' = (xa-yb-xc+yd)co3 - (ya+xb-yc-xd)(si3) */
+ 378:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             //Xd12_out -= Yd12C_out * si3;
+ 379:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             p4 = Yd12C_out * si3;
+ 380:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yd' = (ya+xb-yc-xd)co3 + (xa-yb-xc+yd)(si3) */
+ 381:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             //Yd12_out += Xd12C_out * si3;
+ 382:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             p5 = Xd12C_out * si3;
+ 383:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 384:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xb12_out += p0;
+ 385:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yb12_out -= p1;
+ 386:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xc12_out += p2;
+ 387:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yc12_out -= p3;
+ 388:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xd12_out += p4;
+ 389:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yd12_out -= p5;
+ 390:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 391:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xc' = (xa-xb+xc-xd)co2 + (ya-yb+yc-yd)(si2) */
+ 392:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[2U * i1] = Xc12_out;
+ 393:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 394:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yc' = (ya-yb+yc-yd)co2 - (xa-xb+xc-xd)(si2) */
+ 395:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i1) + 1U] = Yc12_out;
+ 396:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 397:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xb' = (xa+yb-xc-yd)co1 + (ya-xb-yc+xd)(si1) */
+ 398:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[2U * i2] = Xb12_out;
+ 399:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 400:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yb' = (ya-xb-yc+xd)co1 - (xa+yb-xc-yd)(si1) */
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 9
+
+
+ 401:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i2) + 1U] = Yb12_out;
+ 402:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 403:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xd' = (xa-yb-xc+yd)co3 + (ya+xb-yc-xd)(si3) */
+ 404:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[2U * i3] = Xd12_out;
+ 405:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 406:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yd' = (ya+xb-yc-xd)co3 - (xa-yb-xc+yd)(si3) */
+ 407:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i3) + 1U] = Yd12_out;
+ 408:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 409:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             i0 += n1;
+ 410:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          } while (i0 < fftLen);
+ 411:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          j++;
+ 412:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       } while (j <= (n2 - 1U));
+ 413:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       twidCoefModifier <<= 2U;
+ 414:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+ 415:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 416:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    j = fftLen >> 2;
+ 417:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    ptr1 = &pSrc[0];
+ 418:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 419:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /*  Calculations of last stage */
+ 420:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    do
+ 421:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 422:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       xaIn = ptr1[0];
+ 423:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       yaIn = ptr1[1];
+ 424:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       xbIn = ptr1[2];
+ 425:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ybIn = ptr1[3];
+ 426:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       xcIn = ptr1[4];
+ 427:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ycIn = ptr1[5];
+ 428:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       xdIn = ptr1[6];
+ 429:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ydIn = ptr1[7];
+ 430:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 431:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xa + xc */
+ 432:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xaplusc = xaIn + xcIn;
+ 433:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 434:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xa - xc */
+ 435:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xaminusc = xaIn - xcIn;
+ 436:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 437:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* ya + yc */
+ 438:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yaplusc = yaIn + ycIn;
+ 439:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 440:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* ya - yc */
+ 441:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yaminusc = yaIn - ycIn;
+ 442:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 443:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xb + xd */
+ 444:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xbplusd = xbIn + xdIn;
+ 445:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 446:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yb + yd */
+ 447:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Ybplusd = ybIn + ydIn;
+ 448:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 449:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (xb-xd) */
+ 450:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xbminusd = xbIn - xdIn;
+ 451:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 452:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (yb-yd) */
+ 453:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Ybminusd = ybIn - ydIn;
+ 454:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 455:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xa' = xa + xb + xc + xd */
+ 456:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       a0 = (Xaplusc + Xbplusd);
+ 457:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* ya' = ya + yb + yc + yd */
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 10
+
+
+ 458:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       a1 = (Yaplusc + Ybplusd);
+ 459:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xc' = (xa-xb+xc-xd) */
+ 460:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       a2 = (Xaplusc - Xbplusd);
+ 461:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yc' = (ya-yb+yc-yd) */
+ 462:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       a3 = (Yaplusc - Ybplusd);
+ 463:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xb' = (xa+yb-xc-yd) */
+ 464:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       a4 = (Xaminusc + Ybminusd);
+ 465:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yb' = (ya-xb-yc+xd) */
+ 466:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       a5 = (Yaminusc - Xbminusd);
+ 467:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xd' = (xa-yb-xc+yd)) */
+ 468:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       a6 = (Xaminusc - Ybminusd);
+ 469:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yd' = (ya+xb-yc-xd) */
+ 470:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       a7 = (Xbminusd + Yaminusc);
+ 471:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 472:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1[0] = a0;
+ 473:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1[1] = a1;
+ 474:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1[2] = a2;
+ 475:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1[3] = a3;
+ 476:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1[4] = a4;
+ 477:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1[5] = a5;
+ 478:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1[6] = a6;
+ 479:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1[7] = a7;
+ 480:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 481:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* increment pointer by 8 */
+ 482:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1 += 8U;
+ 483:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    } while (--j);
+ 484:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 485:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** #else
+ 486:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 487:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t t1, t2, r1, r2, s1, s2;
+  58              		.loc 1 487 4 view .LVU6
+ 488:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 489:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /* Run the below code for Cortex-M0 */
+ 490:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 491:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /*  Initializations for the fft calculation */
+ 492:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    n2 = fftLen;
+  59              		.loc 1 492 4 view .LVU7
+  60              	.LVL1:
+ 493:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    n1 = n2;
+  61              		.loc 1 493 4 view .LVU8
+ 494:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    for (k = fftLen; k > 1U; k >>= 2U)
+  62              		.loc 1 494 4 view .LVU9
+ 492:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    n1 = n2;
+  63              		.loc 1 492 7 is_stmt 0 view .LVU10
+  64 000c 0B46     		mov	r3, r1
+  65              	.LVL2:
+ 492:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    n1 = n2;
+  66              		.loc 1 492 7 view .LVU11
+  67 000e C246     		mov	r10, r8
+  68 0010 8846     		mov	r8, r1
+  69              	.LVL3:
+ 492:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    n1 = n2;
+  70              		.loc 1 492 7 view .LVU12
+  71 0012 8146     		mov	r9, r0
+  72              		.loc 1 494 4 view .LVU13
+  73 0014 1CE1     		b	.L2
+  74              	.LVL4:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 11
+
+
+  75              	.L5:
+ 495:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 496:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  Initializations for the fft calculation */
+ 497:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       n1 = n2;
+  76              		.loc 1 497 7 is_stmt 1 view .LVU14
+ 498:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       n2 >>= 2U;
+  77              		.loc 1 498 7 view .LVU15
+  78              		.loc 1 498 10 is_stmt 0 view .LVU16
+  79 0016 9A08     		lsrs	r2, r3, #2
+  80 0018 0C92     		str	r2, [sp, #48]
+  81              	.LVL5:
+ 499:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ia1 = 0U;
+  82              		.loc 1 499 7 is_stmt 1 view .LVU17
+ 500:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 501:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  FFT Calculation */
+ 502:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       j = 0;
+  83              		.loc 1 502 7 view .LVU18
+  84              		.loc 1 502 9 is_stmt 0 view .LVU19
+  85 001a 0027     		movs	r7, #0
+ 499:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ia1 = 0U;
+  86              		.loc 1 499 11 view .LVU20
+  87 001c 3D46     		mov	r5, r7
+  88 001e 3C46     		mov	r4, r7
+  89 0020 0F93     		str	r3, [sp, #60]
+  90 0022 CDF85480 		str	r8, [sp, #84]
+  91 0026 CDF850A0 		str	r10, [sp, #80]
+  92              	.LVL6:
+  93              	.L4:
+ 503:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       do
+  94              		.loc 1 503 7 is_stmt 1 view .LVU21
+ 504:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       {
+ 505:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          /*  index calculation for the coefficients */
+ 506:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          ia2 = ia1 + ia1;
+  95              		.loc 1 506 10 view .LVU22
+ 507:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          ia3 = ia2 + ia1;
+  96              		.loc 1 507 10 view .LVU23
+  97              		.loc 1 507 14 is_stmt 0 view .LVU24
+  98 002a 04EB4402 		add	r2, r4, r4, lsl #1
+  99              	.LVL7:
+ 508:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          co1 = pCoef[ia1 * 2U];
+ 100              		.loc 1 508 10 is_stmt 1 view .LVU25
+ 101              		.loc 1 508 21 is_stmt 0 view .LVU26
+ 102 002e E300     		lsls	r3, r4, #3
+ 103              		.loc 1 508 14 view .LVU27
+ 104 0030 56F83410 		ldr	r1, [r6, r4, lsl #3]	@ float
+ 105 0034 0391     		str	r1, [sp, #12]	@ float
+ 106              	.LVL8:
+ 509:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          si1 = pCoef[(ia1 * 2U) + 1U];
+ 107              		.loc 1 509 10 is_stmt 1 view .LVU28
+ 108              		.loc 1 509 21 is_stmt 0 view .LVU29
+ 109 0036 0433     		adds	r3, r3, #4
+ 110              		.loc 1 509 14 view .LVU30
+ 111 0038 F358     		ldr	r3, [r6, r3]	@ float
+ 112 003a 0493     		str	r3, [sp, #16]	@ float
+ 113              	.LVL9:
+ 510:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          co2 = pCoef[ia2 * 2U];
+ 114              		.loc 1 510 10 is_stmt 1 view .LVU31
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 12
+
+
+ 115              		.loc 1 510 21 is_stmt 0 view .LVU32
+ 116 003c 2301     		lsls	r3, r4, #4
+ 117              	.LVL10:
+ 118              		.loc 1 510 14 view .LVU33
+ 119 003e F158     		ldr	r1, [r6, r3]	@ float
+ 120              	.LVL11:
+ 121              		.loc 1 510 14 view .LVU34
+ 122 0040 0591     		str	r1, [sp, #20]	@ float
+ 123              	.LVL12:
+ 511:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          si2 = pCoef[(ia2 * 2U) + 1U];
+ 124              		.loc 1 511 10 is_stmt 1 view .LVU35
+ 125              		.loc 1 511 21 is_stmt 0 view .LVU36
+ 126 0042 0433     		adds	r3, r3, #4
+ 127              		.loc 1 511 14 view .LVU37
+ 128 0044 F358     		ldr	r3, [r6, r3]	@ float
+ 129 0046 0693     		str	r3, [sp, #24]	@ float
+ 130              	.LVL13:
+ 512:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          co3 = pCoef[ia3 * 2U];
+ 131              		.loc 1 512 10 is_stmt 1 view .LVU38
+ 132              		.loc 1 512 21 is_stmt 0 view .LVU39
+ 133 0048 D300     		lsls	r3, r2, #3
+ 134              	.LVL14:
+ 135              		.loc 1 512 14 view .LVU40
+ 136 004a 56F83220 		ldr	r2, [r6, r2, lsl #3]	@ float
+ 137              	.LVL15:
+ 138              		.loc 1 512 14 view .LVU41
+ 139 004e 0D92     		str	r2, [sp, #52]	@ float
+ 140              	.LVL16:
+ 513:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          si3 = pCoef[(ia3 * 2U) + 1U];
+ 141              		.loc 1 513 10 is_stmt 1 view .LVU42
+ 142              		.loc 1 513 21 is_stmt 0 view .LVU43
+ 143 0050 0433     		adds	r3, r3, #4
+ 144              		.loc 1 513 14 view .LVU44
+ 145 0052 F358     		ldr	r3, [r6, r3]	@ float
+ 146 0054 0E93     		str	r3, [sp, #56]	@ float
+ 147              	.LVL17:
+ 514:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 515:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          /*  Twiddle coefficients index modifier */
+ 516:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          ia1 = ia1 + twidCoefModifier;
+ 148              		.loc 1 516 10 is_stmt 1 view .LVU45
+ 149              		.loc 1 516 14 is_stmt 0 view .LVU46
+ 150 0056 149B     		ldr	r3, [sp, #80]
+ 151              	.LVL18:
+ 152              		.loc 1 516 14 view .LVU47
+ 153 0058 1C44     		add	r4, r4, r3
+ 154              	.LVL19:
+ 517:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 518:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          i0 = j;
+ 155              		.loc 1 518 10 is_stmt 1 view .LVU48
+ 156              		.loc 1 518 13 is_stmt 0 view .LVU49
+ 157 005a 1194     		str	r4, [sp, #68]
+ 158 005c AB46     		mov	fp, r5
+ 159 005e 1295     		str	r5, [sp, #72]
+ 160 0060 1396     		str	r6, [sp, #76]
+ 161              	.LVL20:
+ 162              	.L3:
+ 519:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          do
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 13
+
+
+ 163              		.loc 1 519 10 is_stmt 1 view .LVU50
+ 520:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          {
+ 521:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /*  index calculation for the input as, */
+ 522:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /*  pSrc[i0 + 0], pSrc[i0 + fftLen/4], pSrc[i0 + fftLen/2], pSrc[i0 + 3fftLen/4] */
+ 523:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             i1 = i0 + n2;
+ 164              		.loc 1 523 13 view .LVU51
+ 165              		.loc 1 523 16 is_stmt 0 view .LVU52
+ 166 0062 0C9A     		ldr	r2, [sp, #48]
+ 167 0064 0BEB020A 		add	r10, fp, r2
+ 168              	.LVL21:
+ 524:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             i2 = i1 + n2;
+ 169              		.loc 1 524 13 is_stmt 1 view .LVU53
+ 170              		.loc 1 524 16 is_stmt 0 view .LVU54
+ 171 0068 0BEB4203 		add	r3, fp, r2, lsl #1
+ 172              	.LVL22:
+ 525:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             i3 = i2 + n2;
+ 173              		.loc 1 525 13 is_stmt 1 view .LVU55
+ 174              		.loc 1 525 16 is_stmt 0 view .LVU56
+ 175 006c 1A44     		add	r2, r2, r3
+ 176 006e 0192     		str	r2, [sp, #4]
+ 177              	.LVL23:
+ 526:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 527:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xa + xc */
+ 528:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             r1 = pSrc[(2U * i0)] + pSrc[(2U * i2)];
+ 178              		.loc 1 528 13 is_stmt 1 view .LVU57
+ 179              		.loc 1 528 22 is_stmt 0 view .LVU58
+ 180 0070 4FEACB06 		lsl	r6, fp, #3
+ 181 0074 59F83B40 		ldr	r4, [r9, fp, lsl #3]	@ float
+ 182              		.loc 1 528 40 view .LVU59
+ 183 0078 DD00     		lsls	r5, r3, #3
+ 184 007a 0793     		str	r3, [sp, #28]
+ 185 007c 59F83380 		ldr	r8, [r9, r3, lsl #3]	@ float
+ 186              		.loc 1 528 16 view .LVU60
+ 187 0080 4146     		mov	r1, r8
+ 188 0082 2046     		mov	r0, r4
+ 189 0084 FFF7FEFF 		bl	__aeabi_fadd
+ 190              	.LVL24:
+ 191              		.loc 1 528 16 view .LVU61
+ 192 0088 0746     		mov	r7, r0
+ 193              	.LVL25:
+ 529:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 530:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xa - xc */
+ 531:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             r2 = pSrc[(2U * i0)] - pSrc[(2U * i2)];
+ 194              		.loc 1 531 13 is_stmt 1 view .LVU62
+ 195              		.loc 1 531 16 is_stmt 0 view .LVU63
+ 196 008a 4146     		mov	r1, r8
+ 197 008c 2046     		mov	r0, r4
+ 198              	.LVL26:
+ 199              		.loc 1 531 16 view .LVU64
+ 200 008e FFF7FEFF 		bl	__aeabi_fsub
+ 201              	.LVL27:
+ 202 0092 0890     		str	r0, [sp, #32]	@ float
+ 203              	.LVL28:
+ 532:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 533:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* ya + yc */
+ 534:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             s1 = pSrc[(2U * i0) + 1U] + pSrc[(2U * i2) + 1U];
+ 204              		.loc 1 534 13 is_stmt 1 view .LVU65
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 14
+
+
+ 205              		.loc 1 534 22 is_stmt 0 view .LVU66
+ 206 0094 0436     		adds	r6, r6, #4
+ 207 0096 59F80640 		ldr	r4, [r9, r6]	@ float
+ 208              		.loc 1 534 45 view .LVU67
+ 209 009a 291D     		adds	r1, r5, #4
+ 210 009c 0991     		str	r1, [sp, #36]
+ 211 009e 59F80180 		ldr	r8, [r9, r1]	@ float
+ 212              		.loc 1 534 16 view .LVU68
+ 213 00a2 4146     		mov	r1, r8
+ 214 00a4 2046     		mov	r0, r4
+ 215              	.LVL29:
+ 216              		.loc 1 534 16 view .LVU69
+ 217 00a6 FFF7FEFF 		bl	__aeabi_fadd
+ 218              	.LVL30:
+ 219 00aa 0546     		mov	r5, r0
+ 220              	.LVL31:
+ 535:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 536:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* ya - yc */
+ 537:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             s2 = pSrc[(2U * i0) + 1U] - pSrc[(2U * i2) + 1U];
+ 221              		.loc 1 537 13 is_stmt 1 view .LVU70
+ 222              		.loc 1 537 16 is_stmt 0 view .LVU71
+ 223 00ac 4146     		mov	r1, r8
+ 224 00ae 2046     		mov	r0, r4
+ 225              	.LVL32:
+ 226              		.loc 1 537 16 view .LVU72
+ 227 00b0 FFF7FEFF 		bl	__aeabi_fsub
+ 228              	.LVL33:
+ 229 00b4 0A90     		str	r0, [sp, #40]	@ float
+ 230              	.LVL34:
+ 538:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 539:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xb + xd */
+ 540:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             t1 = pSrc[2U * i1] + pSrc[2U * i3];
+ 231              		.loc 1 540 13 is_stmt 1 view .LVU73
+ 232              		.loc 1 540 22 is_stmt 0 view .LVU74
+ 233 00b6 4FEACA04 		lsl	r4, r10, #3
+ 234              		.loc 1 540 38 view .LVU75
+ 235 00ba 019A     		ldr	r2, [sp, #4]
+ 236 00bc 4FEAC208 		lsl	r8, r2, #3
+ 237              		.loc 1 540 16 view .LVU76
+ 238 00c0 59F83210 		ldr	r1, [r9, r2, lsl #3]	@ float
+ 239 00c4 59F83A00 		ldr	r0, [r9, r10, lsl #3]	@ float
+ 240              	.LVL35:
+ 241              		.loc 1 540 16 view .LVU77
+ 242 00c8 FFF7FEFF 		bl	__aeabi_fadd
+ 243              	.LVL36:
+ 541:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 542:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xa' = xa + xb + xc + xd */
+ 543:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[2U * i0] = r1 + t1;
+ 244              		.loc 1 543 13 is_stmt 1 view .LVU78
+ 245              		.loc 1 543 32 is_stmt 0 view .LVU79
+ 246 00cc 0290     		str	r0, [sp, #8]	@ float
+ 247 00ce 0146     		mov	r1, r0
+ 248 00d0 3846     		mov	r0, r7
+ 249              	.LVL37:
+ 250              		.loc 1 543 32 view .LVU80
+ 251 00d2 FFF7FEFF 		bl	__aeabi_fadd
+ 252              	.LVL38:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 15
+
+
+ 253              		.loc 1 543 27 view .LVU81
+ 254 00d6 49F83B00 		str	r0, [r9, fp, lsl #3]	@ float
+ 544:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 545:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xa + xc -(xb + xd) */
+ 546:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             r1 = r1 - t1;
+ 255              		.loc 1 546 13 is_stmt 1 view .LVU82
+ 256              		.loc 1 546 16 is_stmt 0 view .LVU83
+ 257 00da 0299     		ldr	r1, [sp, #8]	@ float
+ 258 00dc 3846     		mov	r0, r7
+ 259 00de FFF7FEFF 		bl	__aeabi_fsub
+ 260              	.LVL39:
+ 261 00e2 0290     		str	r0, [sp, #8]	@ float
+ 262              	.LVL40:
+ 547:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 548:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yb + yd */
+ 549:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             t2 = pSrc[(2U * i1) + 1U] + pSrc[(2U * i3) + 1U];
+ 263              		.loc 1 549 13 is_stmt 1 view .LVU84
+ 264              		.loc 1 549 22 is_stmt 0 view .LVU85
+ 265 00e4 0434     		adds	r4, r4, #4
+ 266              		.loc 1 549 45 view .LVU86
+ 267 00e6 08F10407 		add	r7, r8, #4
+ 268              		.loc 1 549 16 view .LVU87
+ 269 00ea 59F80710 		ldr	r1, [r9, r7]	@ float
+ 270 00ee 59F80400 		ldr	r0, [r9, r4]	@ float
+ 271              	.LVL41:
+ 272              		.loc 1 549 16 view .LVU88
+ 273 00f2 FFF7FEFF 		bl	__aeabi_fadd
+ 274              	.LVL42:
+ 275 00f6 8046     		mov	r8, r0
+ 276              	.LVL43:
+ 550:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 551:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* ya' = ya + yb + yc + yd */
+ 552:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i0) + 1U] = s1 + t2;
+ 277              		.loc 1 552 13 is_stmt 1 view .LVU89
+ 278              		.loc 1 552 39 is_stmt 0 view .LVU90
+ 279 00f8 0146     		mov	r1, r0
+ 280 00fa 2846     		mov	r0, r5
+ 281              	.LVL44:
+ 282              		.loc 1 552 39 view .LVU91
+ 283 00fc FFF7FEFF 		bl	__aeabi_fadd
+ 284              	.LVL45:
+ 285              		.loc 1 552 34 view .LVU92
+ 286 0100 49F80600 		str	r0, [r9, r6]	@ float
+ 553:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 554:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (ya + yc) - (yb + yd) */
+ 555:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             s1 = s1 - t2;
+ 287              		.loc 1 555 13 is_stmt 1 view .LVU93
+ 288              		.loc 1 555 16 is_stmt 0 view .LVU94
+ 289 0104 4146     		mov	r1, r8
+ 290 0106 2846     		mov	r0, r5
+ 291 0108 FFF7FEFF 		bl	__aeabi_fsub
+ 292              	.LVL46:
+ 293 010c 8046     		mov	r8, r0
+ 294              	.LVL47:
+ 556:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 557:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (yb - yd) */
+ 558:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             t1 = pSrc[(2U * i1) + 1U] - pSrc[(2U * i3) + 1U];
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 16
+
+
+ 295              		.loc 1 558 13 is_stmt 1 view .LVU95
+ 296              		.loc 1 558 16 is_stmt 0 view .LVU96
+ 297 010e 59F80710 		ldr	r1, [r9, r7]	@ float
+ 298 0112 59F80400 		ldr	r0, [r9, r4]	@ float
+ 299              	.LVL48:
+ 300              		.loc 1 558 16 view .LVU97
+ 301 0116 FFF7FEFF 		bl	__aeabi_fsub
+ 302              	.LVL49:
+ 303 011a 0646     		mov	r6, r0
+ 304              	.LVL50:
+ 559:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 560:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (xb - xd) */
+ 561:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             t2 = pSrc[2U * i1] - pSrc[2U * i3];
+ 305              		.loc 1 561 13 is_stmt 1 view .LVU98
+ 306              		.loc 1 561 16 is_stmt 0 view .LVU99
+ 307 011c 019A     		ldr	r2, [sp, #4]
+ 308 011e 59F83210 		ldr	r1, [r9, r2, lsl #3]	@ float
+ 309 0122 59F83A00 		ldr	r0, [r9, r10, lsl #3]	@ float
+ 310              	.LVL51:
+ 311              		.loc 1 561 16 view .LVU100
+ 312 0126 FFF7FEFF 		bl	__aeabi_fsub
+ 313              	.LVL52:
+ 314 012a 0546     		mov	r5, r0
+ 315              	.LVL53:
+ 562:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 563:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xc' = (xa-xb+xc-xd)co2 + (ya-yb+yc-yd)(si2) */
+ 564:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[2U * i1] = (r1 * co2) + (s1 * si2);
+ 316              		.loc 1 564 13 is_stmt 1 view .LVU101
+ 317              		.loc 1 564 33 is_stmt 0 view .LVU102
+ 318 012c 0299     		ldr	r1, [sp, #8]	@ float
+ 319 012e 0598     		ldr	r0, [sp, #20]	@ float
+ 320              	.LVL54:
+ 321              		.loc 1 564 33 view .LVU103
+ 322 0130 FFF7FEFF 		bl	__aeabi_fmul
+ 323              	.LVL55:
+ 324 0134 0B90     		str	r0, [sp, #44]	@ float
+ 325              		.loc 1 564 46 view .LVU104
+ 326 0136 4146     		mov	r1, r8
+ 327 0138 0698     		ldr	r0, [sp, #24]	@ float
+ 328 013a FFF7FEFF 		bl	__aeabi_fmul
+ 329              	.LVL56:
+ 330 013e 0146     		mov	r1, r0
+ 331              		.loc 1 564 40 view .LVU105
+ 332 0140 0B98     		ldr	r0, [sp, #44]	@ float
+ 333 0142 FFF7FEFF 		bl	__aeabi_fadd
+ 334              	.LVL57:
+ 335              		.loc 1 564 27 view .LVU106
+ 336 0146 49F83A00 		str	r0, [r9, r10, lsl #3]	@ float
+ 565:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 566:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yc' = (ya-yb+yc-yd)co2 - (xa-xb+xc-xd)(si2) */
+ 567:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i1) + 1U] = (s1 * co2) - (r1 * si2);
+ 337              		.loc 1 567 13 is_stmt 1 view .LVU107
+ 338              		.loc 1 567 40 is_stmt 0 view .LVU108
+ 339 014a 4146     		mov	r1, r8
+ 340 014c 0598     		ldr	r0, [sp, #20]	@ float
+ 341 014e FFF7FEFF 		bl	__aeabi_fmul
+ 342              	.LVL58:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 17
+
+
+ 343 0152 8046     		mov	r8, r0
+ 344              	.LVL59:
+ 345              		.loc 1 567 53 view .LVU109
+ 346 0154 0299     		ldr	r1, [sp, #8]	@ float
+ 347 0156 0698     		ldr	r0, [sp, #24]	@ float
+ 348 0158 FFF7FEFF 		bl	__aeabi_fmul
+ 349              	.LVL60:
+ 350 015c 0146     		mov	r1, r0
+ 351              		.loc 1 567 47 view .LVU110
+ 352 015e 4046     		mov	r0, r8
+ 353 0160 FFF7FEFF 		bl	__aeabi_fsub
+ 354              	.LVL61:
+ 355              		.loc 1 567 34 view .LVU111
+ 356 0164 49F80400 		str	r0, [r9, r4]	@ float
+ 568:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 569:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (xa - xc) + (yb - yd) */
+ 570:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             r1 = r2 + t1;
+ 357              		.loc 1 570 13 is_stmt 1 view .LVU112
+ 358              		.loc 1 570 16 is_stmt 0 view .LVU113
+ 359 0168 3146     		mov	r1, r6
+ 360 016a 089C     		ldr	r4, [sp, #32]	@ float
+ 361 016c 2046     		mov	r0, r4
+ 362 016e FFF7FEFF 		bl	__aeabi_fadd
+ 363              	.LVL62:
+ 364 0172 8246     		mov	r10, r0
+ 365              	.LVL63:
+ 571:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 572:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (xa - xc) - (yb - yd) */
+ 573:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             r2 = r2 - t1;
+ 366              		.loc 1 573 13 is_stmt 1 view .LVU114
+ 367              		.loc 1 573 16 is_stmt 0 view .LVU115
+ 368 0174 3146     		mov	r1, r6
+ 369 0176 2046     		mov	r0, r4
+ 370              	.LVL64:
+ 371              		.loc 1 573 16 view .LVU116
+ 372 0178 FFF7FEFF 		bl	__aeabi_fsub
+ 373              	.LVL65:
+ 374 017c 0446     		mov	r4, r0
+ 375              	.LVL66:
+ 574:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 575:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (ya - yc) -  (xb - xd) */
+ 576:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             s1 = s2 - t2;
+ 376              		.loc 1 576 13 is_stmt 1 view .LVU117
+ 377              		.loc 1 576 16 is_stmt 0 view .LVU118
+ 378 017e 2946     		mov	r1, r5
+ 379 0180 DDF82880 		ldr	r8, [sp, #40]	@ float
+ 380 0184 4046     		mov	r0, r8
+ 381              	.LVL67:
+ 382              		.loc 1 576 16 view .LVU119
+ 383 0186 FFF7FEFF 		bl	__aeabi_fsub
+ 384              	.LVL68:
+ 385 018a 0646     		mov	r6, r0
+ 386              	.LVL69:
+ 577:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 578:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (ya - yc) +  (xb - xd) */
+ 579:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             s2 = s2 + t2;
+ 387              		.loc 1 579 13 is_stmt 1 view .LVU120
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 18
+
+
+ 388              		.loc 1 579 16 is_stmt 0 view .LVU121
+ 389 018c 2946     		mov	r1, r5
+ 390 018e 4046     		mov	r0, r8
+ 391              	.LVL70:
+ 392              		.loc 1 579 16 view .LVU122
+ 393 0190 FFF7FEFF 		bl	__aeabi_fadd
+ 394              	.LVL71:
+ 395 0194 0546     		mov	r5, r0
+ 396              	.LVL72:
+ 580:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 581:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xb' = (xa+yb-xc-yd)co1 + (ya-xb-yc+xd)(si1) */
+ 582:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[2U * i2] = (r1 * co1) + (s1 * si1);
+ 397              		.loc 1 582 13 is_stmt 1 view .LVU123
+ 398              		.loc 1 582 33 is_stmt 0 view .LVU124
+ 399 0196 5146     		mov	r1, r10
+ 400 0198 0398     		ldr	r0, [sp, #12]	@ float
+ 401              	.LVL73:
+ 402              		.loc 1 582 33 view .LVU125
+ 403 019a FFF7FEFF 		bl	__aeabi_fmul
+ 404              	.LVL74:
+ 405 019e 8046     		mov	r8, r0
+ 406              		.loc 1 582 46 view .LVU126
+ 407 01a0 3146     		mov	r1, r6
+ 408 01a2 0498     		ldr	r0, [sp, #16]	@ float
+ 409 01a4 FFF7FEFF 		bl	__aeabi_fmul
+ 410              	.LVL75:
+ 411 01a8 0146     		mov	r1, r0
+ 412              		.loc 1 582 40 view .LVU127
+ 413 01aa 4046     		mov	r0, r8
+ 414 01ac FFF7FEFF 		bl	__aeabi_fadd
+ 415              	.LVL76:
+ 416              		.loc 1 582 27 view .LVU128
+ 417 01b0 079B     		ldr	r3, [sp, #28]
+ 418 01b2 49F83300 		str	r0, [r9, r3, lsl #3]	@ float
+ 583:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 584:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yb' = (ya-xb-yc+xd)co1 - (xa+yb-xc-yd)(si1) */
+ 585:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i2) + 1U] = (s1 * co1) - (r1 * si1);
+ 419              		.loc 1 585 13 is_stmt 1 view .LVU129
+ 420              		.loc 1 585 40 is_stmt 0 view .LVU130
+ 421 01b6 3146     		mov	r1, r6
+ 422 01b8 0398     		ldr	r0, [sp, #12]	@ float
+ 423 01ba FFF7FEFF 		bl	__aeabi_fmul
+ 424              	.LVL77:
+ 425 01be 0646     		mov	r6, r0
+ 426              	.LVL78:
+ 427              		.loc 1 585 53 view .LVU131
+ 428 01c0 5146     		mov	r1, r10
+ 429 01c2 0498     		ldr	r0, [sp, #16]	@ float
+ 430 01c4 FFF7FEFF 		bl	__aeabi_fmul
+ 431              	.LVL79:
+ 432 01c8 0146     		mov	r1, r0
+ 433              		.loc 1 585 47 view .LVU132
+ 434 01ca 3046     		mov	r0, r6
+ 435 01cc FFF7FEFF 		bl	__aeabi_fsub
+ 436              	.LVL80:
+ 437              		.loc 1 585 34 view .LVU133
+ 438 01d0 0999     		ldr	r1, [sp, #36]
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 19
+
+
+ 439 01d2 49F80100 		str	r0, [r9, r1]	@ float
+ 586:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 587:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xd' = (xa-yb-xc+yd)co3 + (ya+xb-yc-xd)(si3) */
+ 588:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[2U * i3] = (r2 * co3) + (s2 * si3);
+ 440              		.loc 1 588 13 is_stmt 1 view .LVU134
+ 441              		.loc 1 588 33 is_stmt 0 view .LVU135
+ 442 01d6 2146     		mov	r1, r4
+ 443 01d8 DDF834A0 		ldr	r10, [sp, #52]	@ float
+ 444              	.LVL81:
+ 445              		.loc 1 588 33 view .LVU136
+ 446 01dc 5046     		mov	r0, r10
+ 447 01de FFF7FEFF 		bl	__aeabi_fmul
+ 448              	.LVL82:
+ 449 01e2 0646     		mov	r6, r0
+ 450              		.loc 1 588 46 view .LVU137
+ 451 01e4 2946     		mov	r1, r5
+ 452 01e6 DDF83880 		ldr	r8, [sp, #56]	@ float
+ 453 01ea 4046     		mov	r0, r8
+ 454 01ec FFF7FEFF 		bl	__aeabi_fmul
+ 455              	.LVL83:
+ 456 01f0 0146     		mov	r1, r0
+ 457              		.loc 1 588 40 view .LVU138
+ 458 01f2 3046     		mov	r0, r6
+ 459 01f4 FFF7FEFF 		bl	__aeabi_fadd
+ 460              	.LVL84:
+ 461              		.loc 1 588 27 view .LVU139
+ 462 01f8 019A     		ldr	r2, [sp, #4]
+ 463 01fa 49F83200 		str	r0, [r9, r2, lsl #3]	@ float
+ 589:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 590:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yd' = (ya+xb-yc-xd)co3 - (xa-yb-xc+yd)(si3) */
+ 591:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i3) + 1U] = (s2 * co3) - (r2 * si3);
+ 464              		.loc 1 591 13 is_stmt 1 view .LVU140
+ 465              		.loc 1 591 40 is_stmt 0 view .LVU141
+ 466 01fe 2946     		mov	r1, r5
+ 467 0200 5046     		mov	r0, r10
+ 468 0202 FFF7FEFF 		bl	__aeabi_fmul
+ 469              	.LVL85:
+ 470 0206 0546     		mov	r5, r0
+ 471              	.LVL86:
+ 472              		.loc 1 591 53 view .LVU142
+ 473 0208 2146     		mov	r1, r4
+ 474 020a 4046     		mov	r0, r8
+ 475 020c FFF7FEFF 		bl	__aeabi_fmul
+ 476              	.LVL87:
+ 477 0210 0146     		mov	r1, r0
+ 478              		.loc 1 591 47 view .LVU143
+ 479 0212 2846     		mov	r0, r5
+ 480 0214 FFF7FEFF 		bl	__aeabi_fsub
+ 481              	.LVL88:
+ 482              		.loc 1 591 34 view .LVU144
+ 483 0218 49F80700 		str	r0, [r9, r7]	@ float
+ 592:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 593:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             i0 += n1;
+ 484              		.loc 1 593 13 is_stmt 1 view .LVU145
+ 485              		.loc 1 593 16 is_stmt 0 view .LVU146
+ 486 021c 0F9B     		ldr	r3, [sp, #60]
+ 487 021e 9B44     		add	fp, fp, r3
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 20
+
+
+ 488              	.LVL89:
+ 594:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          } while ( i0 < fftLen);
+ 489              		.loc 1 594 23 is_stmt 1 discriminator 1 view .LVU147
+ 490 0220 109B     		ldr	r3, [sp, #64]
+ 491 0222 5B45     		cmp	r3, fp
+ 492 0224 3FF61DAF 		bhi	.L3
+ 595:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          j++;
+ 493              		.loc 1 595 11 is_stmt 0 view .LVU148
+ 494 0228 119C     		ldr	r4, [sp, #68]
+ 495              	.LVL90:
+ 496              		.loc 1 595 11 view .LVU149
+ 497 022a 129D     		ldr	r5, [sp, #72]
+ 498 022c 139E     		ldr	r6, [sp, #76]
+ 499              		.loc 1 595 10 is_stmt 1 view .LVU150
+ 500              		.loc 1 595 11 is_stmt 0 view .LVU151
+ 501 022e 0135     		adds	r5, r5, #1
+ 502              	.LVL91:
+ 596:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       } while (j <= (n2 - 1U));
+ 503              		.loc 1 596 18 is_stmt 1 view .LVU152
+ 504              		.loc 1 596 25 is_stmt 0 view .LVU153
+ 505 0230 0C9B     		ldr	r3, [sp, #48]
+ 506 0232 013B     		subs	r3, r3, #1
+ 507              		.loc 1 596 18 view .LVU154
+ 508 0234 AB42     		cmp	r3, r5
+ 509 0236 BFF4F8AE 		bcs	.L4
+ 597:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       twidCoefModifier <<= 2U;
+ 510              		.loc 1 597 24 view .LVU155
+ 511 023a DDF85480 		ldr	r8, [sp, #84]
+ 512 023e DDF850A0 		ldr	r10, [sp, #80]
+ 513              		.loc 1 597 7 is_stmt 1 view .LVU156
+ 514              		.loc 1 597 24 is_stmt 0 view .LVU157
+ 515 0242 4FEA8A03 		lsl	r3, r10, #2
+ 516 0246 1FFA83FA 		uxth	r10, r3
+ 517              	.LVL92:
+ 494:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 518              		.loc 1 494 31 is_stmt 1 discriminator 2 view .LVU158
+ 519 024a 4FEA9808 		lsr	r8, r8, #2
+ 520              	.LVL93:
+ 498:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ia1 = 0U;
+ 521              		.loc 1 498 10 is_stmt 0 view .LVU159
+ 522 024e 0C9B     		ldr	r3, [sp, #48]
+ 523              	.LVL94:
+ 524              	.L2:
+ 494:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 525              		.loc 1 494 23 is_stmt 1 discriminator 1 view .LVU160
+ 526 0250 B8F1010F 		cmp	r8, #1
+ 527 0254 3FF6DFAE 		bhi	.L5
+ 598:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+ 599:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 600:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** #endif /* #if defined (ARM_MATH_DSP) */
+ 601:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 602:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** }
+ 528              		.loc 1 602 1 is_stmt 0 view .LVU161
+ 529 0258 17B0     		add	sp, sp, #92
+ 530              	.LCFI2:
+ 531              		.cfi_def_cfa_offset 36
+ 532              		@ sp needed
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 21
+
+
+ 533 025a BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 534              		.loc 1 602 1 view .LVU162
+ 535              		.cfi_endproc
+ 536              	.LFE101:
+ 538              		.section	.text.arm_radix4_butterfly_inverse_f32,"ax",%progbits
+ 539              		.align	1
+ 540              		.global	arm_radix4_butterfly_inverse_f32
+ 541              		.syntax unified
+ 542              		.thumb
+ 543              		.thumb_func
+ 545              	arm_radix4_butterfly_inverse_f32:
+ 546              	.LVL95:
+ 547              	.LFB102:
+ 603:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 604:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** /*
+ 605:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @brief  Core function for the floating-point CIFFT butterfly process.
+ 606:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @param[in, out] *pSrc            points to the in-place buffer of floating-point data type.
+ 607:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @param[in]      fftLen           length of the FFT.
+ 608:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @param[in]      *pCoef           points to twiddle coefficient buffer.
+ 609:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @param[in]      twidCoefModifier twiddle coefficient modifier that supports different size FFTs w
+ 610:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @param[in]      onebyfftLen      value of 1/fftLen.
+ 611:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** * @return none.
+ 612:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** */
+ 613:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 614:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** void arm_radix4_butterfly_inverse_f32(
+ 615:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** float32_t * pSrc,
+ 616:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** uint16_t fftLen,
+ 617:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** float32_t * pCoef,
+ 618:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** uint16_t twidCoefModifier,
+ 619:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** float32_t onebyfftLen)
+ 620:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** {
+ 548              		.loc 1 620 1 is_stmt 1 view -0
+ 549              		.cfi_startproc
+ 550              		@ args = 4, pretend = 0, frame = 88
+ 551              		@ frame_needed = 0, uses_anonymous_args = 0
+ 552              		.loc 1 620 1 is_stmt 0 view .LVU164
+ 553 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 554              	.LCFI3:
+ 555              		.cfi_def_cfa_offset 36
+ 556              		.cfi_offset 4, -36
+ 557              		.cfi_offset 5, -32
+ 558              		.cfi_offset 6, -28
+ 559              		.cfi_offset 7, -24
+ 560              		.cfi_offset 8, -20
+ 561              		.cfi_offset 9, -16
+ 562              		.cfi_offset 10, -12
+ 563              		.cfi_offset 11, -8
+ 564              		.cfi_offset 14, -4
+ 565 0004 97B0     		sub	sp, sp, #92
+ 566              	.LCFI4:
+ 567              		.cfi_def_cfa_offset 128
+ 568 0006 1091     		str	r1, [sp, #64]
+ 569 0008 9946     		mov	r9, r3
+ 621:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t co1, co2, co3, si1, si2, si3;
+ 570              		.loc 1 621 4 is_stmt 1 view .LVU165
+ 622:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    uint32_t ia1, ia2, ia3;
+ 571              		.loc 1 622 4 view .LVU166
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 22
+
+
+ 623:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    uint32_t i0, i1, i2, i3;
+ 572              		.loc 1 623 4 view .LVU167
+ 624:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    uint32_t n1, n2, j, k;
+ 573              		.loc 1 624 4 view .LVU168
+ 625:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 626:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** #if defined (ARM_MATH_DSP)
+ 627:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 628:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t xaIn, yaIn, xbIn, ybIn, xcIn, ycIn, xdIn, ydIn;
+ 629:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t Xaplusc, Xbplusd, Yaplusc, Ybplusd, Xaminusc, Xbminusd, Yaminusc,
+ 630:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    Ybminusd;
+ 631:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t Xb12C_out, Yb12C_out, Xc12C_out, Yc12C_out, Xd12C_out, Yd12C_out;
+ 632:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t Xb12_out, Yb12_out, Xc12_out, Yc12_out, Xd12_out, Yd12_out;
+ 633:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t *ptr1;
+ 634:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t p0,p1,p2,p3,p4,p5,p6,p7;
+ 635:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t a0,a1,a2,a3,a4,a5,a6,a7;
+ 636:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 637:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 638:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /*  Initializations for the first stage */
+ 639:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    n2 = fftLen;
+ 640:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    n1 = n2;
+ 641:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 642:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /* n2 = fftLen/4 */
+ 643:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    n2 >>= 2U;
+ 644:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    i0 = 0U;
+ 645:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    ia1 = 0U;
+ 646:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 647:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    j = n2;
+ 648:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 649:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /*  Calculation of first stage */
+ 650:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    do
+ 651:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 652:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  index calculation for the input as, */
+ 653:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  pSrc[i0 + 0], pSrc[i0 + fftLen/4], pSrc[i0 + fftLen/2], pSrc[i0 + 3fftLen/4] */
+ 654:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       i1 = i0 + n2;
+ 655:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       i2 = i1 + n2;
+ 656:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       i3 = i2 + n2;
+ 657:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 658:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  Butterfly implementation */
+ 659:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       xaIn = pSrc[(2U * i0)];
+ 660:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       yaIn = pSrc[(2U * i0) + 1U];
+ 661:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 662:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       xcIn = pSrc[(2U * i2)];
+ 663:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ycIn = pSrc[(2U * i2) + 1U];
+ 664:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 665:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       xbIn = pSrc[(2U * i1)];
+ 666:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ybIn = pSrc[(2U * i1) + 1U];
+ 667:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 668:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       xdIn = pSrc[(2U * i3)];
+ 669:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ydIn = pSrc[(2U * i3) + 1U];
+ 670:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 671:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xa + xc */
+ 672:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xaplusc = xaIn + xcIn;
+ 673:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xb + xd */
+ 674:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xbplusd = xbIn + xdIn;
+ 675:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* ya + yc */
+ 676:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yaplusc = yaIn + ycIn;
+ 677:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yb + yd */
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 23
+
+
+ 678:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Ybplusd = ybIn + ydIn;
+ 679:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 680:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  index calculation for the coefficients */
+ 681:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ia2 = ia1 + ia1;
+ 682:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       co2 = pCoef[ia2 * 2U];
+ 683:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       si2 = pCoef[(ia2 * 2U) + 1U];
+ 684:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 685:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xa - xc */
+ 686:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xaminusc = xaIn - xcIn;
+ 687:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xb - xd */
+ 688:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xbminusd = xbIn - xdIn;
+ 689:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* ya - yc */
+ 690:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yaminusc = yaIn - ycIn;
+ 691:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yb - yd */
+ 692:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Ybminusd = ybIn - ydIn;
+ 693:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 694:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xa' = xa + xb + xc + xd */
+ 695:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[(2U * i0)] = Xaplusc + Xbplusd;
+ 696:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 697:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* ya' = ya + yb + yc + yd */
+ 698:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[(2U * i0) + 1U] = Yaplusc + Ybplusd;
+ 699:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 700:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (xa - xc) - (yb - yd) */
+ 701:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xb12C_out = (Xaminusc - Ybminusd);
+ 702:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (ya - yc) + (xb - xd) */
+ 703:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yb12C_out = (Yaminusc + Xbminusd);
+ 704:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (xa + xc) - (xb + xd) */
+ 705:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xc12C_out = (Xaplusc - Xbplusd);
+ 706:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (ya + yc) - (yb + yd) */
+ 707:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yc12C_out = (Yaplusc - Ybplusd);
+ 708:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (xa - xc) + (yb - yd) */
+ 709:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xd12C_out = (Xaminusc + Ybminusd);
+ 710:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (ya - yc) - (xb - xd) */
+ 711:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yd12C_out = (Yaminusc - Xbminusd);
+ 712:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 713:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       co1 = pCoef[ia1 * 2U];
+ 714:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       si1 = pCoef[(ia1 * 2U) + 1U];
+ 715:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 716:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  index calculation for the coefficients */
+ 717:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ia3 = ia2 + ia1;
+ 718:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       co3 = pCoef[ia3 * 2U];
+ 719:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       si3 = pCoef[(ia3 * 2U) + 1U];
+ 720:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 721:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xb12_out = Xb12C_out * co1;
+ 722:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yb12_out = Yb12C_out * co1;
+ 723:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xc12_out = Xc12C_out * co2;
+ 724:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yc12_out = Yc12C_out * co2;
+ 725:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xd12_out = Xd12C_out * co3;
+ 726:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yd12_out = Yd12C_out * co3;
+ 727:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 728:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xb' = (xa+yb-xc-yd)co1 - (ya-xb-yc+xd)(si1) */
+ 729:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       //Xb12_out -= Yb12C_out * si1;
+ 730:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p0 = Yb12C_out * si1;
+ 731:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yb' = (ya-xb-yc+xd)co1 + (xa+yb-xc-yd)(si1) */
+ 732:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       //Yb12_out += Xb12C_out * si1;
+ 733:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p1 = Xb12C_out * si1;
+ 734:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xc' = (xa-xb+xc-xd)co2 - (ya-yb+yc-yd)(si2) */
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 24
+
+
+ 735:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       //Xc12_out -= Yc12C_out * si2;
+ 736:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p2 = Yc12C_out * si2;
+ 737:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yc' = (ya-yb+yc-yd)co2 + (xa-xb+xc-xd)(si2) */
+ 738:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       //Yc12_out += Xc12C_out * si2;
+ 739:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p3 = Xc12C_out * si2;
+ 740:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xd' = (xa-yb-xc+yd)co3 - (ya+xb-yc-xd)(si3) */
+ 741:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       //Xd12_out -= Yd12C_out * si3;
+ 742:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p4 = Yd12C_out * si3;
+ 743:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yd' = (ya+xb-yc-xd)co3 + (xa-yb-xc+yd)(si3) */
+ 744:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       //Yd12_out += Xd12C_out * si3;
+ 745:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p5 = Xd12C_out * si3;
+ 746:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 747:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xb12_out -= p0;
+ 748:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yb12_out += p1;
+ 749:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xc12_out -= p2;
+ 750:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yc12_out += p3;
+ 751:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xd12_out -= p4;
+ 752:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yd12_out += p5;
+ 753:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 754:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xc' = (xa-xb+xc-xd)co2 - (ya-yb+yc-yd)(si2) */
+ 755:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[2U * i1] = Xc12_out;
+ 756:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 757:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yc' = (ya-yb+yc-yd)co2 + (xa-xb+xc-xd)(si2) */
+ 758:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[(2U * i1) + 1U] = Yc12_out;
+ 759:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 760:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xb' = (xa+yb-xc-yd)co1 - (ya-xb-yc+xd)(si1) */
+ 761:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[2U * i2] = Xb12_out;
+ 762:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 763:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yb' = (ya-xb-yc+xd)co1 + (xa+yb-xc-yd)(si1) */
+ 764:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[(2U * i2) + 1U] = Yb12_out;
+ 765:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 766:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xd' = (xa-yb-xc+yd)co3 - (ya+xb-yc-xd)(si3) */
+ 767:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[2U * i3] = Xd12_out;
+ 768:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 769:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yd' = (ya+xb-yc-xd)co3 + (xa-yb-xc+yd)(si3) */
+ 770:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[(2U * i3) + 1U] = Yd12_out;
+ 771:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 772:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  Twiddle coefficients index modifier */
+ 773:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ia1 = ia1 + twidCoefModifier;
+ 774:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 775:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  Updating input index */
+ 776:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       i0 = i0 + 1U;
+ 777:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 778:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    } while (--j);
+ 779:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 780:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    twidCoefModifier <<= 2U;
+ 781:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 782:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /*  Calculation of second stage to excluding last stage */
+ 783:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    for (k = fftLen >> 2U; k > 4U; k >>= 2U)
+ 784:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 785:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  Initializations for the first stage */
+ 786:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       n1 = n2;
+ 787:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       n2 >>= 2U;
+ 788:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ia1 = 0U;
+ 789:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 790:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  Calculation of first stage */
+ 791:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       j = 0;
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 25
+
+
+ 792:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       do
+ 793:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       {
+ 794:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          /*  index calculation for the coefficients */
+ 795:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          ia2 = ia1 + ia1;
+ 796:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          ia3 = ia2 + ia1;
+ 797:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          co1 = pCoef[ia1 * 2U];
+ 798:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          si1 = pCoef[(ia1 * 2U) + 1U];
+ 799:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          co2 = pCoef[ia2 * 2U];
+ 800:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          si2 = pCoef[(ia2 * 2U) + 1U];
+ 801:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          co3 = pCoef[ia3 * 2U];
+ 802:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          si3 = pCoef[(ia3 * 2U) + 1U];
+ 803:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 804:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          /*  Twiddle coefficients index modifier */
+ 805:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          ia1 = ia1 + twidCoefModifier;
+ 806:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 807:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          i0 = j;
+ 808:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          do
+ 809:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          {
+ 810:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /*  index calculation for the input as, */
+ 811:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /*  pSrc[i0 + 0], pSrc[i0 + fftLen/4], pSrc[i0 + fftLen/2], pSrc[i0 + 3fftLen/4] */
+ 812:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             i1 = i0 + n2;
+ 813:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             i2 = i1 + n2;
+ 814:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             i3 = i2 + n2;
+ 815:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 816:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             xaIn = pSrc[(2U * i0)];
+ 817:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             yaIn = pSrc[(2U * i0) + 1U];
+ 818:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 819:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             xbIn = pSrc[(2U * i1)];
+ 820:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             ybIn = pSrc[(2U * i1) + 1U];
+ 821:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 822:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             xcIn = pSrc[(2U * i2)];
+ 823:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             ycIn = pSrc[(2U * i2) + 1U];
+ 824:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 825:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             xdIn = pSrc[(2U * i3)];
+ 826:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             ydIn = pSrc[(2U * i3) + 1U];
+ 827:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 828:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xa - xc */
+ 829:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xaminusc = xaIn - xcIn;
+ 830:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (xb - xd) */
+ 831:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xbminusd = xbIn - xdIn;
+ 832:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* ya - yc */
+ 833:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yaminusc = yaIn - ycIn;
+ 834:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (yb - yd) */
+ 835:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Ybminusd = ybIn - ydIn;
+ 836:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 837:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xa + xc */
+ 838:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xaplusc = xaIn + xcIn;
+ 839:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xb + xd */
+ 840:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xbplusd = xbIn + xdIn;
+ 841:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* ya + yc */
+ 842:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yaplusc = yaIn + ycIn;
+ 843:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yb + yd */
+ 844:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Ybplusd = ybIn + ydIn;
+ 845:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 846:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (xa - xc) - (yb - yd) */
+ 847:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xb12C_out = (Xaminusc - Ybminusd);
+ 848:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (ya - yc) +  (xb - xd) */
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 26
+
+
+ 849:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yb12C_out = (Yaminusc + Xbminusd);
+ 850:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xa + xc -(xb + xd) */
+ 851:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xc12C_out = (Xaplusc - Xbplusd);
+ 852:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (ya + yc) - (yb + yd) */
+ 853:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yc12C_out = (Yaplusc - Ybplusd);
+ 854:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (xa - xc) + (yb - yd) */
+ 855:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xd12C_out = (Xaminusc + Ybminusd);
+ 856:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (ya - yc) -  (xb - xd) */
+ 857:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yd12C_out = (Yaminusc - Xbminusd);
+ 858:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 859:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i0)] = Xaplusc + Xbplusd;
+ 860:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i0) + 1U] = Yaplusc + Ybplusd;
+ 861:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 862:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xb12_out = Xb12C_out * co1;
+ 863:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yb12_out = Yb12C_out * co1;
+ 864:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xc12_out = Xc12C_out * co2;
+ 865:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yc12_out = Yc12C_out * co2;
+ 866:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xd12_out = Xd12C_out * co3;
+ 867:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yd12_out = Yd12C_out * co3;
+ 868:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 869:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xb' = (xa+yb-xc-yd)co1 - (ya-xb-yc+xd)(si1) */
+ 870:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             //Xb12_out -= Yb12C_out * si1;
+ 871:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             p0 = Yb12C_out * si1;
+ 872:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yb' = (ya-xb-yc+xd)co1 + (xa+yb-xc-yd)(si1) */
+ 873:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             //Yb12_out += Xb12C_out * si1;
+ 874:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             p1 = Xb12C_out * si1;
+ 875:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xc' = (xa-xb+xc-xd)co2 - (ya-yb+yc-yd)(si2) */
+ 876:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             //Xc12_out -= Yc12C_out * si2;
+ 877:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             p2 = Yc12C_out * si2;
+ 878:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yc' = (ya-yb+yc-yd)co2 + (xa-xb+xc-xd)(si2) */
+ 879:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             //Yc12_out += Xc12C_out * si2;
+ 880:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             p3 = Xc12C_out * si2;
+ 881:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xd' = (xa-yb-xc+yd)co3 - (ya+xb-yc-xd)(si3) */
+ 882:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             //Xd12_out -= Yd12C_out * si3;
+ 883:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             p4 = Yd12C_out * si3;
+ 884:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yd' = (ya+xb-yc-xd)co3 + (xa-yb-xc+yd)(si3) */
+ 885:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             //Yd12_out += Xd12C_out * si3;
+ 886:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             p5 = Xd12C_out * si3;
+ 887:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 888:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xb12_out -= p0;
+ 889:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yb12_out += p1;
+ 890:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xc12_out -= p2;
+ 891:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yc12_out += p3;
+ 892:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Xd12_out -= p4;
+ 893:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             Yd12_out += p5;
+ 894:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 895:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xc' = (xa-xb+xc-xd)co2 - (ya-yb+yc-yd)(si2) */
+ 896:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[2U * i1] = Xc12_out;
+ 897:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 898:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yc' = (ya-yb+yc-yd)co2 + (xa-xb+xc-xd)(si2) */
+ 899:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i1) + 1U] = Yc12_out;
+ 900:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 901:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xb' = (xa+yb-xc-yd)co1 - (ya-xb-yc+xd)(si1) */
+ 902:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[2U * i2] = Xb12_out;
+ 903:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 904:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yb' = (ya-xb-yc+xd)co1 + (xa+yb-xc-yd)(si1) */
+ 905:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i2) + 1U] = Yb12_out;
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 27
+
+
+ 906:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 907:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xd' = (xa-yb-xc+yd)co3 - (ya+xb-yc-xd)(si3) */
+ 908:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[2U * i3] = Xd12_out;
+ 909:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 910:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yd' = (ya+xb-yc-xd)co3 + (xa-yb-xc+yd)(si3) */
+ 911:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i3) + 1U] = Yd12_out;
+ 912:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 913:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             i0 += n1;
+ 914:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          } while (i0 < fftLen);
+ 915:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          j++;
+ 916:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       } while (j <= (n2 - 1U));
+ 917:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       twidCoefModifier <<= 2U;
+ 918:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+ 919:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /*  Initializations of last stage */
+ 920:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 921:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    j = fftLen >> 2;
+ 922:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    ptr1 = &pSrc[0];
+ 923:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 924:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /*  Calculations of last stage */
+ 925:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    do
+ 926:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 927:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       xaIn = ptr1[0];
+ 928:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       yaIn = ptr1[1];
+ 929:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       xbIn = ptr1[2];
+ 930:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ybIn = ptr1[3];
+ 931:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       xcIn = ptr1[4];
+ 932:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ycIn = ptr1[5];
+ 933:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       xdIn = ptr1[6];
+ 934:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ydIn = ptr1[7];
+ 935:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 936:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  Butterfly implementation */
+ 937:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xa + xc */
+ 938:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xaplusc = xaIn + xcIn;
+ 939:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 940:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xa - xc */
+ 941:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xaminusc = xaIn - xcIn;
+ 942:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 943:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* ya + yc */
+ 944:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yaplusc = yaIn + ycIn;
+ 945:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 946:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* ya - yc */
+ 947:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Yaminusc = yaIn - ycIn;
+ 948:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 949:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xb + xd */
+ 950:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xbplusd = xbIn + xdIn;
+ 951:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 952:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yb + yd */
+ 953:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Ybplusd = ybIn + ydIn;
+ 954:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 955:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (xb-xd) */
+ 956:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Xbminusd = xbIn - xdIn;
+ 957:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 958:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (yb-yd) */
+ 959:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       Ybminusd = ybIn - ydIn;
+ 960:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 961:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xa' = (xa+xb+xc+xd) * onebyfftLen */
+ 962:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       a0 = (Xaplusc + Xbplusd);
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 28
+
+
+ 963:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* ya' = (ya+yb+yc+yd) * onebyfftLen */
+ 964:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       a1 = (Yaplusc + Ybplusd);
+ 965:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xc' = (xa-xb+xc-xd) * onebyfftLen */
+ 966:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       a2 = (Xaplusc - Xbplusd);
+ 967:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yc' = (ya-yb+yc-yd) * onebyfftLen  */
+ 968:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       a3 = (Yaplusc - Ybplusd);
+ 969:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xb' = (xa-yb-xc+yd) * onebyfftLen */
+ 970:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       a4 = (Xaminusc - Ybminusd);
+ 971:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yb' = (ya+xb-yc-xd) * onebyfftLen */
+ 972:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       a5 = (Yaminusc + Xbminusd);
+ 973:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xd' = (xa-yb-xc+yd) * onebyfftLen */
+ 974:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       a6 = (Xaminusc + Ybminusd);
+ 975:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yd' = (ya-xb-yc+xd) * onebyfftLen */
+ 976:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       a7 = (Yaminusc - Xbminusd);
+ 977:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 978:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p0 = a0 * onebyfftLen;
+ 979:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p1 = a1 * onebyfftLen;
+ 980:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p2 = a2 * onebyfftLen;
+ 981:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p3 = a3 * onebyfftLen;
+ 982:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p4 = a4 * onebyfftLen;
+ 983:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p5 = a5 * onebyfftLen;
+ 984:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p6 = a6 * onebyfftLen;
+ 985:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       p7 = a7 * onebyfftLen;
+ 986:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 987:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xa' = (xa+xb+xc+xd) * onebyfftLen */
+ 988:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1[0] = p0;
+ 989:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* ya' = (ya+yb+yc+yd) * onebyfftLen */
+ 990:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1[1] = p1;
+ 991:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xc' = (xa-xb+xc-xd) * onebyfftLen */
+ 992:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1[2] = p2;
+ 993:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yc' = (ya-yb+yc-yd) * onebyfftLen  */
+ 994:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1[3] = p3;
+ 995:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xb' = (xa-yb-xc+yd) * onebyfftLen */
+ 996:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1[4] = p4;
+ 997:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yb' = (ya+xb-yc-xd) * onebyfftLen */
+ 998:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1[5] = p5;
+ 999:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xd' = (xa-yb-xc+yd) * onebyfftLen */
+1000:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1[6] = p6;
+1001:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yd' = (ya-xb-yc+xd) * onebyfftLen */
+1002:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1[7] = p7;
+1003:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1004:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* increment source pointer by 8 for next calculations */
+1005:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ptr1 = ptr1 + 8U;
+1006:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1007:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    } while (--j);
+1008:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1009:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** #else
+1010:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1011:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    float32_t t1, t2, r1, r2, s1, s2;
+ 574              		.loc 1 1011 4 view .LVU169
+1012:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1013:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /* Run the below code for Cortex-M0 */
+1014:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1015:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /*  Initializations for the first stage */
+1016:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    n2 = fftLen;
+ 575              		.loc 1 1016 4 view .LVU170
+ 576              	.LVL96:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 29
+
+
+1017:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    n1 = n2;
+ 577              		.loc 1 1017 4 view .LVU171
+1018:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1019:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /*  Calculation of first stage */
+1020:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    for (k = fftLen; k > 4U; k >>= 2U)
+ 578              		.loc 1 1020 4 view .LVU172
+1016:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    n1 = n2;
+ 579              		.loc 1 1016 7 is_stmt 0 view .LVU173
+ 580 000a 0F91     		str	r1, [sp, #60]
+ 581 000c 0746     		mov	r7, r0
+ 582 000e 1646     		mov	r6, r2
+ 583 0010 8846     		mov	r8, r1
+ 584              		.loc 1 1020 4 view .LVU174
+ 585 0012 20E1     		b	.L8
+ 586              	.LVL97:
+ 587              	.L11:
+1021:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+1022:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  Initializations for the first stage */
+1023:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       n1 = n2;
+ 588              		.loc 1 1023 7 is_stmt 1 view .LVU175
+1024:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       n2 >>= 2U;
+ 589              		.loc 1 1024 7 view .LVU176
+ 590              		.loc 1 1024 10 is_stmt 0 view .LVU177
+ 591 0014 0F9B     		ldr	r3, [sp, #60]
+ 592 0016 9B08     		lsrs	r3, r3, #2
+ 593 0018 0C93     		str	r3, [sp, #48]
+ 594              	.LVL98:
+1025:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ia1 = 0U;
+ 595              		.loc 1 1025 7 is_stmt 1 view .LVU178
+1026:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1027:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  Calculation of first stage */
+1028:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       j = 0;
+ 596              		.loc 1 1028 7 view .LVU179
+ 597              		.loc 1 1028 9 is_stmt 0 view .LVU180
+ 598 001a 4FF0000A 		mov	r10, #0
+1025:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ia1 = 0U;
+ 599              		.loc 1 1025 11 view .LVU181
+ 600 001e 5546     		mov	r5, r10
+ 601 0020 5446     		mov	r4, r10
+ 602 0022 CDF85480 		str	r8, [sp, #84]
+ 603 0026 B846     		mov	r8, r7
+ 604              	.LVL99:
+1025:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ia1 = 0U;
+ 605              		.loc 1 1025 11 view .LVU182
+ 606 0028 CDF85090 		str	r9, [sp, #80]
+ 607              	.LVL100:
+ 608              	.L10:
+1029:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       do
+ 609              		.loc 1 1029 7 is_stmt 1 view .LVU183
+1030:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       {
+1031:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          /*  index calculation for the coefficients */
+1032:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          ia2 = ia1 + ia1;
+ 610              		.loc 1 1032 10 view .LVU184
+1033:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          ia3 = ia2 + ia1;
+ 611              		.loc 1 1033 10 view .LVU185
+ 612              		.loc 1 1033 14 is_stmt 0 view .LVU186
+ 613 002c 04EB4402 		add	r2, r4, r4, lsl #1
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 30
+
+
+ 614              	.LVL101:
+1034:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          co1 = pCoef[ia1 * 2U];
+ 615              		.loc 1 1034 10 is_stmt 1 view .LVU187
+ 616              		.loc 1 1034 21 is_stmt 0 view .LVU188
+ 617 0030 E300     		lsls	r3, r4, #3
+ 618              		.loc 1 1034 14 view .LVU189
+ 619 0032 56F83410 		ldr	r1, [r6, r4, lsl #3]	@ float
+ 620 0036 0391     		str	r1, [sp, #12]	@ float
+ 621              	.LVL102:
+1035:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          si1 = pCoef[(ia1 * 2U) + 1U];
+ 622              		.loc 1 1035 10 is_stmt 1 view .LVU190
+ 623              		.loc 1 1035 21 is_stmt 0 view .LVU191
+ 624 0038 0433     		adds	r3, r3, #4
+ 625              		.loc 1 1035 14 view .LVU192
+ 626 003a F358     		ldr	r3, [r6, r3]	@ float
+ 627 003c 0493     		str	r3, [sp, #16]	@ float
+ 628              	.LVL103:
+1036:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          co2 = pCoef[ia2 * 2U];
+ 629              		.loc 1 1036 10 is_stmt 1 view .LVU193
+ 630              		.loc 1 1036 21 is_stmt 0 view .LVU194
+ 631 003e 2301     		lsls	r3, r4, #4
+ 632              	.LVL104:
+ 633              		.loc 1 1036 14 view .LVU195
+ 634 0040 F158     		ldr	r1, [r6, r3]	@ float
+ 635              	.LVL105:
+ 636              		.loc 1 1036 14 view .LVU196
+ 637 0042 0591     		str	r1, [sp, #20]	@ float
+ 638              	.LVL106:
+1037:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          si2 = pCoef[(ia2 * 2U) + 1U];
+ 639              		.loc 1 1037 10 is_stmt 1 view .LVU197
+ 640              		.loc 1 1037 21 is_stmt 0 view .LVU198
+ 641 0044 0433     		adds	r3, r3, #4
+ 642              		.loc 1 1037 14 view .LVU199
+ 643 0046 F358     		ldr	r3, [r6, r3]	@ float
+ 644 0048 0693     		str	r3, [sp, #24]	@ float
+ 645              	.LVL107:
+1038:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          co3 = pCoef[ia3 * 2U];
+ 646              		.loc 1 1038 10 is_stmt 1 view .LVU200
+ 647              		.loc 1 1038 21 is_stmt 0 view .LVU201
+ 648 004a D300     		lsls	r3, r2, #3
+ 649              	.LVL108:
+ 650              		.loc 1 1038 14 view .LVU202
+ 651 004c 56F83220 		ldr	r2, [r6, r2, lsl #3]	@ float
+ 652              	.LVL109:
+ 653              		.loc 1 1038 14 view .LVU203
+ 654 0050 0D92     		str	r2, [sp, #52]	@ float
+ 655              	.LVL110:
+1039:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          si3 = pCoef[(ia3 * 2U) + 1U];
+ 656              		.loc 1 1039 10 is_stmt 1 view .LVU204
+ 657              		.loc 1 1039 21 is_stmt 0 view .LVU205
+ 658 0052 0433     		adds	r3, r3, #4
+ 659              		.loc 1 1039 14 view .LVU206
+ 660 0054 F358     		ldr	r3, [r6, r3]	@ float
+ 661 0056 0E93     		str	r3, [sp, #56]	@ float
+ 662              	.LVL111:
+1040:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1041:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          /*  Twiddle coefficients index modifier */
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 31
+
+
+1042:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          ia1 = ia1 + twidCoefModifier;
+ 663              		.loc 1 1042 10 is_stmt 1 view .LVU207
+ 664              		.loc 1 1042 14 is_stmt 0 view .LVU208
+ 665 0058 149B     		ldr	r3, [sp, #80]
+ 666              	.LVL112:
+ 667              		.loc 1 1042 14 view .LVU209
+ 668 005a 1C44     		add	r4, r4, r3
+ 669              	.LVL113:
+1043:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1044:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          i0 = j;
+ 670              		.loc 1 1044 10 is_stmt 1 view .LVU210
+ 671              		.loc 1 1044 13 is_stmt 0 view .LVU211
+ 672 005c 1194     		str	r4, [sp, #68]
+ 673 005e AB46     		mov	fp, r5
+ 674 0060 1295     		str	r5, [sp, #72]
+ 675 0062 1396     		str	r6, [sp, #76]
+ 676              	.LVL114:
+ 677              	.L9:
+1045:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          do
+ 678              		.loc 1 1045 10 is_stmt 1 view .LVU212
+1046:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          {
+1047:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /*  index calculation for the input as, */
+1048:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /*  pSrc[i0 + 0], pSrc[i0 + fftLen/4], pSrc[i0 + fftLen/2], pSrc[i0 + 3fftLen/4] */
+1049:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             i1 = i0 + n2;
+ 679              		.loc 1 1049 13 view .LVU213
+ 680              		.loc 1 1049 16 is_stmt 0 view .LVU214
+ 681 0064 0C9A     		ldr	r2, [sp, #48]
+ 682 0066 0BEB020A 		add	r10, fp, r2
+ 683              	.LVL115:
+1050:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             i2 = i1 + n2;
+ 684              		.loc 1 1050 13 is_stmt 1 view .LVU215
+ 685              		.loc 1 1050 16 is_stmt 0 view .LVU216
+ 686 006a 0BEB4203 		add	r3, fp, r2, lsl #1
+ 687              	.LVL116:
+1051:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             i3 = i2 + n2;
+ 688              		.loc 1 1051 13 is_stmt 1 view .LVU217
+ 689              		.loc 1 1051 16 is_stmt 0 view .LVU218
+ 690 006e 1A44     		add	r2, r2, r3
+ 691 0070 0192     		str	r2, [sp, #4]
+ 692              	.LVL117:
+1052:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1053:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xa + xc */
+1054:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             r1 = pSrc[(2U * i0)] + pSrc[(2U * i2)];
+ 693              		.loc 1 1054 13 is_stmt 1 view .LVU219
+ 694              		.loc 1 1054 22 is_stmt 0 view .LVU220
+ 695 0072 4FEACB06 		lsl	r6, fp, #3
+ 696 0076 58F83B40 		ldr	r4, [r8, fp, lsl #3]	@ float
+ 697              		.loc 1 1054 40 view .LVU221
+ 698 007a DD00     		lsls	r5, r3, #3
+ 699 007c 0793     		str	r3, [sp, #28]
+ 700 007e 58F83390 		ldr	r9, [r8, r3, lsl #3]	@ float
+ 701              		.loc 1 1054 16 view .LVU222
+ 702 0082 4946     		mov	r1, r9
+ 703 0084 2046     		mov	r0, r4
+ 704 0086 FFF7FEFF 		bl	__aeabi_fadd
+ 705              	.LVL118:
+ 706              		.loc 1 1054 16 view .LVU223
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 32
+
+
+ 707 008a 0746     		mov	r7, r0
+ 708              	.LVL119:
+1055:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1056:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xa - xc */
+1057:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             r2 = pSrc[(2U * i0)] - pSrc[(2U * i2)];
+ 709              		.loc 1 1057 13 is_stmt 1 view .LVU224
+ 710              		.loc 1 1057 16 is_stmt 0 view .LVU225
+ 711 008c 4946     		mov	r1, r9
+ 712 008e 2046     		mov	r0, r4
+ 713              	.LVL120:
+ 714              		.loc 1 1057 16 view .LVU226
+ 715 0090 FFF7FEFF 		bl	__aeabi_fsub
+ 716              	.LVL121:
+ 717 0094 0890     		str	r0, [sp, #32]	@ float
+ 718              	.LVL122:
+1058:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1059:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* ya + yc */
+1060:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             s1 = pSrc[(2U * i0) + 1U] + pSrc[(2U * i2) + 1U];
+ 719              		.loc 1 1060 13 is_stmt 1 view .LVU227
+ 720              		.loc 1 1060 22 is_stmt 0 view .LVU228
+ 721 0096 0436     		adds	r6, r6, #4
+ 722 0098 58F80640 		ldr	r4, [r8, r6]	@ float
+ 723              		.loc 1 1060 45 view .LVU229
+ 724 009c 291D     		adds	r1, r5, #4
+ 725 009e 0991     		str	r1, [sp, #36]
+ 726 00a0 58F80190 		ldr	r9, [r8, r1]	@ float
+ 727              		.loc 1 1060 16 view .LVU230
+ 728 00a4 4946     		mov	r1, r9
+ 729 00a6 2046     		mov	r0, r4
+ 730              	.LVL123:
+ 731              		.loc 1 1060 16 view .LVU231
+ 732 00a8 FFF7FEFF 		bl	__aeabi_fadd
+ 733              	.LVL124:
+ 734 00ac 0546     		mov	r5, r0
+ 735              	.LVL125:
+1061:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1062:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* ya - yc */
+1063:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             s2 = pSrc[(2U * i0) + 1U] - pSrc[(2U * i2) + 1U];
+ 736              		.loc 1 1063 13 is_stmt 1 view .LVU232
+ 737              		.loc 1 1063 16 is_stmt 0 view .LVU233
+ 738 00ae 4946     		mov	r1, r9
+ 739 00b0 2046     		mov	r0, r4
+ 740              	.LVL126:
+ 741              		.loc 1 1063 16 view .LVU234
+ 742 00b2 FFF7FEFF 		bl	__aeabi_fsub
+ 743              	.LVL127:
+ 744 00b6 0A90     		str	r0, [sp, #40]	@ float
+ 745              	.LVL128:
+1064:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1065:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xb + xd */
+1066:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             t1 = pSrc[2U * i1] + pSrc[2U * i3];
+ 746              		.loc 1 1066 13 is_stmt 1 view .LVU235
+ 747              		.loc 1 1066 22 is_stmt 0 view .LVU236
+ 748 00b8 4FEACA04 		lsl	r4, r10, #3
+ 749              		.loc 1 1066 38 view .LVU237
+ 750 00bc 019A     		ldr	r2, [sp, #4]
+ 751 00be 4FEAC209 		lsl	r9, r2, #3
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 33
+
+
+ 752              		.loc 1 1066 16 view .LVU238
+ 753 00c2 58F83210 		ldr	r1, [r8, r2, lsl #3]	@ float
+ 754 00c6 58F83A00 		ldr	r0, [r8, r10, lsl #3]	@ float
+ 755              	.LVL129:
+ 756              		.loc 1 1066 16 view .LVU239
+ 757 00ca FFF7FEFF 		bl	__aeabi_fadd
+ 758              	.LVL130:
+1067:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1068:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xa' = xa + xb + xc + xd */
+1069:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[2U * i0] = r1 + t1;
+ 759              		.loc 1 1069 13 is_stmt 1 view .LVU240
+ 760              		.loc 1 1069 32 is_stmt 0 view .LVU241
+ 761 00ce 0290     		str	r0, [sp, #8]	@ float
+ 762 00d0 0146     		mov	r1, r0
+ 763 00d2 3846     		mov	r0, r7
+ 764              	.LVL131:
+ 765              		.loc 1 1069 32 view .LVU242
+ 766 00d4 FFF7FEFF 		bl	__aeabi_fadd
+ 767              	.LVL132:
+ 768              		.loc 1 1069 27 view .LVU243
+ 769 00d8 48F83B00 		str	r0, [r8, fp, lsl #3]	@ float
+1070:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1071:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xa + xc -(xb + xd) */
+1072:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             r1 = r1 - t1;
+ 770              		.loc 1 1072 13 is_stmt 1 view .LVU244
+ 771              		.loc 1 1072 16 is_stmt 0 view .LVU245
+ 772 00dc 0299     		ldr	r1, [sp, #8]	@ float
+ 773 00de 3846     		mov	r0, r7
+ 774 00e0 FFF7FEFF 		bl	__aeabi_fsub
+ 775              	.LVL133:
+ 776 00e4 0290     		str	r0, [sp, #8]	@ float
+ 777              	.LVL134:
+1073:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1074:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yb + yd */
+1075:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             t2 = pSrc[(2U * i1) + 1U] + pSrc[(2U * i3) + 1U];
+ 778              		.loc 1 1075 13 is_stmt 1 view .LVU246
+ 779              		.loc 1 1075 22 is_stmt 0 view .LVU247
+ 780 00e6 0434     		adds	r4, r4, #4
+ 781              		.loc 1 1075 45 view .LVU248
+ 782 00e8 09F10407 		add	r7, r9, #4
+ 783              		.loc 1 1075 16 view .LVU249
+ 784 00ec 58F80710 		ldr	r1, [r8, r7]	@ float
+ 785 00f0 58F80400 		ldr	r0, [r8, r4]	@ float
+ 786              	.LVL135:
+ 787              		.loc 1 1075 16 view .LVU250
+ 788 00f4 FFF7FEFF 		bl	__aeabi_fadd
+ 789              	.LVL136:
+ 790 00f8 8146     		mov	r9, r0
+ 791              	.LVL137:
+1076:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1077:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* ya' = ya + yb + yc + yd */
+1078:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i0) + 1U] = s1 + t2;
+ 792              		.loc 1 1078 13 is_stmt 1 view .LVU251
+ 793              		.loc 1 1078 39 is_stmt 0 view .LVU252
+ 794 00fa 0146     		mov	r1, r0
+ 795 00fc 2846     		mov	r0, r5
+ 796              	.LVL138:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 34
+
+
+ 797              		.loc 1 1078 39 view .LVU253
+ 798 00fe FFF7FEFF 		bl	__aeabi_fadd
+ 799              	.LVL139:
+ 800              		.loc 1 1078 34 view .LVU254
+ 801 0102 48F80600 		str	r0, [r8, r6]	@ float
+1079:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1080:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (ya + yc) - (yb + yd) */
+1081:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             s1 = s1 - t2;
+ 802              		.loc 1 1081 13 is_stmt 1 view .LVU255
+ 803              		.loc 1 1081 16 is_stmt 0 view .LVU256
+ 804 0106 4946     		mov	r1, r9
+ 805 0108 2846     		mov	r0, r5
+ 806 010a FFF7FEFF 		bl	__aeabi_fsub
+ 807              	.LVL140:
+ 808 010e 8146     		mov	r9, r0
+ 809              	.LVL141:
+1082:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1083:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (yb - yd) */
+1084:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             t1 = pSrc[(2U * i1) + 1U] - pSrc[(2U * i3) + 1U];
+ 810              		.loc 1 1084 13 is_stmt 1 view .LVU257
+ 811              		.loc 1 1084 16 is_stmt 0 view .LVU258
+ 812 0110 58F80710 		ldr	r1, [r8, r7]	@ float
+ 813 0114 58F80400 		ldr	r0, [r8, r4]	@ float
+ 814              	.LVL142:
+ 815              		.loc 1 1084 16 view .LVU259
+ 816 0118 FFF7FEFF 		bl	__aeabi_fsub
+ 817              	.LVL143:
+ 818 011c 0646     		mov	r6, r0
+ 819              	.LVL144:
+1085:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1086:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (xb - xd) */
+1087:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             t2 = pSrc[2U * i1] - pSrc[2U * i3];
+ 820              		.loc 1 1087 13 is_stmt 1 view .LVU260
+ 821              		.loc 1 1087 16 is_stmt 0 view .LVU261
+ 822 011e 019A     		ldr	r2, [sp, #4]
+ 823 0120 58F83210 		ldr	r1, [r8, r2, lsl #3]	@ float
+ 824 0124 58F83A00 		ldr	r0, [r8, r10, lsl #3]	@ float
+ 825              	.LVL145:
+ 826              		.loc 1 1087 16 view .LVU262
+ 827 0128 FFF7FEFF 		bl	__aeabi_fsub
+ 828              	.LVL146:
+ 829 012c 0546     		mov	r5, r0
+ 830              	.LVL147:
+1088:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1089:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xc' = (xa-xb+xc-xd)co2 - (ya-yb+yc-yd)(si2) */
+1090:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[2U * i1] = (r1 * co2) - (s1 * si2);
+ 831              		.loc 1 1090 13 is_stmt 1 view .LVU263
+ 832              		.loc 1 1090 33 is_stmt 0 view .LVU264
+ 833 012e 0299     		ldr	r1, [sp, #8]	@ float
+ 834 0130 0598     		ldr	r0, [sp, #20]	@ float
+ 835              	.LVL148:
+ 836              		.loc 1 1090 33 view .LVU265
+ 837 0132 FFF7FEFF 		bl	__aeabi_fmul
+ 838              	.LVL149:
+ 839 0136 0B90     		str	r0, [sp, #44]	@ float
+ 840              		.loc 1 1090 46 view .LVU266
+ 841 0138 4946     		mov	r1, r9
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 35
+
+
+ 842 013a 0698     		ldr	r0, [sp, #24]	@ float
+ 843 013c FFF7FEFF 		bl	__aeabi_fmul
+ 844              	.LVL150:
+ 845 0140 0146     		mov	r1, r0
+ 846              		.loc 1 1090 40 view .LVU267
+ 847 0142 0B98     		ldr	r0, [sp, #44]	@ float
+ 848 0144 FFF7FEFF 		bl	__aeabi_fsub
+ 849              	.LVL151:
+ 850              		.loc 1 1090 27 view .LVU268
+ 851 0148 48F83A00 		str	r0, [r8, r10, lsl #3]	@ float
+1091:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1092:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yc' = (ya-yb+yc-yd)co2 + (xa-xb+xc-xd)(si2) */
+1093:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i1) + 1U] = (s1 * co2) + (r1 * si2);
+ 852              		.loc 1 1093 13 is_stmt 1 view .LVU269
+ 853              		.loc 1 1093 40 is_stmt 0 view .LVU270
+ 854 014c 4946     		mov	r1, r9
+ 855 014e 0598     		ldr	r0, [sp, #20]	@ float
+ 856 0150 FFF7FEFF 		bl	__aeabi_fmul
+ 857              	.LVL152:
+ 858 0154 8146     		mov	r9, r0
+ 859              	.LVL153:
+ 860              		.loc 1 1093 53 view .LVU271
+ 861 0156 0299     		ldr	r1, [sp, #8]	@ float
+ 862 0158 0698     		ldr	r0, [sp, #24]	@ float
+ 863 015a FFF7FEFF 		bl	__aeabi_fmul
+ 864              	.LVL154:
+ 865 015e 0146     		mov	r1, r0
+ 866              		.loc 1 1093 47 view .LVU272
+ 867 0160 4846     		mov	r0, r9
+ 868 0162 FFF7FEFF 		bl	__aeabi_fadd
+ 869              	.LVL155:
+ 870              		.loc 1 1093 34 view .LVU273
+ 871 0166 48F80400 		str	r0, [r8, r4]	@ float
+1094:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1095:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (xa - xc) - (yb - yd) */
+1096:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             r1 = r2 - t1;
+ 872              		.loc 1 1096 13 is_stmt 1 view .LVU274
+ 873              		.loc 1 1096 16 is_stmt 0 view .LVU275
+ 874 016a 3146     		mov	r1, r6
+ 875 016c 089C     		ldr	r4, [sp, #32]	@ float
+ 876 016e 2046     		mov	r0, r4
+ 877 0170 FFF7FEFF 		bl	__aeabi_fsub
+ 878              	.LVL156:
+ 879 0174 8246     		mov	r10, r0
+ 880              	.LVL157:
+1097:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1098:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (xa - xc) + (yb - yd) */
+1099:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             r2 = r2 + t1;
+ 881              		.loc 1 1099 13 is_stmt 1 view .LVU276
+ 882              		.loc 1 1099 16 is_stmt 0 view .LVU277
+ 883 0176 3146     		mov	r1, r6
+ 884 0178 2046     		mov	r0, r4
+ 885              	.LVL158:
+ 886              		.loc 1 1099 16 view .LVU278
+ 887 017a FFF7FEFF 		bl	__aeabi_fadd
+ 888              	.LVL159:
+ 889 017e 0446     		mov	r4, r0
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 36
+
+
+ 890              	.LVL160:
+1100:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1101:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (ya - yc) +  (xb - xd) */
+1102:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             s1 = s2 + t2;
+ 891              		.loc 1 1102 13 is_stmt 1 view .LVU279
+ 892              		.loc 1 1102 16 is_stmt 0 view .LVU280
+ 893 0180 2946     		mov	r1, r5
+ 894 0182 DDF82890 		ldr	r9, [sp, #40]	@ float
+ 895 0186 4846     		mov	r0, r9
+ 896              	.LVL161:
+ 897              		.loc 1 1102 16 view .LVU281
+ 898 0188 FFF7FEFF 		bl	__aeabi_fadd
+ 899              	.LVL162:
+ 900 018c 0646     		mov	r6, r0
+ 901              	.LVL163:
+1103:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1104:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* (ya - yc) -  (xb - xd) */
+1105:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             s2 = s2 - t2;
+ 902              		.loc 1 1105 13 is_stmt 1 view .LVU282
+ 903              		.loc 1 1105 16 is_stmt 0 view .LVU283
+ 904 018e 2946     		mov	r1, r5
+ 905 0190 4846     		mov	r0, r9
+ 906              	.LVL164:
+ 907              		.loc 1 1105 16 view .LVU284
+ 908 0192 FFF7FEFF 		bl	__aeabi_fsub
+ 909              	.LVL165:
+ 910 0196 0546     		mov	r5, r0
+ 911              	.LVL166:
+1106:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1107:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xb' = (xa+yb-xc-yd)co1 - (ya-xb-yc+xd)(si1) */
+1108:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[2U * i2] = (r1 * co1) - (s1 * si1);
+ 912              		.loc 1 1108 13 is_stmt 1 view .LVU285
+ 913              		.loc 1 1108 33 is_stmt 0 view .LVU286
+ 914 0198 5146     		mov	r1, r10
+ 915 019a 0398     		ldr	r0, [sp, #12]	@ float
+ 916              	.LVL167:
+ 917              		.loc 1 1108 33 view .LVU287
+ 918 019c FFF7FEFF 		bl	__aeabi_fmul
+ 919              	.LVL168:
+ 920 01a0 8146     		mov	r9, r0
+ 921              		.loc 1 1108 46 view .LVU288
+ 922 01a2 3146     		mov	r1, r6
+ 923 01a4 0498     		ldr	r0, [sp, #16]	@ float
+ 924 01a6 FFF7FEFF 		bl	__aeabi_fmul
+ 925              	.LVL169:
+ 926 01aa 0146     		mov	r1, r0
+ 927              		.loc 1 1108 40 view .LVU289
+ 928 01ac 4846     		mov	r0, r9
+ 929 01ae FFF7FEFF 		bl	__aeabi_fsub
+ 930              	.LVL170:
+ 931              		.loc 1 1108 27 view .LVU290
+ 932 01b2 079B     		ldr	r3, [sp, #28]
+ 933 01b4 48F83300 		str	r0, [r8, r3, lsl #3]	@ float
+1109:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1110:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yb' = (ya-xb-yc+xd)co1 + (xa+yb-xc-yd)(si1) */
+1111:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i2) + 1U] = (s1 * co1) + (r1 * si1);
+ 934              		.loc 1 1111 13 is_stmt 1 view .LVU291
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 37
+
+
+ 935              		.loc 1 1111 40 is_stmt 0 view .LVU292
+ 936 01b8 3146     		mov	r1, r6
+ 937 01ba 0398     		ldr	r0, [sp, #12]	@ float
+ 938 01bc FFF7FEFF 		bl	__aeabi_fmul
+ 939              	.LVL171:
+ 940 01c0 0646     		mov	r6, r0
+ 941              	.LVL172:
+ 942              		.loc 1 1111 53 view .LVU293
+ 943 01c2 5146     		mov	r1, r10
+ 944 01c4 0498     		ldr	r0, [sp, #16]	@ float
+ 945 01c6 FFF7FEFF 		bl	__aeabi_fmul
+ 946              	.LVL173:
+ 947 01ca 0146     		mov	r1, r0
+ 948              		.loc 1 1111 47 view .LVU294
+ 949 01cc 3046     		mov	r0, r6
+ 950 01ce FFF7FEFF 		bl	__aeabi_fadd
+ 951              	.LVL174:
+ 952              		.loc 1 1111 34 view .LVU295
+ 953 01d2 0999     		ldr	r1, [sp, #36]
+ 954 01d4 48F80100 		str	r0, [r8, r1]	@ float
+1112:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1113:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* xd' = (xa-yb-xc+yd)co3 - (ya+xb-yc-xd)(si3) */
+1114:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[2U * i3] = (r2 * co3) - (s2 * si3);
+ 955              		.loc 1 1114 13 is_stmt 1 view .LVU296
+ 956              		.loc 1 1114 33 is_stmt 0 view .LVU297
+ 957 01d8 2146     		mov	r1, r4
+ 958 01da DDF834A0 		ldr	r10, [sp, #52]	@ float
+ 959              	.LVL175:
+ 960              		.loc 1 1114 33 view .LVU298
+ 961 01de 5046     		mov	r0, r10
+ 962 01e0 FFF7FEFF 		bl	__aeabi_fmul
+ 963              	.LVL176:
+ 964 01e4 0646     		mov	r6, r0
+ 965              		.loc 1 1114 46 view .LVU299
+ 966 01e6 2946     		mov	r1, r5
+ 967 01e8 DDF83890 		ldr	r9, [sp, #56]	@ float
+ 968 01ec 4846     		mov	r0, r9
+ 969 01ee FFF7FEFF 		bl	__aeabi_fmul
+ 970              	.LVL177:
+ 971 01f2 0146     		mov	r1, r0
+ 972              		.loc 1 1114 40 view .LVU300
+ 973 01f4 3046     		mov	r0, r6
+ 974 01f6 FFF7FEFF 		bl	__aeabi_fsub
+ 975              	.LVL178:
+ 976              		.loc 1 1114 27 view .LVU301
+ 977 01fa 019A     		ldr	r2, [sp, #4]
+ 978 01fc 48F83200 		str	r0, [r8, r2, lsl #3]	@ float
+1115:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1116:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             /* yd' = (ya+xb-yc-xd)co3 + (xa-yb-xc+yd)(si3) */
+1117:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             pSrc[(2U * i3) + 1U] = (s2 * co3) + (r2 * si3);
+ 979              		.loc 1 1117 13 is_stmt 1 view .LVU302
+ 980              		.loc 1 1117 40 is_stmt 0 view .LVU303
+ 981 0200 2946     		mov	r1, r5
+ 982 0202 5046     		mov	r0, r10
+ 983 0204 FFF7FEFF 		bl	__aeabi_fmul
+ 984              	.LVL179:
+ 985 0208 0546     		mov	r5, r0
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 38
+
+
+ 986              	.LVL180:
+ 987              		.loc 1 1117 53 view .LVU304
+ 988 020a 2146     		mov	r1, r4
+ 989 020c 4846     		mov	r0, r9
+ 990 020e FFF7FEFF 		bl	__aeabi_fmul
+ 991              	.LVL181:
+ 992 0212 0146     		mov	r1, r0
+ 993              		.loc 1 1117 47 view .LVU305
+ 994 0214 2846     		mov	r0, r5
+ 995 0216 FFF7FEFF 		bl	__aeabi_fadd
+ 996              	.LVL182:
+ 997              		.loc 1 1117 34 view .LVU306
+ 998 021a 48F80700 		str	r0, [r8, r7]	@ float
+1118:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1119:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****             i0 += n1;
+ 999              		.loc 1 1119 13 is_stmt 1 view .LVU307
+ 1000              		.loc 1 1119 16 is_stmt 0 view .LVU308
+ 1001 021e 0F9B     		ldr	r3, [sp, #60]
+ 1002 0220 9B44     		add	fp, fp, r3
+ 1003              	.LVL183:
+1120:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          } while ( i0 < fftLen);
+ 1004              		.loc 1 1120 23 is_stmt 1 discriminator 1 view .LVU309
+ 1005 0222 109B     		ldr	r3, [sp, #64]
+ 1006 0224 5B45     		cmp	r3, fp
+ 1007 0226 3FF61DAF 		bhi	.L9
+1121:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****          j++;
+ 1008              		.loc 1 1121 11 is_stmt 0 view .LVU310
+ 1009 022a 119C     		ldr	r4, [sp, #68]
+ 1010              	.LVL184:
+ 1011              		.loc 1 1121 11 view .LVU311
+ 1012 022c 129D     		ldr	r5, [sp, #72]
+ 1013 022e 139E     		ldr	r6, [sp, #76]
+ 1014              		.loc 1 1121 10 is_stmt 1 view .LVU312
+ 1015              		.loc 1 1121 11 is_stmt 0 view .LVU313
+ 1016 0230 0135     		adds	r5, r5, #1
+ 1017              	.LVL185:
+1122:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       } while (j <= (n2 - 1U));
+ 1018              		.loc 1 1122 18 is_stmt 1 view .LVU314
+ 1019              		.loc 1 1122 25 is_stmt 0 view .LVU315
+ 1020 0232 0C9B     		ldr	r3, [sp, #48]
+ 1021 0234 013B     		subs	r3, r3, #1
+ 1022              		.loc 1 1122 18 view .LVU316
+ 1023 0236 AB42     		cmp	r3, r5
+ 1024 0238 BFF4F8AE 		bcs	.L10
+1123:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       twidCoefModifier <<= 2U;
+ 1025              		.loc 1 1123 24 view .LVU317
+ 1026 023c 4746     		mov	r7, r8
+ 1027 023e DDF85480 		ldr	r8, [sp, #84]
+ 1028              	.LVL186:
+ 1029              		.loc 1 1123 24 view .LVU318
+ 1030 0242 DDF85090 		ldr	r9, [sp, #80]
+ 1031              		.loc 1 1123 7 is_stmt 1 view .LVU319
+ 1032              		.loc 1 1123 24 is_stmt 0 view .LVU320
+ 1033 0246 4FEA890C 		lsl	ip, r9, #2
+ 1034 024a 1FFA8CF9 		uxth	r9, ip
+ 1035              	.LVL187:
+1020:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 39
+
+
+ 1036              		.loc 1 1020 31 is_stmt 1 discriminator 2 view .LVU321
+ 1037 024e 4FEA9808 		lsr	r8, r8, #2
+ 1038              	.LVL188:
+1024:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       ia1 = 0U;
+ 1039              		.loc 1 1024 10 is_stmt 0 view .LVU322
+ 1040 0252 0C9B     		ldr	r3, [sp, #48]
+ 1041 0254 0F93     		str	r3, [sp, #60]
+ 1042              	.LVL189:
+ 1043              	.L8:
+1020:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 1044              		.loc 1 1020 23 is_stmt 1 discriminator 1 view .LVU323
+ 1045 0256 B8F1040F 		cmp	r8, #4
+ 1046 025a 3FF6DBAE 		bhi	.L11
+1124:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+1125:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /*  Initializations of last stage */
+1126:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    n1 = n2;
+1127:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    n2 >>= 2U;
+ 1047              		.loc 1 1127 7 is_stmt 0 view .LVU324
+ 1048 025e BB46     		mov	fp, r7
+1126:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    n2 >>= 2U;
+ 1049              		.loc 1 1126 4 is_stmt 1 view .LVU325
+ 1050              	.LVL190:
+ 1051              		.loc 1 1127 4 view .LVU326
+ 1052              		.loc 1 1127 7 is_stmt 0 view .LVU327
+ 1053 0260 0F9B     		ldr	r3, [sp, #60]
+ 1054 0262 9B08     		lsrs	r3, r3, #2
+ 1055 0264 0993     		str	r3, [sp, #36]
+ 1056              	.LVL191:
+1128:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1129:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    /*  Calculations of last stage */
+1130:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    for (i0 = 0U; i0 <= (fftLen - n1); i0 += n1)
+ 1057              		.loc 1 1130 4 is_stmt 1 view .LVU328
+ 1058              		.loc 1 1130 12 is_stmt 0 view .LVU329
+ 1059 0266 0024     		movs	r4, #0
+ 1060 0268 209D     		ldr	r5, [sp, #128]	@ float
+ 1061              		.loc 1 1130 4 view .LVU330
+ 1062 026a B2E0     		b	.L12
+ 1063              	.LVL192:
+ 1064              	.L13:
+1131:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+1132:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  index calculation for the input as, */
+1133:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  pSrc[i0 + 0], pSrc[i0 + fftLen/4], pSrc[i0 + fftLen/2], pSrc[i0 + 3fftLen/4] */
+1134:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       i1 = i0 + n2;
+ 1065              		.loc 1 1134 7 is_stmt 1 view .LVU331
+ 1066              		.loc 1 1134 10 is_stmt 0 view .LVU332
+ 1067 026c 099B     		ldr	r3, [sp, #36]
+ 1068 026e E218     		adds	r2, r4, r3
+ 1069 0270 0192     		str	r2, [sp, #4]
+ 1070              	.LVL193:
+1135:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       i2 = i1 + n2;
+ 1071              		.loc 1 1135 7 is_stmt 1 view .LVU333
+ 1072              		.loc 1 1135 10 is_stmt 0 view .LVU334
+ 1073 0272 04EB4301 		add	r1, r4, r3, lsl #1
+ 1074              	.LVL194:
+1136:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       i3 = i2 + n2;
+ 1075              		.loc 1 1136 7 is_stmt 1 view .LVU335
+ 1076              		.loc 1 1136 10 is_stmt 0 view .LVU336
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 40
+
+
+ 1077 0276 0B44     		add	r3, r3, r1
+ 1078 0278 0293     		str	r3, [sp, #8]
+ 1079              	.LVL195:
+1137:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1138:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /*  Butterfly implementation */
+1139:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xa + xc */
+1140:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       r1 = pSrc[2U * i0] + pSrc[2U * i2];
+ 1080              		.loc 1 1140 7 is_stmt 1 view .LVU337
+ 1081              		.loc 1 1140 16 is_stmt 0 view .LVU338
+ 1082 027a 4FEAC40A 		lsl	r10, r4, #3
+ 1083 027e 5BF83470 		ldr	r7, [fp, r4, lsl #3]	@ float
+ 1084              		.loc 1 1140 32 view .LVU339
+ 1085 0282 4FEAC109 		lsl	r9, r1, #3
+ 1086 0286 0491     		str	r1, [sp, #16]
+ 1087 0288 5BF83180 		ldr	r8, [fp, r1, lsl #3]	@ float
+ 1088              		.loc 1 1140 10 view .LVU340
+ 1089 028c 4146     		mov	r1, r8
+ 1090              	.LVL196:
+ 1091              		.loc 1 1140 10 view .LVU341
+ 1092 028e 3846     		mov	r0, r7
+ 1093 0290 FFF7FEFF 		bl	__aeabi_fadd
+ 1094              	.LVL197:
+ 1095              		.loc 1 1140 10 view .LVU342
+ 1096 0294 0646     		mov	r6, r0
+ 1097              	.LVL198:
+1141:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1142:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xa - xc */
+1143:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       r2 = pSrc[2U * i0] - pSrc[2U * i2];
+ 1098              		.loc 1 1143 7 is_stmt 1 view .LVU343
+ 1099              		.loc 1 1143 10 is_stmt 0 view .LVU344
+ 1100 0296 4146     		mov	r1, r8
+ 1101 0298 3846     		mov	r0, r7
+ 1102              	.LVL199:
+ 1103              		.loc 1 1143 10 view .LVU345
+ 1104 029a FFF7FEFF 		bl	__aeabi_fsub
+ 1105              	.LVL200:
+ 1106 029e 0590     		str	r0, [sp, #20]	@ float
+ 1107              	.LVL201:
+1144:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1145:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* ya + yc */
+1146:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       s1 = pSrc[(2U * i0) + 1U] + pSrc[(2U * i2) + 1U];
+ 1108              		.loc 1 1146 7 is_stmt 1 view .LVU346
+ 1109              		.loc 1 1146 16 is_stmt 0 view .LVU347
+ 1110 02a0 0AF1040A 		add	r10, r10, #4
+ 1111 02a4 5BF80A70 		ldr	r7, [fp, r10]	@ float
+ 1112              		.loc 1 1146 39 view .LVU348
+ 1113 02a8 09F1040C 		add	ip, r9, #4
+ 1114 02ac CDF818C0 		str	ip, [sp, #24]
+ 1115 02b0 5BF80C80 		ldr	r8, [fp, ip]	@ float
+ 1116              		.loc 1 1146 10 view .LVU349
+ 1117 02b4 4146     		mov	r1, r8
+ 1118 02b6 3846     		mov	r0, r7
+ 1119              	.LVL202:
+ 1120              		.loc 1 1146 10 view .LVU350
+ 1121 02b8 FFF7FEFF 		bl	__aeabi_fadd
+ 1122              	.LVL203:
+ 1123 02bc 0790     		str	r0, [sp, #28]	@ float
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 41
+
+
+ 1124              	.LVL204:
+1147:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1148:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* ya - yc */
+1149:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       s2 = pSrc[(2U * i0) + 1U] - pSrc[(2U * i2) + 1U];
+ 1125              		.loc 1 1149 7 is_stmt 1 view .LVU351
+ 1126              		.loc 1 1149 10 is_stmt 0 view .LVU352
+ 1127 02be 4146     		mov	r1, r8
+ 1128 02c0 3846     		mov	r0, r7
+ 1129              	.LVL205:
+ 1130              		.loc 1 1149 10 view .LVU353
+ 1131 02c2 FFF7FEFF 		bl	__aeabi_fsub
+ 1132              	.LVL206:
+ 1133 02c6 0390     		str	r0, [sp, #12]	@ float
+ 1134              	.LVL207:
+1150:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1151:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xc + xd */
+1152:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       t1 = pSrc[2U * i1] + pSrc[2U * i3];
+ 1135              		.loc 1 1152 7 is_stmt 1 view .LVU354
+ 1136              		.loc 1 1152 16 is_stmt 0 view .LVU355
+ 1137 02c8 019A     		ldr	r2, [sp, #4]
+ 1138 02ca 4FEAC208 		lsl	r8, r2, #3
+ 1139              		.loc 1 1152 32 view .LVU356
+ 1140 02ce 029B     		ldr	r3, [sp, #8]
+ 1141 02d0 DF00     		lsls	r7, r3, #3
+ 1142              		.loc 1 1152 10 view .LVU357
+ 1143 02d2 5BF83310 		ldr	r1, [fp, r3, lsl #3]	@ float
+ 1144 02d6 5BF83200 		ldr	r0, [fp, r2, lsl #3]	@ float
+ 1145              	.LVL208:
+ 1146              		.loc 1 1152 10 view .LVU358
+ 1147 02da FFF7FEFF 		bl	__aeabi_fadd
+ 1148              	.LVL209:
+ 1149 02de 8146     		mov	r9, r0
+ 1150              	.LVL210:
+1153:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1154:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xa' = xa + xb + xc + xd */
+1155:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[2U * i0] = (r1 + t1) * onebyfftLen;
+ 1151              		.loc 1 1155 7 is_stmt 1 view .LVU359
+ 1152              		.loc 1 1155 27 is_stmt 0 view .LVU360
+ 1153 02e0 0146     		mov	r1, r0
+ 1154 02e2 3046     		mov	r0, r6
+ 1155              	.LVL211:
+ 1156              		.loc 1 1155 27 view .LVU361
+ 1157 02e4 FFF7FEFF 		bl	__aeabi_fadd
+ 1158              	.LVL212:
+ 1159              		.loc 1 1155 33 view .LVU362
+ 1160 02e8 2946     		mov	r1, r5
+ 1161 02ea FFF7FEFF 		bl	__aeabi_fmul
+ 1162              	.LVL213:
+ 1163              		.loc 1 1155 21 view .LVU363
+ 1164 02ee 4BF83400 		str	r0, [fp, r4, lsl #3]	@ float
+1156:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1157:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (xa + xb) - (xc + xd) */
+1158:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       r1 = r1 - t1;
+ 1165              		.loc 1 1158 7 is_stmt 1 view .LVU364
+ 1166              		.loc 1 1158 10 is_stmt 0 view .LVU365
+ 1167 02f2 4946     		mov	r1, r9
+ 1168 02f4 3046     		mov	r0, r6
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 42
+
+
+ 1169 02f6 FFF7FEFF 		bl	__aeabi_fsub
+ 1170              	.LVL214:
+ 1171 02fa 0890     		str	r0, [sp, #32]	@ float
+ 1172              	.LVL215:
+1159:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1160:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yb + yd */
+1161:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       t2 = pSrc[(2U * i1) + 1U] + pSrc[(2U * i3) + 1U];
+ 1173              		.loc 1 1161 7 is_stmt 1 view .LVU366
+ 1174              		.loc 1 1161 16 is_stmt 0 view .LVU367
+ 1175 02fc 08F10408 		add	r8, r8, #4
+ 1176              		.loc 1 1161 39 view .LVU368
+ 1177 0300 0437     		adds	r7, r7, #4
+ 1178              		.loc 1 1161 10 view .LVU369
+ 1179 0302 5BF80710 		ldr	r1, [fp, r7]	@ float
+ 1180 0306 5BF80800 		ldr	r0, [fp, r8]	@ float
+ 1181              	.LVL216:
+ 1182              		.loc 1 1161 10 view .LVU370
+ 1183 030a FFF7FEFF 		bl	__aeabi_fadd
+ 1184              	.LVL217:
+ 1185 030e 0646     		mov	r6, r0
+ 1186              	.LVL218:
+1162:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1163:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* ya' = ya + yb + yc + yd */
+1164:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[(2U * i0) + 1U] = (s1 + t2) * onebyfftLen;
+ 1187              		.loc 1 1164 7 is_stmt 1 view .LVU371
+ 1188              		.loc 1 1164 34 is_stmt 0 view .LVU372
+ 1189 0310 0146     		mov	r1, r0
+ 1190 0312 DDF81C90 		ldr	r9, [sp, #28]	@ float
+ 1191              	.LVL219:
+ 1192              		.loc 1 1164 34 view .LVU373
+ 1193 0316 4846     		mov	r0, r9
+ 1194              	.LVL220:
+ 1195              		.loc 1 1164 34 view .LVU374
+ 1196 0318 FFF7FEFF 		bl	__aeabi_fadd
+ 1197              	.LVL221:
+ 1198              		.loc 1 1164 40 view .LVU375
+ 1199 031c 2946     		mov	r1, r5
+ 1200 031e FFF7FEFF 		bl	__aeabi_fmul
+ 1201              	.LVL222:
+ 1202              		.loc 1 1164 28 view .LVU376
+ 1203 0322 4BF80A00 		str	r0, [fp, r10]	@ float
+1165:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1166:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (ya + yc) - (yb + yd) */
+1167:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       s1 = s1 - t2;
+ 1204              		.loc 1 1167 7 is_stmt 1 view .LVU377
+ 1205              		.loc 1 1167 10 is_stmt 0 view .LVU378
+ 1206 0326 3146     		mov	r1, r6
+ 1207 0328 4846     		mov	r0, r9
+ 1208 032a FFF7FEFF 		bl	__aeabi_fsub
+ 1209              	.LVL223:
+ 1210 032e 8246     		mov	r10, r0
+ 1211              	.LVL224:
+1168:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1169:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (yb-yd) */
+1170:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       t1 = pSrc[(2U * i1) + 1U] - pSrc[(2U * i3) + 1U];
+ 1212              		.loc 1 1170 7 is_stmt 1 view .LVU379
+ 1213              		.loc 1 1170 10 is_stmt 0 view .LVU380
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 43
+
+
+ 1214 0330 5BF80710 		ldr	r1, [fp, r7]	@ float
+ 1215 0334 5BF80800 		ldr	r0, [fp, r8]	@ float
+ 1216              	.LVL225:
+ 1217              		.loc 1 1170 10 view .LVU381
+ 1218 0338 FFF7FEFF 		bl	__aeabi_fsub
+ 1219              	.LVL226:
+ 1220 033c 8146     		mov	r9, r0
+ 1221              	.LVL227:
+1171:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1172:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (xb-xd) */
+1173:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       t2 = pSrc[2U * i1] - pSrc[2U * i3];
+ 1222              		.loc 1 1173 7 is_stmt 1 view .LVU382
+ 1223              		.loc 1 1173 10 is_stmt 0 view .LVU383
+ 1224 033e 029B     		ldr	r3, [sp, #8]
+ 1225 0340 5BF83310 		ldr	r1, [fp, r3, lsl #3]	@ float
+ 1226 0344 019A     		ldr	r2, [sp, #4]
+ 1227 0346 5BF83200 		ldr	r0, [fp, r2, lsl #3]	@ float
+ 1228              	.LVL228:
+ 1229              		.loc 1 1173 10 view .LVU384
+ 1230 034a FFF7FEFF 		bl	__aeabi_fsub
+ 1231              	.LVL229:
+ 1232 034e 0646     		mov	r6, r0
+ 1233              	.LVL230:
+1174:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1175:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xc' = (xa-xb+xc-xd)co2 - (ya-yb+yc-yd)(si2) */
+1176:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[2U * i1] = r1 * onebyfftLen;
+ 1234              		.loc 1 1176 7 is_stmt 1 view .LVU385
+ 1235              		.loc 1 1176 26 is_stmt 0 view .LVU386
+ 1236 0350 0899     		ldr	r1, [sp, #32]	@ float
+ 1237 0352 2846     		mov	r0, r5
+ 1238              	.LVL231:
+ 1239              		.loc 1 1176 26 view .LVU387
+ 1240 0354 FFF7FEFF 		bl	__aeabi_fmul
+ 1241              	.LVL232:
+ 1242              		.loc 1 1176 21 view .LVU388
+ 1243 0358 019A     		ldr	r2, [sp, #4]
+ 1244 035a 4BF83200 		str	r0, [fp, r2, lsl #3]	@ float
+1177:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1178:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yc' = (ya-yb+yc-yd)co2 + (xa-xb+xc-xd)(si2) */
+1179:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[(2U * i1) + 1U] = s1 * onebyfftLen;
+ 1245              		.loc 1 1179 7 is_stmt 1 view .LVU389
+ 1246              		.loc 1 1179 33 is_stmt 0 view .LVU390
+ 1247 035e 5146     		mov	r1, r10
+ 1248 0360 2846     		mov	r0, r5
+ 1249 0362 FFF7FEFF 		bl	__aeabi_fmul
+ 1250              	.LVL233:
+ 1251              		.loc 1 1179 28 view .LVU391
+ 1252 0366 4BF80800 		str	r0, [fp, r8]	@ float
+1180:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1181:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (xa - xc) - (yb-yd) */
+1182:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       r1 = r2 - t1;
+ 1253              		.loc 1 1182 7 is_stmt 1 view .LVU392
+ 1254              		.loc 1 1182 10 is_stmt 0 view .LVU393
+ 1255 036a 4946     		mov	r1, r9
+ 1256 036c DDF81480 		ldr	r8, [sp, #20]	@ float
+ 1257 0370 4046     		mov	r0, r8
+ 1258 0372 FFF7FEFF 		bl	__aeabi_fsub
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 44
+
+
+ 1259              	.LVL234:
+ 1260 0376 8246     		mov	r10, r0
+ 1261              	.LVL235:
+1183:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1184:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (xa - xc) + (yb-yd) */
+1185:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       r2 = r2 + t1;
+ 1262              		.loc 1 1185 7 is_stmt 1 view .LVU394
+ 1263              		.loc 1 1185 10 is_stmt 0 view .LVU395
+ 1264 0378 4946     		mov	r1, r9
+ 1265 037a 4046     		mov	r0, r8
+ 1266              	.LVL236:
+ 1267              		.loc 1 1185 10 view .LVU396
+ 1268 037c FFF7FEFF 		bl	__aeabi_fadd
+ 1269              	.LVL237:
+ 1270 0380 8046     		mov	r8, r0
+ 1271              	.LVL238:
+1186:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1187:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (ya - yc) + (xb-xd) */
+1188:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       s1 = s2 + t2;
+ 1272              		.loc 1 1188 7 is_stmt 1 view .LVU397
+ 1273              		.loc 1 1188 10 is_stmt 0 view .LVU398
+ 1274 0382 3146     		mov	r1, r6
+ 1275 0384 0398     		ldr	r0, [sp, #12]	@ float
+ 1276              	.LVL239:
+ 1277              		.loc 1 1188 10 view .LVU399
+ 1278 0386 FFF7FEFF 		bl	__aeabi_fadd
+ 1279              	.LVL240:
+ 1280 038a 8146     		mov	r9, r0
+ 1281              	.LVL241:
+1189:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1190:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* (ya - yc) - (xb-xd) */
+1191:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       s2 = s2 - t2;
+ 1282              		.loc 1 1191 7 is_stmt 1 view .LVU400
+ 1283              		.loc 1 1191 10 is_stmt 0 view .LVU401
+ 1284 038c 3146     		mov	r1, r6
+ 1285 038e 0398     		ldr	r0, [sp, #12]	@ float
+ 1286              	.LVL242:
+ 1287              		.loc 1 1191 10 view .LVU402
+ 1288 0390 FFF7FEFF 		bl	__aeabi_fsub
+ 1289              	.LVL243:
+ 1290 0394 0646     		mov	r6, r0
+ 1291              	.LVL244:
+1192:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1193:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xb' = (xa+yb-xc-yd)co1 - (ya-xb-yc+xd)(si1) */
+1194:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[2U * i2] = r1 * onebyfftLen;
+ 1292              		.loc 1 1194 7 is_stmt 1 view .LVU403
+ 1293              		.loc 1 1194 26 is_stmt 0 view .LVU404
+ 1294 0396 5146     		mov	r1, r10
+ 1295 0398 2846     		mov	r0, r5
+ 1296              	.LVL245:
+ 1297              		.loc 1 1194 26 view .LVU405
+ 1298 039a FFF7FEFF 		bl	__aeabi_fmul
+ 1299              	.LVL246:
+ 1300              		.loc 1 1194 21 view .LVU406
+ 1301 039e 0499     		ldr	r1, [sp, #16]
+ 1302 03a0 4BF83100 		str	r0, [fp, r1, lsl #3]	@ float
+1195:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 45
+
+
+1196:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yb' = (ya-xb-yc+xd)co1 + (xa+yb-xc-yd)(si1) */
+1197:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[(2U * i2) + 1U] = s1 * onebyfftLen;
+ 1303              		.loc 1 1197 7 is_stmt 1 view .LVU407
+ 1304              		.loc 1 1197 33 is_stmt 0 view .LVU408
+ 1305 03a4 4946     		mov	r1, r9
+ 1306 03a6 2846     		mov	r0, r5
+ 1307 03a8 FFF7FEFF 		bl	__aeabi_fmul
+ 1308              	.LVL247:
+ 1309              		.loc 1 1197 28 view .LVU409
+ 1310 03ac DDF818C0 		ldr	ip, [sp, #24]
+ 1311 03b0 4BF80C00 		str	r0, [fp, ip]	@ float
+1198:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1199:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* xd' = (xa-yb-xc+yd)co3 - (ya+xb-yc-xd)(si3) */
+1200:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[2U * i3] = r2 * onebyfftLen;
+ 1312              		.loc 1 1200 7 is_stmt 1 view .LVU410
+ 1313              		.loc 1 1200 26 is_stmt 0 view .LVU411
+ 1314 03b4 4146     		mov	r1, r8
+ 1315 03b6 2846     		mov	r0, r5
+ 1316 03b8 FFF7FEFF 		bl	__aeabi_fmul
+ 1317              	.LVL248:
+ 1318              		.loc 1 1200 21 view .LVU412
+ 1319 03bc 029B     		ldr	r3, [sp, #8]
+ 1320 03be 4BF83300 		str	r0, [fp, r3, lsl #3]	@ float
+1201:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1202:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       /* yd' = (ya+xb-yc-xd)co3 + (xa-yb-xc+yd)(si3) */
+1203:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****       pSrc[(2U * i3) + 1U] = s2 * onebyfftLen;
+ 1321              		.loc 1 1203 7 is_stmt 1 view .LVU413
+ 1322              		.loc 1 1203 33 is_stmt 0 view .LVU414
+ 1323 03c2 3146     		mov	r1, r6
+ 1324 03c4 2846     		mov	r0, r5
+ 1325 03c6 FFF7FEFF 		bl	__aeabi_fmul
+ 1326              	.LVL249:
+ 1327              		.loc 1 1203 28 view .LVU415
+ 1328 03ca 4BF80700 		str	r0, [fp, r7]	@ float
+1130:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 1329              		.loc 1 1130 42 is_stmt 1 discriminator 3 view .LVU416
+ 1330 03ce 0F9B     		ldr	r3, [sp, #60]
+ 1331 03d0 1C44     		add	r4, r4, r3
+ 1332              	.LVL250:
+ 1333              	.L12:
+1130:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 1334              		.loc 1 1130 21 discriminator 1 view .LVU417
+1130:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 1335              		.loc 1 1130 32 is_stmt 0 discriminator 1 view .LVU418
+ 1336 03d2 109B     		ldr	r3, [sp, #64]
+ 1337 03d4 0F9A     		ldr	r2, [sp, #60]
+ 1338 03d6 9B1A     		subs	r3, r3, r2
+1130:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 1339              		.loc 1 1130 21 discriminator 1 view .LVU419
+ 1340 03d8 A342     		cmp	r3, r4
+ 1341 03da BFF447AF 		bcs	.L13
+1204:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+1205:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+1206:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** #endif /* #if defined (ARM_MATH_DSP) */
+1207:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** }
+ 1342              		.loc 1 1207 1 view .LVU420
+ 1343 03de 17B0     		add	sp, sp, #92
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 46
+
+
+ 1344              	.LCFI5:
+ 1345              		.cfi_def_cfa_offset 36
+ 1346              		@ sp needed
+ 1347 03e0 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1348              		.loc 1 1207 1 view .LVU421
+ 1349              		.cfi_endproc
+ 1350              	.LFE102:
+ 1352              		.section	.text.arm_cfft_radix4_f32,"ax",%progbits
+ 1353              		.align	1
+ 1354              		.global	arm_cfft_radix4_f32
+ 1355              		.syntax unified
+ 1356              		.thumb
+ 1357              		.thumb_func
+ 1359              	arm_cfft_radix4_f32:
+ 1360              	.LVL251:
+ 1361              	.LFB100:
+  73:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    if (S->ifftFlag == 1U)
+ 1362              		.loc 1 73 1 is_stmt 1 view -0
+ 1363              		.cfi_startproc
+ 1364              		@ args = 0, pretend = 0, frame = 0
+ 1365              		@ frame_needed = 0, uses_anonymous_args = 0
+  73:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    if (S->ifftFlag == 1U)
+ 1366              		.loc 1 73 1 is_stmt 0 view .LVU423
+ 1367 0000 30B5     		push	{r4, r5, lr}
+ 1368              	.LCFI6:
+ 1369              		.cfi_def_cfa_offset 12
+ 1370              		.cfi_offset 4, -12
+ 1371              		.cfi_offset 5, -8
+ 1372              		.cfi_offset 14, -4
+ 1373 0002 83B0     		sub	sp, sp, #12
+ 1374              	.LCFI7:
+ 1375              		.cfi_def_cfa_offset 24
+ 1376 0004 0446     		mov	r4, r0
+ 1377 0006 0D46     		mov	r5, r1
+  74:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 1378              		.loc 1 74 4 is_stmt 1 view .LVU424
+  74:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 1379              		.loc 1 74 9 is_stmt 0 view .LVU425
+ 1380 0008 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+  74:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 1381              		.loc 1 74 7 view .LVU426
+ 1382 000a 012B     		cmp	r3, #1
+ 1383 000c 0AD0     		beq	.L20
+  82:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+ 1384              		.loc 1 82 7 is_stmt 1 view .LVU427
+ 1385 000e 8389     		ldrh	r3, [r0, #12]
+ 1386 0010 4268     		ldr	r2, [r0, #4]
+ 1387 0012 0188     		ldrh	r1, [r0]
+ 1388              	.LVL252:
+  82:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+ 1389              		.loc 1 82 7 is_stmt 0 view .LVU428
+ 1390 0014 2846     		mov	r0, r5
+ 1391              	.LVL253:
+  82:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+ 1392              		.loc 1 82 7 view .LVU429
+ 1393 0016 FFF7FEFF 		bl	arm_radix4_butterfly_f32
+ 1394              	.LVL254:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 47
+
+
+ 1395              	.L17:
+  85:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 1396              		.loc 1 85 4 is_stmt 1 view .LVU430
+  85:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 1397              		.loc 1 85 9 is_stmt 0 view .LVU431
+ 1398 001a E378     		ldrb	r3, [r4, #3]	@ zero_extendqisi2
+  85:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    {
+ 1399              		.loc 1 85 7 view .LVU432
+ 1400 001c 012B     		cmp	r3, #1
+ 1401 001e 0AD0     		beq	.L21
+ 1402              	.L15:
+  91:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 1403              		.loc 1 91 1 view .LVU433
+ 1404 0020 03B0     		add	sp, sp, #12
+ 1405              	.LCFI8:
+ 1406              		.cfi_remember_state
+ 1407              		.cfi_def_cfa_offset 12
+ 1408              		@ sp needed
+ 1409 0022 30BD     		pop	{r4, r5, pc}
+ 1410              	.LVL255:
+ 1411              	.L20:
+ 1412              	.LCFI9:
+ 1413              		.cfi_restore_state
+  77:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+ 1414              		.loc 1 77 7 is_stmt 1 view .LVU434
+  77:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+ 1415              		.loc 1 77 92 is_stmt 0 view .LVU435
+ 1416 0024 0369     		ldr	r3, [r0, #16]	@ float
+  77:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+ 1417              		.loc 1 77 7 view .LVU436
+ 1418 0026 0093     		str	r3, [sp]	@ float
+ 1419 0028 8389     		ldrh	r3, [r0, #12]
+ 1420 002a 4268     		ldr	r2, [r0, #4]
+ 1421 002c 0188     		ldrh	r1, [r0]
+ 1422              	.LVL256:
+  77:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+ 1423              		.loc 1 77 7 view .LVU437
+ 1424 002e 2846     		mov	r0, r5
+ 1425              	.LVL257:
+  77:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+ 1426              		.loc 1 77 7 view .LVU438
+ 1427 0030 FFF7FEFF 		bl	arm_radix4_butterfly_inverse_f32
+ 1428              	.LVL258:
+ 1429 0034 F1E7     		b	.L17
+ 1430              	.L21:
+  88:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c ****    }
+ 1431              		.loc 1 88 7 is_stmt 1 view .LVU439
+ 1432 0036 A368     		ldr	r3, [r4, #8]
+ 1433 0038 E289     		ldrh	r2, [r4, #14]
+ 1434 003a 2188     		ldrh	r1, [r4]
+ 1435 003c 2846     		mov	r0, r5
+ 1436 003e FFF7FEFF 		bl	arm_bitreversal_f32
+ 1437              	.LVL259:
+  91:Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix4_f32.c **** 
+ 1438              		.loc 1 91 1 is_stmt 0 view .LVU440
+ 1439 0042 EDE7     		b	.L15
+ 1440              		.cfi_endproc
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 48
+
+
+ 1441              	.LFE100:
+ 1443              		.text
+ 1444              	.Letext0:
+ 1445              		.file 2 "C:/ARM GNU Toolchain/arm-none-eabi/include/machine/_default_types.h"
+ 1446              		.file 3 "C:/ARM GNU Toolchain/arm-none-eabi/include/sys/_stdint.h"
+ 1447              		.file 4 "Drivers/CMSIS/DSP/Include/arm_math.h"
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s 			page 49
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 arm_cfft_radix4_f32.c
+C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s:22     .text.arm_radix4_butterfly_f32:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s:28     .text.arm_radix4_butterfly_f32:00000000 arm_radix4_butterfly_f32
+C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s:539    .text.arm_radix4_butterfly_inverse_f32:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s:545    .text.arm_radix4_butterfly_inverse_f32:00000000 arm_radix4_butterfly_inverse_f32
+C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s:1353   .text.arm_cfft_radix4_f32:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccVmNhAJ.s:1359   .text.arm_cfft_radix4_f32:00000000 arm_cfft_radix4_f32
+
+UNDEFINED SYMBOLS
+__aeabi_fadd
+__aeabi_fsub
+__aeabi_fmul
+arm_bitreversal_f32
