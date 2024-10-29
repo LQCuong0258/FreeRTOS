@@ -1,7 +1,7 @@
 #include "Controller.h"
 
 void PID_Vel(data * value, uint8_t ts) {
-    float error = value->setpoint - value->velocity;
+    float error = value->setpoint - value->angle;
     float up = 0, ud = 0;
     static float ui, errorReset, pre_error;
     int64_t pwm;
@@ -9,10 +9,10 @@ void PID_Vel(data * value, uint8_t ts) {
     int64_t Hlim = 100;
     int64_t Llim = -100;
 
-    float Kp = 4.8422;
-    float Ki = 76.8285;
-    float Kd = 0;
-    float Kb = 15.8666; /* Không hiệu quả */
+    float Kp = 32.6683;
+    float Ki = 30.7314;
+    float Kd = 1.9369;
+    float Kb = 3.9833;
 
     up = Kp * error;
     ui += Ki*error*ts*0.001 + Kb*errorReset*ts*0.001;

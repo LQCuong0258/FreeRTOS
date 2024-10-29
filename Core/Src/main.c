@@ -25,7 +25,7 @@ void MainTask(void * xTaskParameters) {
     // dataToSend.velocity = delta_encoder * 60 / (Ts * 0.001 * 4.0 * 11 * 45); /* RPM */
     dataToSend.velocity = delta_encoder*2*pi / (Ts * 0.001 * 4.0 * 11 * 45); /* rad/s */
     pre_encoder = encoder;
-    // position = encoder * 360.0 / (4.0 * 11 * 45);
+    dataToSend.angle = encoder*2*pi / (4.0 * 11 * 45);
     PID_Vel(&dataToSend, Ts);
 
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
@@ -47,7 +47,7 @@ void CommunicationTask(void * xTaskParameters) {
   data dataToReceive;
   for(;;) {
     if (xSemaphoreTake(CommuniSemaphore, portMAX_DELAY) && xQueueReceive(CommuniQueue, &dataToReceive, portMAX_DELAY) == pdTRUE) {
-      sprintf(buffer, "%0.2f,%0.2f\n", dataToReceive.setpoint, dataToReceive.velocity);
+      sprintf(buffer, "%0.2f,%0.2f\n", dataToReceive.setpoint, dataToReceive.angle);
       // sprintf(buffer, "%d,%0.2f\n", pwm, dataToReceive.velocity);
       SendString(buffer);
     }

@@ -8,7 +8,7 @@ typedef struct {
   float pwm;
   float setpoint;
   float velocity;
-  float position;
+  float angle;
 } data;
 
 
