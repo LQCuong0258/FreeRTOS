@@ -4,6 +4,8 @@
 #include "queue.h"
 #include "semphr.h"
 
+#define pi  3.1415926539
+
 QueueHandle_t CommuniQueue;
 SemaphoreHandle_t CommuniSemaphore;
 
@@ -20,7 +22,8 @@ void MainTask(void * xTaskParameters) {
   data dataToSend;
   for(;;) {
     dataToSend.setpoint = Setpoint;
-    dataToSend.velocity = delta_encoder * 60 / (Ts * 0.001 * 4.0 * 11 * 45); /* RPM */
+    // dataToSend.velocity = delta_encoder * 60 / (Ts * 0.001 * 4.0 * 11 * 45); /* RPM */
+    dataToSend.velocity = delta_encoder*2*pi / (Ts * 0.001 * 4.0 * 11 * 45); /* rad/s */
     pre_encoder = encoder;
     // position = encoder * 360.0 / (4.0 * 11 * 45);
     PID_Vel(&dataToSend, Ts);
@@ -52,7 +55,7 @@ void CommunicationTask(void * xTaskParameters) {
 }
 
 int main(void)
-{
+{ 
   HAL_Init();
   SystemClock_Config();
   MX_GPIO_Init();
