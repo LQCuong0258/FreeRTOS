@@ -39,6 +39,7 @@ extern "C" {
 #include "SysConfig.h"
 #include "usart.h"
 #include "timer.h"
+#include "Controller.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

@@ -5,7 +5,7 @@ build/system_stm32f1xx.o: Core/Src/system_stm32f1xx.c \
  Drivers/CMSIS/Include/cmsis_compiler.h Drivers/CMSIS/Include/cmsis_gcc.h \
  Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
- Core/Inc/stm32f1xx_hal_conf.h \
+ Core/Src/stm32f1xx_hal_conf.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h \
@@ -30,7 +30,7 @@ Drivers/CMSIS/Include/cmsis_compiler.h:
 Drivers/CMSIS/Include/cmsis_gcc.h:
 Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
-Core/Inc/stm32f1xx_hal_conf.h:
+Core/Src/stm32f1xx_hal_conf.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h:

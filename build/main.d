@@ -1,6 +1,6 @@
-build/main.o: Core/Src/main.c Core/Inc/main.h \
+build/main.o: Core/Src/main.c Core/Src/main.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
- Core/Inc/stm32f1xx_hal_conf.h \
+ Core/Src/stm32f1xx_hal_conf.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h \
  Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h \
@@ -21,9 +21,10 @@ build/main.o: Core/Src/main.c Core/Inc/main.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
- Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h Core/Inc/printf.h \
+ Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h Core/Src/printf.h \
  Core/Src/Drivers/Inc/SysConfig.h Core/Src/Drivers/Inc/usart.h \
- Core/Src/Drivers/Inc/timer.h ThirdParty/FreeRTOS/include/FreeRTOS.h \
+ Core/Src/Drivers/Inc/timer.h Core/Src/Drivers/Inc/Controller.h \
+ ThirdParty/FreeRTOS/include/FreeRTOS.h \
  ThirdParty/FreeRTOS/include/FreeRTOSConfig.h \
  ThirdParty/FreeRTOS/include/projdefs.h \
  ThirdParty/FreeRTOS/include/portable.h \
@@ -33,9 +34,9 @@ build/main.o: Core/Src/main.c Core/Inc/main.h \
  ThirdParty/FreeRTOS/include/task.h ThirdParty/FreeRTOS/include/list.h \
  ThirdParty/FreeRTOS/include/queue.h ThirdParty/FreeRTOS/include/task.h \
  ThirdParty/FreeRTOS/include/semphr.h ThirdParty/FreeRTOS/include/queue.h
-Core/Inc/main.h:
+Core/Src/main.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
-Core/Inc/stm32f1xx_hal_conf.h:
+Core/Src/stm32f1xx_hal_conf.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h:
 Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h:
@@ -59,10 +60,11 @@ Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
-Core/Inc/printf.h:
+Core/Src/printf.h:
 Core/Src/Drivers/Inc/SysConfig.h:
 Core/Src/Drivers/Inc/usart.h:
 Core/Src/Drivers/Inc/timer.h:
+Core/Src/Drivers/Inc/Controller.h:
 ThirdParty/FreeRTOS/include/FreeRTOS.h:
 ThirdParty/FreeRTOS/include/FreeRTOSConfig.h:
 ThirdParty/FreeRTOS/include/projdefs.h:

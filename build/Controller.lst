@@ -1,0 +1,493 @@
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"Controller.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Core/Src/Drivers/Src/Controller.c"
+  18              		.global	__aeabi_fsub
+  19              		.global	__aeabi_fmul
+  20              		.global	__aeabi_i2f
+  21              		.global	__aeabi_f2d
+  22              		.global	__aeabi_dmul
+  23              		.global	__aeabi_dadd
+  24              		.global	__aeabi_d2f
+  25              		.global	__aeabi_fdiv
+  26              		.global	__aeabi_fadd
+  27              		.global	__aeabi_f2lz
+  28              		.global	__aeabi_l2f
+  29              		.section	.text.PID_Vel,"ax",%progbits
+  30              		.align	1
+  31              		.global	PID_Vel
+  32              		.syntax unified
+  33              		.thumb
+  34              		.thumb_func
+  36              	PID_Vel:
+  37              	.LVL0:
+  38              	.LFB65:
+   1:Core/Src/Drivers/Src/Controller.c **** #include "Controller.h"
+   2:Core/Src/Drivers/Src/Controller.c **** 
+   3:Core/Src/Drivers/Src/Controller.c **** void PID_Vel(data* value, uint8_t ts) {
+  39              		.loc 1 3 39 view -0
+  40              		.cfi_startproc
+  41              		@ args = 0, pretend = 0, frame = 0
+  42              		@ frame_needed = 0, uses_anonymous_args = 0
+  43              		.loc 1 3 39 is_stmt 0 view .LVU1
+  44 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+  45              	.LCFI0:
+  46              		.cfi_def_cfa_offset 32
+  47              		.cfi_offset 4, -32
+  48              		.cfi_offset 5, -28
+  49              		.cfi_offset 6, -24
+  50              		.cfi_offset 7, -20
+  51              		.cfi_offset 8, -16
+  52              		.cfi_offset 9, -12
+  53              		.cfi_offset 10, -8
+  54              		.cfi_offset 14, -4
+  55 0004 0D46     		mov	r5, r1
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s 			page 2
+
+
+   4:Core/Src/Drivers/Src/Controller.c ****     float error = value->setpoint - value->velocity;
+  56              		.loc 1 4 5 is_stmt 1 view .LVU2
+  57              		.loc 1 4 11 is_stmt 0 view .LVU3
+  58 0006 8168     		ldr	r1, [r0, #8]	@ float
+  59              	.LVL1:
+  60              		.loc 1 4 11 view .LVU4
+  61 0008 4068     		ldr	r0, [r0, #4]	@ float
+  62              	.LVL2:
+  63              		.loc 1 4 11 view .LVU5
+  64 000a FFF7FEFF 		bl	__aeabi_fsub
+  65              	.LVL3:
+  66 000e 0446     		mov	r4, r0
+  67              	.LVL4:
+   5:Core/Src/Drivers/Src/Controller.c ****     float up = 0, ud = 0;
+  68              		.loc 1 5 5 is_stmt 1 view .LVU6
+   6:Core/Src/Drivers/Src/Controller.c ****     static float ui, errorReset, pre_error;
+  69              		.loc 1 6 5 view .LVU7
+   7:Core/Src/Drivers/Src/Controller.c ****     int64_t pwm;
+  70              		.loc 1 7 5 view .LVU8
+   8:Core/Src/Drivers/Src/Controller.c **** 
+   9:Core/Src/Drivers/Src/Controller.c ****     int64_t Hlim = 100;
+  71              		.loc 1 9 5 view .LVU9
+  10:Core/Src/Drivers/Src/Controller.c ****     int64_t Llim = -100;
+  72              		.loc 1 10 5 view .LVU10
+  11:Core/Src/Drivers/Src/Controller.c **** 
+  12:Core/Src/Drivers/Src/Controller.c ****     float Kp = 0.4908;
+  73              		.loc 1 12 5 view .LVU11
+  13:Core/Src/Drivers/Src/Controller.c ****     float Ki = 7.9491;
+  74              		.loc 1 13 5 view .LVU12
+  14:Core/Src/Drivers/Src/Controller.c ****     float Kd = 0;
+  75              		.loc 1 14 5 view .LVU13
+  15:Core/Src/Drivers/Src/Controller.c ****     float Kb = 16.1968;
+  76              		.loc 1 15 5 view .LVU14
+  16:Core/Src/Drivers/Src/Controller.c **** 
+  17:Core/Src/Drivers/Src/Controller.c ****     up = Kp * error;
+  77              		.loc 1 17 5 view .LVU15
+  78              		.loc 1 17 8 is_stmt 0 view .LVU16
+  79 0010 5B49     		ldr	r1, .L12+8
+  80 0012 FFF7FEFF 		bl	__aeabi_fmul
+  81              	.LVL5:
+  82              		.loc 1 17 8 view .LVU17
+  83 0016 0746     		mov	r7, r0
+  84              	.LVL6:
+  18:Core/Src/Drivers/Src/Controller.c ****     ui += Ki*error*ts*0.001 + Kb*errorReset*ts*0.001;
+  85              		.loc 1 18 5 is_stmt 1 view .LVU18
+  86              		.loc 1 18 13 is_stmt 0 view .LVU19
+  87 0018 5A49     		ldr	r1, .L12+12
+  88 001a 2046     		mov	r0, r4
+  89              	.LVL7:
+  90              		.loc 1 18 13 view .LVU20
+  91 001c FFF7FEFF 		bl	__aeabi_fmul
+  92              	.LVL8:
+  93 0020 0646     		mov	r6, r0
+  94              		.loc 1 18 19 view .LVU21
+  95 0022 2846     		mov	r0, r5
+  96 0024 FFF7FEFF 		bl	__aeabi_i2f
+  97              	.LVL9:
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s 			page 3
+
+
+  98 0028 0546     		mov	r5, r0
+  99              	.LVL10:
+ 100              		.loc 1 18 19 view .LVU22
+ 101 002a 0146     		mov	r1, r0
+ 102 002c 3046     		mov	r0, r6
+ 103 002e FFF7FEFF 		bl	__aeabi_fmul
+ 104              	.LVL11:
+ 105 0032 FFF7FEFF 		bl	__aeabi_f2d
+ 106              	.LVL12:
+ 107              		.loc 1 18 22 view .LVU23
+ 108 0036 50A3     		adr	r3, .L12
+ 109 0038 D3E90023 		ldrd	r2, [r3]
+ 110 003c FFF7FEFF 		bl	__aeabi_dmul
+ 111              	.LVL13:
+ 112 0040 8046     		mov	r8, r0
+ 113 0042 8946     		mov	r9, r1
+ 114              		.loc 1 18 33 view .LVU24
+ 115 0044 5049     		ldr	r1, .L12+16
+ 116 0046 514B     		ldr	r3, .L12+20
+ 117 0048 1868     		ldr	r0, [r3]	@ float
+ 118 004a FFF7FEFF 		bl	__aeabi_fmul
+ 119              	.LVL14:
+ 120 004e 0146     		mov	r1, r0
+ 121              		.loc 1 18 44 view .LVU25
+ 122 0050 2846     		mov	r0, r5
+ 123 0052 FFF7FEFF 		bl	__aeabi_fmul
+ 124              	.LVL15:
+ 125 0056 FFF7FEFF 		bl	__aeabi_f2d
+ 126              	.LVL16:
+ 127              		.loc 1 18 47 view .LVU26
+ 128 005a 47A3     		adr	r3, .L12
+ 129 005c D3E90023 		ldrd	r2, [r3]
+ 130 0060 FFF7FEFF 		bl	__aeabi_dmul
+ 131              	.LVL17:
+ 132 0064 0246     		mov	r2, r0
+ 133 0066 0B46     		mov	r3, r1
+ 134              		.loc 1 18 29 view .LVU27
+ 135 0068 4046     		mov	r0, r8
+ 136 006a 4946     		mov	r1, r9
+ 137 006c FFF7FEFF 		bl	__aeabi_dadd
+ 138              	.LVL18:
+ 139 0070 8046     		mov	r8, r0
+ 140 0072 8946     		mov	r9, r1
+ 141              		.loc 1 18 8 view .LVU28
+ 142 0074 DFF818A1 		ldr	r10, .L12+24
+ 143 0078 DAF80000 		ldr	r0, [r10]	@ float
+ 144 007c FFF7FEFF 		bl	__aeabi_f2d
+ 145              	.LVL19:
+ 146 0080 4246     		mov	r2, r8
+ 147 0082 4B46     		mov	r3, r9
+ 148 0084 FFF7FEFF 		bl	__aeabi_dadd
+ 149              	.LVL20:
+ 150 0088 FFF7FEFF 		bl	__aeabi_d2f
+ 151              	.LVL21:
+ 152 008c 0646     		mov	r6, r0
+ 153 008e CAF80000 		str	r0, [r10]	@ float
+  19:Core/Src/Drivers/Src/Controller.c ****     ud = Kd*(error - pre_error)/ts;
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s 			page 4
+
+
+ 154              		.loc 1 19 5 is_stmt 1 view .LVU29
+ 155              		.loc 1 19 20 is_stmt 0 view .LVU30
+ 156 0092 DFF80081 		ldr	r8, .L12+28
+ 157 0096 D8F80010 		ldr	r1, [r8]	@ float
+ 158 009a 2046     		mov	r0, r4
+ 159 009c FFF7FEFF 		bl	__aeabi_fsub
+ 160              	.LVL22:
+ 161              		.loc 1 19 12 view .LVU31
+ 162 00a0 0021     		movs	r1, #0
+ 163 00a2 FFF7FEFF 		bl	__aeabi_fmul
+ 164              	.LVL23:
+ 165              		.loc 1 19 8 view .LVU32
+ 166 00a6 2946     		mov	r1, r5
+ 167 00a8 FFF7FEFF 		bl	__aeabi_fdiv
+ 168              	.LVL24:
+ 169 00ac 0546     		mov	r5, r0
+ 170              	.LVL25:
+  20:Core/Src/Drivers/Src/Controller.c ****     pre_error = error;
+ 171              		.loc 1 20 5 is_stmt 1 view .LVU33
+ 172              		.loc 1 20 15 is_stmt 0 view .LVU34
+ 173 00ae C8F80040 		str	r4, [r8]	@ float
+  21:Core/Src/Drivers/Src/Controller.c **** 
+  22:Core/Src/Drivers/Src/Controller.c ****     int64_t uout = (int64_t)(up + ui + ud);
+ 174              		.loc 1 22 5 is_stmt 1 view .LVU35
+ 175              		.loc 1 22 33 is_stmt 0 view .LVU36
+ 176 00b2 3946     		mov	r1, r7
+ 177 00b4 3046     		mov	r0, r6
+ 178              	.LVL26:
+ 179              		.loc 1 22 33 view .LVU37
+ 180 00b6 FFF7FEFF 		bl	__aeabi_fadd
+ 181              	.LVL27:
+ 182              		.loc 1 22 38 view .LVU38
+ 183 00ba 2946     		mov	r1, r5
+ 184 00bc FFF7FEFF 		bl	__aeabi_fadd
+ 185              	.LVL28:
+ 186              		.loc 1 22 13 view .LVU39
+ 187 00c0 FFF7FEFF 		bl	__aeabi_f2lz
+ 188              	.LVL29:
+ 189 00c4 0446     		mov	r4, r0
+ 190              	.LVL30:
+ 191              		.loc 1 22 13 view .LVU40
+ 192 00c6 0D46     		mov	r5, r1
+ 193              	.LVL31:
+ 194              		.loc 1 22 13 view .LVU41
+ 195 00c8 0646     		mov	r6, r0
+ 196 00ca 0F46     		mov	r7, r1
+ 197              	.LVL32:
+  23:Core/Src/Drivers/Src/Controller.c **** 
+  24:Core/Src/Drivers/Src/Controller.c ****     if (uout > 0) {
+ 198              		.loc 1 24 5 is_stmt 1 view .LVU42
+ 199              		.loc 1 24 8 is_stmt 0 view .LVU43
+ 200 00cc 0128     		cmp	r0, #1
+ 201 00ce 71F10003 		sbcs	r3, r1, #0
+ 202 00d2 15DA     		bge	.L10
+  25:Core/Src/Drivers/Src/Controller.c ****         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+  26:Core/Src/Drivers/Src/Controller.c ****         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
+  27:Core/Src/Drivers/Src/Controller.c **** 
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s 			page 5
+
+
+  28:Core/Src/Drivers/Src/Controller.c ****         if (uout > Hlim) pwm = Hlim;
+  29:Core/Src/Drivers/Src/Controller.c ****         else pwm = uout;
+  30:Core/Src/Drivers/Src/Controller.c **** 
+  31:Core/Src/Drivers/Src/Controller.c ****         errorReset = pwm - uout;
+  32:Core/Src/Drivers/Src/Controller.c ****     }
+  33:Core/Src/Drivers/Src/Controller.c ****     else if (uout < 0) {
+ 203              		.loc 1 33 10 is_stmt 1 view .LVU44
+ 204              		.loc 1 33 13 is_stmt 0 view .LVU45
+ 205 00d4 0029     		cmp	r1, #0
+ 206 00d6 30DB     		blt	.L11
+  34:Core/Src/Drivers/Src/Controller.c ****         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
+  35:Core/Src/Drivers/Src/Controller.c ****         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
+  36:Core/Src/Drivers/Src/Controller.c **** 
+  37:Core/Src/Drivers/Src/Controller.c ****         if (uout < Llim) pwm = Llim;
+  38:Core/Src/Drivers/Src/Controller.c ****         else pwm = uout;
+  39:Core/Src/Drivers/Src/Controller.c **** 
+  40:Core/Src/Drivers/Src/Controller.c ****         errorReset = pwm - uout;
+  41:Core/Src/Drivers/Src/Controller.c **** 
+  42:Core/Src/Drivers/Src/Controller.c ****         pwm *= -1;
+  43:Core/Src/Drivers/Src/Controller.c ****     }
+  44:Core/Src/Drivers/Src/Controller.c ****     else {
+  45:Core/Src/Drivers/Src/Controller.c ****         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+ 207              		.loc 1 45 9 is_stmt 1 view .LVU46
+ 208 00d8 2F4C     		ldr	r4, .L12+32
+ 209 00da 0022     		movs	r2, #0
+ 210 00dc 0121     		movs	r1, #1
+ 211              	.LVL33:
+ 212              		.loc 1 45 9 is_stmt 0 view .LVU47
+ 213 00de 2046     		mov	r0, r4
+ 214              	.LVL34:
+ 215              		.loc 1 45 9 view .LVU48
+ 216 00e0 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 217              	.LVL35:
+  46:Core/Src/Drivers/Src/Controller.c ****         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);    
+ 218              		.loc 1 46 9 is_stmt 1 view .LVU49
+ 219 00e4 0022     		movs	r2, #0
+ 220 00e6 0221     		movs	r1, #2
+ 221 00e8 2046     		mov	r0, r4
+ 222 00ea FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 223              	.LVL36:
+  47:Core/Src/Drivers/Src/Controller.c ****         pwm = 0;
+ 224              		.loc 1 47 9 view .LVU50
+  48:Core/Src/Drivers/Src/Controller.c **** 
+  49:Core/Src/Drivers/Src/Controller.c ****         errorReset = pwm - uout;
+ 225              		.loc 1 49 9 view .LVU51
+ 226              		.loc 1 49 26 is_stmt 0 view .LVU52
+ 227 00ee 7042     		negs	r0, r6
+ 228              		.loc 1 49 20 view .LVU53
+ 229 00f0 65EB4501 		sbc	r1, r5, r5, lsl #1
+ 230 00f4 FFF7FEFF 		bl	__aeabi_l2f
+ 231              	.LVL37:
+ 232 00f8 244B     		ldr	r3, .L12+20
+ 233 00fa 1860     		str	r0, [r3]	@ float
+  47:Core/Src/Drivers/Src/Controller.c ****         pwm = 0;
+ 234              		.loc 1 47 13 view .LVU54
+ 235 00fc 0024     		movs	r4, #0
+ 236 00fe 18E0     		b	.L4
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s 			page 6
+
+
+ 237              	.LVL38:
+ 238              	.L10:
+  25:Core/Src/Drivers/Src/Controller.c ****         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
+ 239              		.loc 1 25 9 is_stmt 1 view .LVU55
+ 240 0100 DFF89480 		ldr	r8, .L12+32
+ 241 0104 0022     		movs	r2, #0
+ 242 0106 0121     		movs	r1, #1
+ 243              	.LVL39:
+  25:Core/Src/Drivers/Src/Controller.c ****         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
+ 244              		.loc 1 25 9 is_stmt 0 view .LVU56
+ 245 0108 4046     		mov	r0, r8
+ 246              	.LVL40:
+  25:Core/Src/Drivers/Src/Controller.c ****         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
+ 247              		.loc 1 25 9 view .LVU57
+ 248 010a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 249              	.LVL41:
+  26:Core/Src/Drivers/Src/Controller.c **** 
+ 250              		.loc 1 26 9 is_stmt 1 view .LVU58
+ 251 010e 0122     		movs	r2, #1
+ 252 0110 0221     		movs	r1, #2
+ 253 0112 4046     		mov	r0, r8
+ 254 0114 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 255              	.LVL42:
+  28:Core/Src/Drivers/Src/Controller.c ****         else pwm = uout;
+ 256              		.loc 1 28 9 view .LVU59
+  28:Core/Src/Drivers/Src/Controller.c ****         else pwm = uout;
+ 257              		.loc 1 28 12 is_stmt 0 view .LVU60
+ 258 0118 652C     		cmp	r4, #101
+ 259 011a 75F10003 		sbcs	r3, r5, #0
+ 260 011e 01DB     		blt	.L3
+  28:Core/Src/Drivers/Src/Controller.c ****         else pwm = uout;
+ 261              		.loc 1 28 30 discriminator 1 view .LVU61
+ 262 0120 6424     		movs	r4, #100
+ 263              	.LVL43:
+  28:Core/Src/Drivers/Src/Controller.c ****         else pwm = uout;
+ 264              		.loc 1 28 30 discriminator 1 view .LVU62
+ 265 0122 0025     		movs	r5, #0
+ 266              	.LVL44:
+ 267              	.L3:
+  31:Core/Src/Drivers/Src/Controller.c ****     }
+ 268              		.loc 1 31 9 is_stmt 1 view .LVU63
+  31:Core/Src/Drivers/Src/Controller.c ****     }
+ 269              		.loc 1 31 26 is_stmt 0 view .LVU64
+ 270 0124 A01B     		subs	r0, r4, r6
+  31:Core/Src/Drivers/Src/Controller.c ****     }
+ 271              		.loc 1 31 20 view .LVU65
+ 272 0126 65EB0701 		sbc	r1, r5, r7
+ 273 012a FFF7FEFF 		bl	__aeabi_l2f
+ 274              	.LVL45:
+ 275 012e 174B     		ldr	r3, .L12+20
+ 276 0130 1860     		str	r0, [r3]	@ float
+ 277              	.LVL46:
+ 278              	.L4:
+  50:Core/Src/Drivers/Src/Controller.c ****     }
+  51:Core/Src/Drivers/Src/Controller.c **** 
+  52:Core/Src/Drivers/Src/Controller.c ****     TIM3->CCR1 = pwm;
+ 279              		.loc 1 52 5 is_stmt 1 view .LVU66
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s 			page 7
+
+
+ 280              		.loc 1 52 16 is_stmt 0 view .LVU67
+ 281 0132 1A4B     		ldr	r3, .L12+36
+ 282 0134 5C63     		str	r4, [r3, #52]
+  53:Core/Src/Drivers/Src/Controller.c **** }
+ 283              		.loc 1 53 1 view .LVU68
+ 284 0136 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 285              	.LVL47:
+ 286              	.L11:
+  34:Core/Src/Drivers/Src/Controller.c ****         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
+ 287              		.loc 1 34 9 is_stmt 1 view .LVU69
+ 288 013a DFF85C80 		ldr	r8, .L12+32
+ 289 013e 0122     		movs	r2, #1
+ 290 0140 1146     		mov	r1, r2
+ 291              	.LVL48:
+  34:Core/Src/Drivers/Src/Controller.c ****         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
+ 292              		.loc 1 34 9 is_stmt 0 view .LVU70
+ 293 0142 4046     		mov	r0, r8
+ 294              	.LVL49:
+  34:Core/Src/Drivers/Src/Controller.c ****         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
+ 295              		.loc 1 34 9 view .LVU71
+ 296 0144 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 297              	.LVL50:
+  35:Core/Src/Drivers/Src/Controller.c **** 
+ 298              		.loc 1 35 9 is_stmt 1 view .LVU72
+ 299 0148 0022     		movs	r2, #0
+ 300 014a 0221     		movs	r1, #2
+ 301 014c 4046     		mov	r0, r8
+ 302 014e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 303              	.LVL51:
+  37:Core/Src/Drivers/Src/Controller.c ****         else pwm = uout;
+ 304              		.loc 1 37 9 view .LVU73
+  37:Core/Src/Drivers/Src/Controller.c ****         else pwm = uout;
+ 305              		.loc 1 37 12 is_stmt 0 view .LVU74
+ 306 0152 14F1640F 		cmn	r4, #100
+ 307 0156 75F1FF33 		sbcs	r3, r5, #-1
+ 308 015a 03DA     		bge	.L6
+  37:Core/Src/Drivers/Src/Controller.c ****         else pwm = uout;
+ 309              		.loc 1 37 30 discriminator 1 view .LVU75
+ 310 015c 6FF06304 		mvn	r4, #99
+ 311              	.LVL52:
+  37:Core/Src/Drivers/Src/Controller.c ****         else pwm = uout;
+ 312              		.loc 1 37 30 discriminator 1 view .LVU76
+ 313 0160 4FF0FF35 		mov	r5, #-1
+ 314              	.LVL53:
+ 315              	.L6:
+  40:Core/Src/Drivers/Src/Controller.c **** 
+ 316              		.loc 1 40 9 is_stmt 1 view .LVU77
+  40:Core/Src/Drivers/Src/Controller.c **** 
+ 317              		.loc 1 40 26 is_stmt 0 view .LVU78
+ 318 0164 A01B     		subs	r0, r4, r6
+  40:Core/Src/Drivers/Src/Controller.c **** 
+ 319              		.loc 1 40 20 view .LVU79
+ 320 0166 65EB0701 		sbc	r1, r5, r7
+ 321 016a FFF7FEFF 		bl	__aeabi_l2f
+ 322              	.LVL54:
+ 323 016e 074B     		ldr	r3, .L12+20
+ 324 0170 1860     		str	r0, [r3]	@ float
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s 			page 8
+
+
+  42:Core/Src/Drivers/Src/Controller.c ****     }
+ 325              		.loc 1 42 9 is_stmt 1 view .LVU80
+  42:Core/Src/Drivers/Src/Controller.c ****     }
+ 326              		.loc 1 42 13 is_stmt 0 view .LVU81
+ 327 0172 6442     		negs	r4, r4
+  42:Core/Src/Drivers/Src/Controller.c ****     }
+ 328              		.loc 1 42 13 view .LVU82
+ 329 0174 DDE7     		b	.L4
+ 330              	.L13:
+ 331 0176 00BF     		.align	3
+ 332              	.L12:
+ 333 0178 FCA9F1D2 		.word	-755914244
+ 334 017c 4D62503F 		.word	1062232653
+ 335 0180 234AFB3E 		.word	1056655907
+ 336 0184 075FFE40 		.word	1090412295
+ 337 0188 0C938141 		.word	1099010828
+ 338 018c 00000000 		.word	errorReset.1
+ 339 0190 00000000 		.word	ui.2
+ 340 0194 00000000 		.word	pre_error.0
+ 341 0198 000C0140 		.word	1073810432
+ 342 019c 00040040 		.word	1073742848
+ 343              		.cfi_endproc
+ 344              	.LFE65:
+ 346              		.section	.bss.pre_error.0,"aw",%nobits
+ 347              		.align	2
+ 350              	pre_error.0:
+ 351 0000 00000000 		.space	4
+ 352              		.section	.bss.errorReset.1,"aw",%nobits
+ 353              		.align	2
+ 356              	errorReset.1:
+ 357 0000 00000000 		.space	4
+ 358              		.section	.bss.ui.2,"aw",%nobits
+ 359              		.align	2
+ 362              	ui.2:
+ 363 0000 00000000 		.space	4
+ 364              		.text
+ 365              	.Letext0:
+ 366              		.file 2 "C:/ARM GNU Toolchain/arm-none-eabi/include/machine/_default_types.h"
+ 367              		.file 3 "C:/ARM GNU Toolchain/arm-none-eabi/include/sys/_stdint.h"
+ 368              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 369              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h"
+ 370              		.file 6 "Core/Src/Drivers/Inc/Controller.h"
+ARM GAS  C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 Controller.c
+C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s:30     .text.PID_Vel:00000000 $t
+C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s:36     .text.PID_Vel:00000000 PID_Vel
+C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s:333    .text.PID_Vel:00000178 $d
+C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s:356    .bss.errorReset.1:00000000 errorReset.1
+C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s:362    .bss.ui.2:00000000 ui.2
+C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s:350    .bss.pre_error.0:00000000 pre_error.0
+C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s:347    .bss.pre_error.0:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s:353    .bss.errorReset.1:00000000 $d
+C:\Users\Lamp\AppData\Local\Temp\ccXrTara.s:359    .bss.ui.2:00000000 $d
+
+UNDEFINED SYMBOLS
+__aeabi_fsub
+__aeabi_fmul
+__aeabi_i2f
+__aeabi_f2d
+__aeabi_dmul
+__aeabi_dadd
+__aeabi_d2f
+__aeabi_fdiv
+__aeabi_fadd
+__aeabi_f2lz
+__aeabi_l2f
+HAL_GPIO_WritePin

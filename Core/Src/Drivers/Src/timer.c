@@ -66,4 +66,7 @@ void PWM_init(void)
     TIM3->CCER |= TIM_CCER_CC1E;
     TIM3->CR1 |= TIM_CR1_CEN;                   // Enable Timer 3
     TIM3->EGR |= TIM_EGR_UG;
+
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);	
 }

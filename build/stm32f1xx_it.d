@@ -1,6 +1,6 @@
-build/stm32f1xx_it.o: Core/Src/stm32f1xx_it.c Core/Inc/main.h \
+build/stm32f1xx_it.o: Core/Src/stm32f1xx_it.c Core/Src/main.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
- Core/Inc/stm32f1xx_hal_conf.h \
+ Core/Src/stm32f1xx_hal_conf.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h \
  Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h \
@@ -21,12 +21,13 @@ build/stm32f1xx_it.o: Core/Src/stm32f1xx_it.c Core/Inc/main.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
- Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h Core/Inc/printf.h \
+ Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h Core/Src/printf.h \
  Core/Src/Drivers/Inc/SysConfig.h Core/Src/Drivers/Inc/usart.h \
- Core/Src/Drivers/Inc/timer.h Core/Inc/stm32f1xx_it.h
-Core/Inc/main.h:
+ Core/Src/Drivers/Inc/timer.h Core/Src/Drivers/Inc/Controller.h \
+ Core/Src/stm32f1xx_it.h
+Core/Src/main.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
-Core/Inc/stm32f1xx_hal_conf.h:
+Core/Src/stm32f1xx_hal_conf.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h:
 Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h:
@@ -50,8 +51,9 @@ Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h:
 Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
-Core/Inc/printf.h:
+Core/Src/printf.h:
 Core/Src/Drivers/Inc/SysConfig.h:
 Core/Src/Drivers/Inc/usart.h:
 Core/Src/Drivers/Inc/timer.h:
-Core/Inc/stm32f1xx_it.h:
+Core/Src/Drivers/Inc/Controller.h:
+Core/Src/stm32f1xx_it.h:
